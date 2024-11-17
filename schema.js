@@ -22,9 +22,13 @@ CREATE TABLE IF NOT EXISTS field(
 CREATE TABLE IF NOT EXISTS link(
   idlink SERIAL PRIMARY KEY,
   idbox_from INTEGER,
-  idbox_to INTEGER
+  idfield_from INTEGER,
+  idbox_to INTEGER,
+  idfield_to INTEGER,
   FOREIGN KEY (idbox_from) REFERENCES box(idbox),
-  FOREIGN KEY (idbox_to) REFERENCES box(idbox)
+  FOREIGN KEY (idfield_from) REFERENCES field(idfield),
+  FOREIGN KEY (idbox_to) REFERENCES box(idbox),
+  FOREIGN KEY (idfield_to) REFERENCES field(idfield)
 );
 
 CREATE TABLE IF NOT EXISTS tag(
@@ -37,7 +41,8 @@ CREATE TABLE IF NOT EXISTS tag(
 INSERT INTO tag(type_code, code) VALUES
 ('KEY','PRIMARY_KEY'),('KEY','FOREIGN_KEY'),
 ('CONSTRAINT','UNIQUE'),
-('COLOR','yellow'),('COLOR','pink'),('COLOR','hotpink'),('COLOR','palegreen'),('COLOR','red'),('COLOR','orange'),('COLOR','skyblue'),('COLOR','olive'),('COLOR','grey'),('COLOR','darkviolet');
+('COLOR','yellow'),('COLOR','pink'),('COLOR','hotpink'),('COLOR','palegreen'),('COLOR','red'),('COLOR','orange'),('COLOR','skyblue'),('COLOR','olive'),('COLOR','grey'),('COLOR','darkviolet'),
+(RELATION_CATEGORY','TR2');
 
 CREATE TABLE message_tag(
   idmessage SERIAL PRIMARY KEY,
