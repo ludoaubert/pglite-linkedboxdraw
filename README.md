@@ -5,17 +5,17 @@
 Typical use case:
 
 Just been hired on a software (or data) project. You need to quickly understand how the data is structured. With linkedboxdraw, you can quickly create your own map.
-To look at an example of map : https://ludoaubert.github.io/linkedboxdraw/table_edit_ti.html
+To look at an example of map : https://ludoaubert.github.io/pglite-linkedboxdraw/table_edit_ti.html
 
 In the case of relational diagrams, there are some SQL scripts that are available to produce a diagram file.
 
-SQL Server : https://ludoaubert.github.io/linkedboxdraw/SelectMetaData_SQLServer.sql
+SQL Server : https://ludoaubert.github.io/pglite-linkedboxdraw/SelectMetaData_SQLServer.sql
 
-MySQL : https://ludoaubert.github.io/linkedboxdraw/SelectMetaData_MySQL.sql
+MySQL : https://ludoaubert.github.io/pglite-linkedboxdraw/SelectMetaData_MySQL.sql
 
 other engines : you can create your own script and share it.
 
-You can then proceed to load the diagram file by pressing the "File Choose" button in the "File Input" section of https://ludoaubert.github.io/linkedboxdraw/table_edit_ti.html
+You can then proceed to load the diagram file by pressing the "File Choose" button in the "File Input" section of https://ludoaubert.github.io/pglite-linkedboxdraw/table_edit_ti.html
 
 Or you can enter the information (box titles, box fields and links) manually.
 
@@ -23,7 +23,7 @@ Section "Table Edit" is a simple GUI where you can type in your box (table) name
 
 You can save your diagram data to a json file by pressing "Save As" in the "File Output" section.
 
-https://ludoaubert.github.io/linkedboxdraw/table_edit_ti.html
+https://ludoaubert.github.io/pglite-linkedboxdraw/table_edit_ti.html
 
 Is where you can view the diagram. It is also possible to edit the geometric information in two ways.
 1) by moving a box (click and drag), which will also trigger a recomputation of the geometric links.
