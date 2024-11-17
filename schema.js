@@ -39,6 +39,21 @@ INSERT INTO tag(type_code, code) VALUES
 ('CONSTRAINT','UNIQUE'),
 ('COLOR','yellow'),('COLOR','pink'),('COLOR','hotpink'),('COLOR','palegreen'),('COLOR','red'),('COLOR','orange'),('COLOR','skyblue'),('COLOR','olive'),('COLOR','grey'),('COLOR','darkviolet');
 
+CREATE TABLE message_tag(
+  idmessage SERIAL PRIMARY KEY,
+  message TEXT
+);
+
+CREATE TABLE graph(
+  from_table VARCHAR(128),
+  from_key INTEGER,
+  to_table VARCHAR(128),
+  to_key INTEGER
+);
+
+-- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('box',1,'message_tag',1);
+-- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('field,1,'tag',1);
+
 --does PostgreSQL have a SQL Graph feature ?
 
 CREATE TABLE rectangle(
