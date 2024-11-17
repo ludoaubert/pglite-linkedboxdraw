@@ -1,0 +1,97 @@
+<html>
+<meta charset="UTF-8">
+<head>
+    <title>connected rectangles</title>
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+	<link rel="icon" type="image/x-icon" href="favicon.ico" />
+	
+   <script>   
+
+//	import contexts from "./contexts.json" assert { type: "json" };
+//	import data from "./diagdata.json" assert { type: "json" };
+
+	function onLoad() {
+		var Module = {
+		  'print': function(text) { console.log('stdout: ' + text) },
+		  'printErr': function(text) { console.log('stderr: ' + text) }
+		}; 
+		
+		var xmlhttp1 = new XMLHttpRequest();
+		var data_url = "diagdata.json";
+
+		xmlhttp1.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				mydata = JSON.parse(this.responseText);
+				if (mycontexts != null)
+					drawDiag();
+			}
+		};
+		xmlhttp1.open("GET", data_url, true);
+		xmlhttp1.send();
+		
+
+		var xmlhttp2 = new XMLHttpRequest();
+		var contexts_url = "contexts.json";
+
+		xmlhttp2.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				mycontexts = JSON.parse(this.responseText);
+				if (mydata != null)
+					drawDiag();
+			}
+		};
+		xmlhttp2.open("GET", contexts_url, true);
+		xmlhttp2.send();
+	}
+    </script>
+	
+    <script type="text/javascript" src="bombix-origine.js"></script>
+	<script type="text/javascript" src="pretty.js"></script>
+	<script type="text/javascript" src="compute_box_rectangles.js"></script>
+    <script type="text/javascript" src="dbcomponent.js"></script>
+	<link rel="stylesheet" type="text/css" href="dbcomponent.css">
+	<script type="text/javascript" src="iocomponent.js"></script>
+	<link rel="stylesheet" type="text/css" href="iocomponent.css">
+    <script type="text/javascript" src="diagload.js"></script>
+    <link rel="stylesheet" type="text/css" href="diagstyle.css">
+	<link rel="stylesheet" type="text/css" href="collapsible.css">
+    <script type="text/javascript" src="collapsible.js"></script>	
+</head>
+  
+<body onload="onLoad()">
+
+<button type="button" class="collapsible" onclick="switchCollapsible(this)">Repartition</button>
+<div id="repartitionc" class="content">
+</div>
+
+<div id="diagram">
+</div>
+
+<button type="button" class="collapsible" onclick="switchCollapsible(this)">Input Output</button>
+<div id="input_output" class="content">
+	<h1>Geometry File Input</h1>
+
+	<ul>
+	<li>Load Geometry File</li>
+	<li><input type="file" accept=".json" value="Load" onchange="loadFile(this, handleReceiveMyContextsEvent2)"></li>
+	</ul>
+
+	<h1>Geometry File Output</h1>
+	<ul>
+	<li>
+		<form onsubmit="return false">
+		  <input type="text" name="name" value="contexts.json">
+		  <input type="submit" value="Save Geometry File As" onclick="download(this.previousElementSibling.value, mycontexts)">
+		</form>
+	</li>
+	</ul>
+
+	<h1>Data File Input</h1>
+	<ul>
+	<li>Load Data File</li>
+	<li><input type="file" accept=".json" value="Load" onchange="loadFile(this, handleReceiveMyDataEvent2)"></li>
+	</ul>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+<html>
+<head>
+	<title>Decision Tree Viewer</title>
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+	<link rel="icon" type="image/x-icon" href="favicon.ico" />
+	<link rel="stylesheet" href="topo_space.css">
+	<script type="module" src="topo_space.js"></script>
+</head>
+<body onload="main()">
+
+<div class="grid-container">
+
+<div id="main_svg">
+
+</div>
+
+<div id="dt_div">
+<button onclick="PreviousTest()">PreviousTest</button><button onclick="NextTest()">NextTest</button>
+<table id="decision_tree">
+<caption>Decision Tree</caption>
+  <thead>
+    <tr>
+      <th>i</th>
+      <th>parent_index</th>
+      <th>depth</th>
+      <th>i_empl_source</th>
+      <th>i_empl_dest</th>
+      <th>match</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>-1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>69</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>-1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>69</td>
+    </tr>
+  </tbody>
+</table>
+
+<table id="chemin">
+<caption>Selected Chemin</caption>
+  <thead>
+    <tr>
+      <th>i</th>
+      <th>parent_index</th>
+      <th>depth</th>
+      <th>i_empl_source</th>
+      <th>i_empl_dest</th>
+      <th>match</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>-1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>69</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>-1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>69</td>
+    </tr>
+  </tbody>
+</table>
+
+<table id="scores">
+<caption>Scores</caption>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>sigma_edge_dist</th>
+      <th>width</th>
+      <th>height</th>
+      <th>total</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+
+</div>
+
+</div>
+
+<div id="range_svg">
+
+</div>
+
+</body>
+</html>

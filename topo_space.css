@@ -1,0 +1,70 @@
+
+.rect{
+	fill:blue;
+	stroke:pink;
+	stroke-width:5;
+	opacity:0.5;
+}
+
+
+.hole{
+	fill:red;
+	stroke:green;
+	stroke-width:5;
+	opacity:0.5;	
+}
+
+
+.logical_contact{
+	fill:white;
+}
+
+.topological_contact{
+	fill:black;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}
+
+table {
+    border: 1px solid grey;
+}
+tbody tr,thead tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+#scores tbody tr,#scores thead tr {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+tbody {
+    width: 100%;
+    overflow-y: auto;
+    display: block;
+}
+thead {
+    background: yellowgreen;
+}
+td,th {
+    padding: 1px;
+    text-align: center;
+}
+
+#decision_tree tbody {
+    height: 350px;
+}
+#chemin tbody {
+    height: 150px;
+}
+#scores tbody {
+	height: 150px;
+}
+
+#decision_tree tr.clicked, #scores tr.clicked {
+    background: #ccd;
+}
+#decision_tree tr.highlight, #scores tr.highlight {
+    background: #eef;
+}
