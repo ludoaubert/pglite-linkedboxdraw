@@ -19,6 +19,13 @@ CREATE TABLE IF NOT EXISTS field(
   FOREIGN KEY (idbox) REFERENCES box(idbox)
 );
 
+CREATE TABLE IF NOT EXISTS value(
+  idvalue SERIAL PRIMARY KEY,
+  data TEXT,
+  idfield INTEGER,
+  FOREIGN KEY (idfield) REFERENCES field(idfield)
+);
+
 CREATE TABLE IF NOT EXISTS link(
   idlink SERIAL PRIMARY KEY,
   idbox_from INTEGER,
