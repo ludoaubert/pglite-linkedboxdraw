@@ -30,8 +30,16 @@ CREATE TABLE IF NOT EXISTS link(
 CREATE TABLE IF NOT EXISTS tag(
   idtag SERIAL PRIMARY KEY,
   type_code VARCHAR(128),
-  code VARCHAR(128)
+  code VARCHAR(128),
+  UNIQUE(type_code,code)
 );
+
+INSERT INTO tag(type_code, code) VALUES
+('KEY','PRIMARY_KEY'),('KEY','FOREIGN_KEY'),
+('CONSTRAINT','UNIQUE'),
+('COLOR','yellow'),('COLOR','pink'),('COLOR','hotpink'),('COLOR','palegreen'),('COLOR','red'),('COLOR','orange'),('COLOR','skyblue'),('COLOR','olive'),('COLOR','grey'),('COLOR','darkviolet');
+
+--does PostgreSQL have a SQL Graph feature ?
 
 CREATE TABLE rectangle(
   idrectangle SERIAL PRIMARY KEY,
