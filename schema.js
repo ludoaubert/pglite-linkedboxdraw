@@ -1,3 +1,5 @@
+const schema=`
+
 CREATE TABLE IF NOT EXISTS diagram(
   iddiagram SERIAL PRIMARY KEY,
   title VARCHAR(128)
@@ -54,3 +56,4 @@ CREATE TABLE point(
   y INTEGER NULL,
   FOREIGN KEY (idlink) REFERENCES link(idlink)
 );
+`;
