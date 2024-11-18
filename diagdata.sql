@@ -4,29 +4,15 @@ INSERT INTO box(idbox, title, iddiagram) VALUES (1, 'ChanmeBlemeproPec', 1);
 INSERT INTO field(idfield, name, idbox) VALUES (1, 'teillebouRap', 1);
 
 INSERT INTO box(idbox, title, iddiagram) VALUES (2, 'PouilledePotecaCaillerag', 1);
-INSERT INTO field(idfield, name, idbox) VALUES (1, 'cesu', 2);
-INSERT INTO field(idfield, name, idbox) VALUES (2, 'reusta', 2);
+INSERT INTO field(idfield, name, idbox) VALUES (2, 'cesu', 2), (3, 'reusta', 2);
 
-INSERT INTO box(
-{"title":"Blemepro",
-"id":2,
-"fields":[
-	{"name":"cesu","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"Peuclo","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"name","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"phoneTel","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"donbi","isPrimaryKey":false,"isForeignKey":false}
-]},
-{"title":"TassepeTcheubi",
-"id":3,
-"fields":[
-	{"name":"telmor","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"meuf","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"guedinTeub","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"teillebouRap","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"guezmere","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"donbi","isPrimaryKey":false,"isForeignKey":false}
-]},
+INSERT INTO box(idbox, title, iddiagram) VALUES(3, 'Blemepro', 1);
+INSERT INTO field(idfield, name, idbox) VALUES (4, 'cesu', 3), (5, 'Peuclo', 3), (6, 'name', 3), (7, 'phoneTel', 3), (8, 'donbi', 3);
+
+INSERT INTO box(idbox, title, iddiagram) VALUES(4, 'TassepeTcheubi', 1);
+INSERT INTO field(idfield, name, idbox) VALUES (9, 'telmor', 4), (10, 'meuf', 4), (11, 'guedinTeub', 4), (12, 'teillebouRap', 4), (13, 'guezmere', 4), (14, 'donbi', 4);
+
+
 {"title":"GuedraTeucheTipeu",
 "id":4,
 "fields":[
