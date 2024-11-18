@@ -1,15 +1,13 @@
-{"documentTitle":"Jacket Gafa BlemePro","boxes":[
-{"title":"ChanmeBlemeproPec",
-"id":0,
-"fields":[
-	{"name":"teillebouRap","isPrimaryKey":false,"isForeignKey":false}
-]},
-{"title":"PouilledePotecaCaillerag",
-"id":1,
-"fields":[
-	{"name":"cesu","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"reusta","isPrimaryKey":false,"isForeignKey":false}
-]},
+INSERT INTO diagram(iddiagram, title) VALUES (1, 'Jacket Gafa BlemePro');
+
+INSERT INTO box(idbox, title, iddiagram) VALUES (1, 'ChanmeBlemeproPec', 1);
+INSERT INTO field(idfield, name, idbox) VALUES (1, 'teillebouRap', 1);
+
+INSERT INTO box(idbox, title, iddiagram) VALUES (2, 'PouilledePotecaCaillerag', 1);
+INSERT INTO field(idfield, name, idbox) VALUES (1, 'cesu', 2);
+INSERT INTO field(idfield, name, idbox) VALUES (2, 'reusta', 2);
+
+INSERT INTO box(
 {"title":"Blemepro",
 "id":2,
 "fields":[
