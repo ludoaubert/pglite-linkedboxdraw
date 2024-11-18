@@ -1,31 +1,24 @@
 INSERT INTO diagram(iddiagram, title) VALUES (1, 'Jacket Gafa BlemePro');
 
 INSERT INTO box(idbox, title, iddiagram) VALUES (1, 'ChanmeBlemeproPec', 1);
-INSERT INTO field(idfield, name, idbox) VALUES (1, 'teillebouRap', 1);
+INSERT INTO field(name, idbox) VALUES ('teillebouRap', 1);
 
 INSERT INTO box(idbox, title, iddiagram) VALUES (2, 'PouilledePotecaCaillerag', 1);
-INSERT INTO field(idfield, name, idbox) VALUES (2, 'cesu', 2), (3, 'reusta', 2);
+INSERT INTO field(name, idbox) VALUES ('cesu', 2), ('reusta', 2);
 
 INSERT INTO box(idbox, title, iddiagram) VALUES(3, 'Blemepro', 1);
-INSERT INTO field(idfield, name, idbox) VALUES (4, 'cesu', 3), (5, 'Peuclo', 3), (6, 'name', 3), (7, 'phoneTel', 3), (8, 'donbi', 3);
+INSERT INTO field(name, idbox) VALUES ('cesu', 3), ('Peuclo', 3), ('name', 3), ('phoneTel', 3), ('donbi', 3);
 
 INSERT INTO box(idbox, title, iddiagram) VALUES(4, 'TassepeTcheubi', 1);
-INSERT INTO field(idfield, name, idbox) VALUES (9, 'telmor', 4), (10, 'meuf', 4), (11, 'guedinTeub', 4), (12, 'teillebouRap', 4), (13, 'guezmere', 4), (14, 'donbi', 4);
+INSERT INTO field(name, idbox) VALUES ('telmor', 4), ('meuf', 4), ('guedinTeub', 4), ('teillebouRap', 4), ('guezmere', 4), ('donbi', 4);
+
+INSERT INTO box(idbox, title, iddiagram) VALUES(5, 'GuedraTeucheTipeu', 1);
+INSERT INTO field(name, idbox) VALUES ('tepo', 5), ('teillebouRap', 5);
+
+INSERT INTO box(idbox, title, iddiagram) VALUES(6, 'TejeTiepeTigenToncarInsseGueusGuedinUc', 1);
+INSERT INTO field(name, idbox) VALUES ('cesu', 6), ('yeuf', 6), ('KeneVeugra', 6);
 
 
-{"title":"GuedraTeucheTipeu",
-"id":4,
-"fields":[
-	{"name":"tepo","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"teillebouRap","isPrimaryKey":false,"isForeignKey":false}
-]},
-{"title":"TejeTiepeTigenToncarInsseGueusGuedinUc",
-"id":5,
-"fields":[
-	{"name":"cesu","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"yeuf","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"KeneVeugra","isPrimaryKey":false,"isForeignKey":false}
-]},
 {"title":"Lassedege",
 "id":6,
 "fields":[
