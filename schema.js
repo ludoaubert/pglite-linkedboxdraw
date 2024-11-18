@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS link(
   FOREIGN KEY (idbox_from) REFERENCES box(idbox),
   FOREIGN KEY (idfield_from) REFERENCES field(idfield),
   FOREIGN KEY (idbox_to) REFERENCES box(idbox),
-  FOREIGN KEY (idfield_to) REFERENCES field(idfield)
+  FOREIGN KEY (idfield_to) REFERENCES field(idfield),
+  UNIQUE(idbox_from, idbox_to)
 );
 
 CREATE TABLE IF NOT EXISTS tag(
@@ -72,6 +73,7 @@ CREATE TABLE frame(
   idframe SERIAL PRIMARY KEY,
   left,right,top,bottom INTEGER,
   iddiagram INTEGER,
+  UNIQUE(iddiagram),
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) 
 );
 
@@ -80,12 +82,14 @@ CREATE TABLE rectangle(
   width INTEGER,
   height INTEGER,
   idbox INTEGER,
+  UNIQUE(idbox),
   FOREIGN KEY (idbox) REFERENCES box(idbox)
 );
 
 CREATE TABLE translation(
   idtranslation SERIAL PRIMARY KEY,
   idrectangle INTEGER,
+  UNIQUE(idrectangle),
   x INTEGER,
   y INTEGER,
   FOREIGN KEY (idrectangle) REFERENCES rectangle(idrectangle)
