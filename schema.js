@@ -64,9 +64,16 @@ CREATE TABLE graph(
 );
 
 -- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('box',1,'message_tag',1);
--- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('field,1,'tag',1);
+-- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('field',1,'tag',1);
 
 --does PostgreSQL have a SQL Graph feature ?
+
+CREATE TABLE frame(
+  idframe SERIAL PRIMARY KEY,
+  left,right,top,bottom INTEGER,
+  iddiagram INTEGER,
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) 
+);
 
 CREATE TABLE rectangle(
   idrectangle SERIAL PRIMARY KEY,
