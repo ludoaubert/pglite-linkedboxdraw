@@ -18,109 +18,102 @@ INSERT INTO field(name, idbox) VALUES ('tepo', 5), ('teillebouRap', 5);
 INSERT INTO box(idbox, title, iddiagram) VALUES(6, 'TejeTiepeTigenToncarInsseGueusGuedinUc', 1);
 INSERT INTO field(name, idbox) VALUES ('cesu', 6), ('yeuf', 6), ('KeneVeugra', 6);
 
+INSERT INTO box(idbox, title, iddiagram) VALUES(7, 'Lassedege', 1);
+INSERT INTO field(name, idbox) VALUES ('cesu', 7), ('al', 7), ('zessegon', 7), ('Peuclo', 7), ('yepe', 7), ('zeto', 7), ('phoneTel', 7);
 
-{"title":"Lassedege",
-"id":6,
-"fields":[
-	{"name":"cesu","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"al","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"zessegon","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"Peuclo","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"yepe","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"zeto","isPrimaryKey":false,"isForeignKey":false},
-	{"name":"phoneTel","isPrimaryKey":false,"isForeignKey":false}
+
 ]},
-{"title":"fechnoueuf",
+INSERT INTO box(idbox, title, iddiagram) VALUES({"title":"fechnoueuf",
 "id":7,
 "fields":[
-	{"name":"cesu","isPrimaryKey":false,"isForeignKey":false},
+INSERT INTO field(name, idbox) VALUES (	{"name":"cesu","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"gova","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"vessause","isPrimaryKey":false,"isForeignKey":false}
 ]},
-{"title":"ZetiNoichNeuthuZincMeucaYoce",
+INSERT INTO box(idbox, title, iddiagram) VALUES({"title":"ZetiNoichNeuthuZincMeucaYoce",
 "id":8,
 "fields":[
-	{"name":"[lassedeg]","isPrimaryKey":false,"isForeignKey":false},
+INSERT INTO field(name, idbox) VALUES (	{"name":"[lassedeg]","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"[yecous]","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"zebe","isPrimaryKey":false,"isForeignKey":false}
 ]},
-{"title":"zomblou",
+INSERT INTO box(idbox, title, iddiagram) VALUES({"title":"zomblou",
 "id":9,
 "fields":[
-	{"name":"[zedouZicmus]","isPrimaryKey":false,"isForeignKey":false},
+INSERT INTO field(name, idbox) VALUES (	{"name":"[zedouZicmus]","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"[mifaOideOiteOe]","isPrimaryKey":true,"isForeignKey":false},
 	{"name":"[zessegonNeuthu]","isPrimaryKey":true,"isForeignKey":false},
 	{"name":"yeuf","isPrimaryKey":true,"isForeignKey":false}
 ]},
-{"title":"lassedegLeurdit",
+INSERT INTO box(idbox, title, iddiagram) VALUES({"title":"lassedegLeurdit",
 "id":10,
 "fields":[
-	{"name":"[zomblou]{2}","isPrimaryKey":false,"isForeignKey":false},
+INSERT INTO field(name, idbox) VALUES (	{"name":"[zomblou]{2}","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"zenZincs","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"vessause","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"yeuf","isPrimaryKey":false,"isForeignKey":true},
 	{"name":"oinje","isPrimaryKey":false,"isForeignKey":true}
 ]},
-{"title":"youvoi",
+INSERT INTO box(idbox, title, iddiagram) VALUES({"title":"youvoi",
 "id":11,
 "fields":[
-	{"name":"[yeufi]{2}","isPrimaryKey":false,"isForeignKey":false},
+INSERT INTO field(name, idbox) VALUES (	{"name":"[yeufi]{2}","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"zyva","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"yepe","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"zetyenchesZeyo","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"nemobitKps","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"keuf","isPrimaryKey":false,"isForeignKey":false}
 ]},
-{"title":"lacelles",
+INSERT INTO box(idbox, title, iddiagram) VALUES({"title":"lacelles",
 "id":12,
 "fields":[
-	{"name":"keblo","isPrimaryKey":false,"isForeignKey":false},
+INSERT INTO field(name, idbox) VALUES (	{"name":"keblo","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"euf","isPrimaryKey":false,"isForeignKey":false}
 ]},
-{"title":"mefu",
+INSERT INTO box(idbox, title, iddiagram) VALUES({"title":"mefu",
 "id":13,
 "fields":[
-	{"name":"cesu","isPrimaryKey":false,"isForeignKey":false},
+INSERT INTO field(name, idbox) VALUES (	{"name":"cesu","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"zeberyep","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"youvoiUc","isPrimaryKey":false,"isForeignKey":false}
 ]},
-{"title":"euf",
+INSERT INTO box(idbox, title, iddiagram) VALUES({"title":"euf",
 "id":14,
 "fields":[
-	{"name":"lassedeg","isPrimaryKey":false,"isForeignKey":false},
+INSERT INTO field(name, idbox) VALUES (	{"name":"lassedeg","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"id","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"fichateraToDeuspidrepo","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"yecous","isPrimaryKey":false,"isForeignKey":false}
 ]},
-{"title":"zedouZicmus",
+INSERT INTO box(idbox, title, iddiagram) VALUES({"title":"zedouZicmus",
 "id":15,
 "fields":[
-	{"name":"[updatesKecos]","isPrimaryKey":false,"isForeignKey":false},
+INSERT INTO field(name, idbox) VALUES (	{"name":"[updatesKecos]","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"yeufiyechKeco","isPrimaryKey":false,"isForeignKey":false}
 ]},
-{"title":"vessause",
+INSERT INTO box(idbox, title, iddiagram) VALUES({"title":"vessause",
 "id":16,
 "fields":[
-	{"name":"lassedeg","isPrimaryKey":false,"isForeignKey":false},
+INSERT INTO field(name, idbox) VALUES (	{"name":"lassedeg","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"persistenceYeche","isPrimaryKey":false,"isForeignKey":false}
 ]},
-{"title":"KeneVeugra",
+INSERT INTO box(idbox, title, iddiagram) VALUES({"title":"KeneVeugra",
 "id":17,
 "fields":[
-	{"name":"name","isPrimaryKey":false,"isForeignKey":false},
+INSERT INTO field(name, idbox) VALUES (	{"name":"name","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"[symbolsIndices]","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"kisdeAggregator","isPrimaryKey":false,"isForeignKey":false}
 ]},
-{"title":"keusse",
+INSERT INTO box(idbox, title, iddiagram) VALUES({"title":"keusse",
 "id":18,
 "fields":[
-	{"name":"al","isPrimaryKey":false,"isForeignKey":false},
+INSERT INTO field(name, idbox) VALUES (	{"name":"al","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"zeto","isPrimaryKey":false,"isForeignKey":false}
 ]},
-{"title":"usage",
+INSERT INTO box(idbox, title, iddiagram) VALUES({"title":"usage",
 "id":19,
 "fields":[
-	{"name":"[zomblouLeurdits]","isPrimaryKey":false,"isForeignKey":false},
+INSERT INTO field(name, idbox) VALUES (	{"name":"[zomblouLeurdits]","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"{youvois}","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"fechnoueuf","isPrimaryKey":false,"isForeignKey":false},
 	{"name":"lancebaVeucheYeuveZarbiZeu","isPrimaryKey":false,"isForeignKey":false},
