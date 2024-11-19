@@ -26,7 +26,7 @@ INSERT INTO rectangle(width, height, idbox) VALUES
 (50, 56, 19),
 (182, 120, 20);
  
-INSERT INTO translation(idrect, x, y) VALUES
+INSERT INTO translation(idrectangle, x, y) VALUES
  (1+0, 16, 234),
  (1+1, 495, 186),
  (1+2, 391, 10),
