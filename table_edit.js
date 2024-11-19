@@ -1,3 +1,4 @@
+import { PGlite } from '@electric-sql/pglite'
 import sample_diagdata from "./diagdata.json" with {type: "json"};
 
 import {mycontexts, contexts, resetContexts, setContexts, drawDiag, compute_links, ApplyRepartition, enforce_bounding_rectangle, data2contexts} from "./diagload.js";
@@ -6,6 +7,8 @@ import {getFileData} from "./iocomponent.js";
 import {compute_box_rectangle} from "./compute_box_rectangles.js"
 
 export {init, mydata, data, resetData, setData, displayCurrent, createMutationObserver};
+
+const db = new PGlite('idb://my-pgdata');
 
 var mydata = sample_diagdata;
 
