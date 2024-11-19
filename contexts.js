@@ -1,5 +1,5 @@
 {"contexts":[{
-"frame":{"left":0,"right":701,"top":0,"bottom":704},
+"frame":(701, 704},
 
 INSERT INTO translations(idrect, x, y) VALUES
  (1+0, 16, 234),
@@ -22,7 +22,8 @@ INSERT INTO translations(idrect, x, y) VALUES
  (1+17, 30, 122),
  (1+18, 59, 346),
  (1+19, 301, 442);
-],
+
+INSERT INTO point(idlink 
 "links":[
 {"polyline":[{"x":423, 114},{"x":423, 154}],"from":2,"to":14},
 {"polyline":[{"x":391, 46},{"x":351, 46}],"from":2,"to":5},
@@ -48,25 +49,25 @@ INSERT INTO translations(idrect, x, y) VALUES
 {"polyline":[{"x":617, 442},{"x":617, 402}],"from":11,"to":13},
 {"polyline":[{"x":59, 586},{"x":59, 546}],"from":9,"to":15}
 ]}],
-"rectangles":[
-{"left":0,"right":127,"top":0,"bottom":40},
-{"left":0,"right":176,"top":0,"bottom":56},
-{"left":0,"right":64,"top":0,"bottom":104},
-{"left":0,"right":106,"top":0,"bottom":120},
-{"left":0,"right":127,"top":0,"bottom":56},
-{"left":0,"right":274,"top":0,"bottom":72},
-{"left":0,"right":71,"top":0,"bottom":136},
-{"left":0,"right":78,"top":0,"bottom":72},
-{"left":0,"right":204,"top":0,"bottom":72},
-{"left":0,"right":133,"top":0,"bottom":88},
-{"left":0,"right":113,"top":0,"bottom":104},
-{"left":0,"right":98,"top":0,"bottom":120},
-{"left":0,"right":64,"top":0,"bottom":56},
-{"left":0,"right":56,"top":0,"bottom":72},
-{"left":0,"right":154,"top":0,"bottom":88},
-{"left":0,"right":98,"top":0,"bottom":56},
-{"left":0,"right":112,"top":0,"bottom":56},
-{"left":0,"right":112,"top":0,"bottom":72},
-{"left":0,"right":50,"top":0,"bottom":56},
-{"left":0,"right":182,"top":0,"bottom":120}
-]}
+
+INSERT INTO rectangles(width, height, idbox) VALUES
+(127, 40, 1),
+(176, 56, 2),
+(64, 104, 3),
+(106, 120, 4),
+(127, 56, 5),
+(274, 72, 6),
+(71, 136, 7),
+(78, 72, 8),
+(204, 72, 9),
+(133, 88, 10),
+(113, 104, 11),
+(98, 120, 12),
+(64, 56, 13),
+(56, 72, 14),
+(154, 88, 15),
+(98, 56, 16),
+(112, 56, 17),
+(112, 72, 18),
+(50, 56, 19),
+(182, 120, 20);
