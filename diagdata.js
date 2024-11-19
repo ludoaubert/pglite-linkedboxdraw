@@ -1,6 +1,6 @@
-export {sample_diagdata_}
+export {sample_diagdata}
 
-const sample_diagdata_ = `
+const sample_diagdata = `
 INSERT INTO diagram(iddiagram, title) VALUES (1, 'Jacket Gafa BlemePro');
 
 INSERT INTO box(idbox, title, iddiagram) VALUES (1, 'ChanmeBlemeproPec', 1);
