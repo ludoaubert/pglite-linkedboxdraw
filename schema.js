@@ -1,3 +1,5 @@
+export {schema};
+
 const schema=`
 
 CREATE TABLE IF NOT EXISTS diagram(
