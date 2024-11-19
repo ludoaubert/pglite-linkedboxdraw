@@ -69,8 +69,6 @@ CREATE TABLE graph(
 -- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('box',1,'message_tag',1);
 -- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('field',1,'tag',1);
 
---does PostgreSQL have a SQL Graph feature ?
-
 CREATE TABLE frame(
   idframe SERIAL PRIMARY KEY,
   width, height INTEGER,
@@ -97,11 +95,10 @@ CREATE TABLE translation(
   FOREIGN KEY (idrectangle) REFERENCES rectangle(idrectangle)
 );
 
-CREATE TABLE point(
-  idpoint SERIAL PRIMARY KEY,
+CREATE TABLE polyline(
+  idpolyline SERIAL PRIMARY KEY,
   idlink INTEGER,
-  x INTEGER NULL,
-  y INTEGER NULL,
+  points JSON,
   FOREIGN KEY (idlink) REFERENCES link(idlink)
 );
 `;
