@@ -1,4 +1,4 @@
-import { PGlite } from '@electric-sql/pglite'
+import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js"
 //import sample_diagdata from "./diagdata.json" with {type: "json"};
 
 import {mycontexts, contexts, resetContexts, setContexts, drawDiag, compute_links, ApplyRepartition, enforce_bounding_rectangle, data2contexts} from "./diagload.js";
