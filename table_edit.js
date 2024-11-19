@@ -10,7 +10,7 @@ import {sample_diagdata} from "./diagdata.js"
 
 export {db, init, mydata, data, resetData, setData, displayCurrent, createMutationObserver};
 
-const db = new PGlite('idb://my-pgdata');
+const db = new PGlite();
 await db.exec(schema);
 await db.exec(sample_diagdata);
 
