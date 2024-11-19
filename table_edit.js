@@ -6,7 +6,7 @@ import {download} from "./iocomponent.js";
 import {getFileData} from "./iocomponent.js";
 import {compute_box_rectangle} from "./compute_box_rectangles.js"
 import {schema} from "./schema.js"
-import sample_diagdata_ from "./diagdata.js"
+import {sample_diagdata_} from "./diagdata.js"
 
 export {db, init, mydata, data, resetData, setData, displayCurrent, createMutationObserver};
 
