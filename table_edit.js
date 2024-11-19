@@ -6,10 +6,13 @@ import {download} from "./iocomponent.js";
 import {getFileData} from "./iocomponent.js";
 import {compute_box_rectangle} from "./compute_box_rectangles.js"
 import {schema} from "./schema.js"
+import sample_diagdata_ from "./diagdata.js"
 
-export {init, mydata, data, resetData, setData, displayCurrent, createMutationObserver};
+export {db, init, mydata, data, resetData, setData, displayCurrent, createMutationObserver};
 
 const db = new PGlite('idb://my-pgdata');
+await db.exec(schema);
+await db.exec(diagdata);
 
 var mydata = sample_diagdata;
 
