@@ -12,7 +12,7 @@ export {db, init, mydata, data, resetData, setData, displayCurrent, createMutati
 
 const db = new PGlite('idb://my-pgdata');
 await db.exec(schema);
-await db.exec(diagdata);
+await db.exec(sample_diagdata_);
 
 var mydata = sample_diagdata;
 
