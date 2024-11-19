@@ -1,3 +1,6 @@
+export {sample_diagdata_}
+
+const sample_diagdata_ = `
 INSERT INTO diagram(iddiagram, title) VALUES (1, 'Jacket Gafa BlemePro');
 
 INSERT INTO box(idbox, title, iddiagram) VALUES (1, 'ChanmeBlemeproPec', 1);
@@ -84,3 +87,4 @@ INSERT INTO link(idbox_from, idfield_from, idbox_to, idfield_to) VALUES
 (16+1, 1+1,  3+1,  1+1),
 (11+1, 0+1,  13+1,  0+1),
 (9+1, 0+1,  15+1,  0+1);
+`
