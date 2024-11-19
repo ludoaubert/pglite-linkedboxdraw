@@ -73,7 +73,7 @@ CREATE TABLE graph(
 
 CREATE TABLE frame(
   idframe SERIAL PRIMARY KEY,
-  left,right,top,bottom INTEGER,
+  width, height INTEGER,
   iddiagram INTEGER,
   UNIQUE(iddiagram),
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) 
