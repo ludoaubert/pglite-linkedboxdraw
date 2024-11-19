@@ -1,6 +1,6 @@
-export {sample_contexts_}
+export {sample_contexts}
 
-const sample_contexts_ = `
+const sample_contexts = `
 
 INSERT INTO frame(width, height, iddiagram) VALUES (701, 704, 1);
 
