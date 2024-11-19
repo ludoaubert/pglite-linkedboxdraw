@@ -1,7 +1,8 @@
-import sample_contexts from "./contexts.json" with {type: "json"};
+//import sample_contexts from "./contexts.json" with {type: "json"};
+import {sample_contexts} from "./contexts.js";
 
 import {default as createMyModule} from "./latuile-origine.js";
-import {init, mydata, data, resetData, displayCurrent, createMutationObserver} from "./table_edit.js";
+import {db, init, mydata, data, resetData, displayCurrent, createMutationObserver} from "./table_edit.js";
 import {initClient} from "./client.js";
 import {getFileData, download} from "./iocomponent.js";
 import {compute_box_rectangle} from "./compute_box_rectangles.js"
@@ -10,6 +11,7 @@ export {mycontexts, contexts, resetContexts, setContexts, drawDiag, compute_link
 
 var Module;
 
+await db.exec(sample_contexts);
 var mycontexts = sample_contexts;
 
 function setContexts(mycontexts_)
