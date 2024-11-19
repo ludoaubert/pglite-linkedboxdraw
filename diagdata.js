@@ -46,7 +46,7 @@ INSERT INTO box(idbox, title, iddiagram) VALUES(14, 'mefu', 1);
 INSERT INTO field(name, idbox) VALUES ('cesu', 14), ('zeberyep', 14), ('youvoiUc', 14);
 
 INSERT INTO box(idbox, title, iddiagram) VALUES(15, 'euf', 1);
-INSERT INTO field(name, idbox) VALUES ('lassedeg', 15), ('id', 15), ('fichateraToDeuspidrepo', 15), ('yecous', 16);
+INSERT INTO field(name, idbox) VALUES ('lassedeg', 15), ('id', 15), ('fichateraToDeuspidrepo', 15), ('yecous', 15);
 
 INSERT INTO box(idbox, title, iddiagram) VALUES(16, 'zedouZicmus', 1);
 INSERT INTO field(name, idbox) VALUES ('[updatesKecos]', 16), ('yeufiyechKeco', 16);
