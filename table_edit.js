@@ -5,14 +5,10 @@ import {mycontexts, contexts, resetContexts, setContexts, drawDiag, compute_link
 import {download} from "./iocomponent.js";
 import {getFileData} from "./iocomponent.js";
 import {compute_box_rectangle} from "./compute_box_rectangles.js"
-import {schema} from "./schema.js"
-import {sample_diagdata} from "./diagdata.js"
 
 export {db, init, mydata, data, resetData, setData, displayCurrent, createMutationObserver};
 
 const db = new PGlite();
-await db.exec(schema);
-await db.exec(sample_diagdata);
 
 var mydata = sample_diagdata;
 
