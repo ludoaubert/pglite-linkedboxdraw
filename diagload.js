@@ -11,7 +11,6 @@ export {mycontexts, contexts, resetContexts, setContexts, drawDiag, compute_link
 
 var Module;
 
-await db.exec(sample_contexts);
 var mycontexts = sample_contexts;
 
 function setContexts(mycontexts_)
@@ -696,6 +695,7 @@ window.main = async function main()
 	createMyModule().then(function(mymod){
 		Module = mymod;
 	});
+	await db.exec(sample_contexts);
 	await drawDiag();
 	init();
 	initClient();
