@@ -48,7 +48,7 @@ INSERT INTO translations(idrect, x, y) VALUES
  (1+18, 59, 346),
  (1+19, 301, 442);
 
-INSERT INTO polyline(idlink, points) VALUES 
+INSERT INTO polyline(points, idlink) VALUES 
 ('[{"x":423,"y":114},{"x":423,"y":154}]', 1),
 ('[{"x":391,"y":46},{"x":351,"y":46}]', 2),
 ('[{"x":142,"y":158},{"x":190,"y":158},{"x":190,"y":234}]', 3),
