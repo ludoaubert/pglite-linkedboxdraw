@@ -52,14 +52,14 @@ INSERT INTO tag(type_code, code) VALUES
 ('KEY','PRIMARY_KEY'),('KEY','FOREIGN_KEY'),
 ('CONSTRAINT','UNIQUE'),
 ('COLOR','yellow'),('COLOR','pink'),('COLOR','hotpink'),('COLOR','palegreen'),('COLOR','red'),('COLOR','orange'),('COLOR','skyblue'),('COLOR','olive'),('COLOR','grey'),('COLOR','darkviolet'),
-(RELATION_CATEGORY','TR2');
+('RELATION_CATEGORY','TR2');
 
-CREATE TABLE message_tag(
+CREATE TABLE IF NOT EXISTS message_tag(
   idmessage SERIAL PRIMARY KEY,
   message TEXT
 );
 
-CREATE TABLE graph(
+CREATE TABLE IF NOT EXISTS graph(
   from_table VARCHAR(128),
   from_key INTEGER,
   to_table VARCHAR(128),
@@ -69,9 +69,10 @@ CREATE TABLE graph(
 -- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('box',1,'message_tag',1);
 -- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('field',1,'tag',1);
 
-CREATE TABLE frame(
+CREATE TABLE IF NOT EXISTS frame(
   idframe SERIAL PRIMARY KEY,
-  width, height INTEGER,
+  width INTEGER,
+  height INTEGER,
   iddiagram INTEGER,
   UNIQUE(iddiagram),
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) 
@@ -101,4 +102,4 @@ CREATE TABLE polyline(
   points JSON,
   FOREIGN KEY (idlink) REFERENCES link(idlink)
 );
-`;
+`
