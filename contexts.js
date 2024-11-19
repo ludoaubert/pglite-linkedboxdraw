@@ -1,3 +1,7 @@
+export {sample_contexts_}
+
+const sample_contexts_ = `
+
 {"contexts":[{
 "frame":(701, 704},
 
