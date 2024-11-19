@@ -2,8 +2,7 @@ export {sample_contexts_}
 
 const sample_contexts_ = `
 
-{"contexts":[{
-"frame":(701, 704},
+INSERT INTO frame(width, height, iddiagram) VALUES (701, 704, 1);
 
 INSERT INTO rectangles(width, height, idbox) VALUES
 (127, 40, 1),
