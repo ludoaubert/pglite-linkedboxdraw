@@ -4,7 +4,7 @@ const sample_contexts_ = `
 
 INSERT INTO frame(width, height, iddiagram) VALUES (701, 704, 1);
 
-INSERT INTO rectangles(width, height, idbox) VALUES
+INSERT INTO rectangle(width, height, idbox) VALUES
 (127, 40, 1),
 (176, 56, 2),
 (64, 104, 3),
@@ -26,7 +26,7 @@ INSERT INTO rectangles(width, height, idbox) VALUES
 (50, 56, 19),
 (182, 120, 20);
  
-INSERT INTO translations(idrect, x, y) VALUES
+INSERT INTO translation(idrect, x, y) VALUES
  (1+0, 16, 234),
  (1+1, 495, 186),
  (1+2, 391, 10),
