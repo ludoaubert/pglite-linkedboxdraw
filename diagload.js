@@ -6,6 +6,8 @@ import {db, init, mydata, data, resetData, displayCurrent, createMutationObserve
 import {initClient} from "./client.js";
 import {getFileData, download} from "./iocomponent.js";
 import {compute_box_rectangle} from "./compute_box_rectangles.js"
+import {schema} from "./schema.js"
+import {sample_diagdata} from "./diagdata.js"
 
 export {mycontexts, contexts, resetContexts, setContexts, drawDiag, compute_links, ApplyRepartition, enforce_bounding_rectangle, data2contexts};
 
@@ -695,6 +697,8 @@ window.main = async function main()
 	createMyModule().then(function(mymod){
 		Module = mymod;
 	});
+	await db.exec(schema);
+	await db.exec(sample_diagdata);
 	await db.exec(sample_contexts);
 	await drawDiag();
 	init();
