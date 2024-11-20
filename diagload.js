@@ -593,7 +593,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 			<rect id="rect_${id}" x="${rectangle.left}" y="${rectangle.top}" width="${width(rectangle)}" height="${height(rectangle)}" />
 			<foreignObject id="box${id}" width="${width(rectangle)}" height="${height(rectangle)}">`;
 */
-			innerHTML += drawBoxComponent(id, mydata);
+			innerHTML += drawBoxComponent(id, mydata, db);
 
 			const ret = await db.query(`
    				SELECT FORMAT('</foreignObject>
