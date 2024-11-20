@@ -107,6 +107,7 @@ CREATE TABLE polyline(
   FOREIGN KEY (idlink) REFERENCES link(idlink),
   UNIQUE(idlink),
   FOREIGN KEY (translation_from) REFERENCES translation(idtranslation),
-  FOREIGN KEY (translation_to) REFERENCES translation(idtranslation)
+  FOREIGN KEY (translation_to) REFERENCES translation(idtranslation),
+  UNIQUE(translation_from, translation_to)
 );
 `
