@@ -80,7 +80,6 @@ CREATE TABLE IF NOT EXISTS frame(
 
 CREATE TABLE rectangle(
   idrectangle SERIAL PRIMARY KEY,
-  context INTEGER DEFAULT 1,
   width INTEGER,
   height INTEGER,
   idbox INTEGER,
@@ -90,6 +89,7 @@ CREATE TABLE rectangle(
 
 CREATE TABLE translation(
   idtranslation SERIAL PRIMARY KEY,
+  context INTEGER DEFAULT 1,
   idrectangle INTEGER,
   UNIQUE(idrectangle),
   x INTEGER,
