@@ -18,7 +18,7 @@ function compute_key_distrib(fields)
 }
 
 
-function drawComponent(id, mydata) {
+function drawComponent(id, mydata, db) {
 
 	const {documentTitle, boxes, values, boxComments, fieldComments, links, fieldColors, pictures} = mydata;
 
