@@ -80,6 +80,7 @@ CREATE TABLE IF NOT EXISTS frame(
 
 CREATE TABLE rectangle(
   idrectangle SERIAL PRIMARY KEY,
+  context INTEGER DEFAULT 1,
   width INTEGER,
   height INTEGER,
   idbox INTEGER,
@@ -98,8 +99,10 @@ CREATE TABLE translation(
 
 CREATE TABLE polyline(
   idpolyline SERIAL PRIMARY KEY,
+  context INTEGER DEFAULT 1,
   idlink INTEGER,
   points JSON,
-  FOREIGN KEY (idlink) REFERENCES link(idlink)
+  FOREIGN KEY (idlink) REFERENCES link(idlink),
+  UNIQUE(idlink)
 );
 `
