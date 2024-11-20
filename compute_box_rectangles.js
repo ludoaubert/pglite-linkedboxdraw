@@ -27,14 +27,25 @@ function compute_box_rectangle(box, db, id)
 	].flat();
 	
 	const max_width = Math.max(...widths);
-*/	
+*/
+	const ret = await db.query(`
+ 		WITH cte(height) AS (
+ 			SELECT 8 + ${CHAR_RECT_HEIGHT}
+   			UNION ALL
+     			SELECT ${CHAR_RECT_HEIGHT} FROM field WHERE idbox = ${i}
+		)
+  		SELECT SUM(height)
+    		FROM cte
+ 	`);
+	const height = ret.rows[0];
+/*
 	const heights = [
 		8 + CHAR_RECT_HEIGHT,
 		fields.map(field => CHAR_RECT_HEIGHT)
 	].flat()
 
 	const height = heights.reduce((a,b) => a + b, 0);
-
+*/
 	const rec = {
 		left:0,
 		right:max_width,
