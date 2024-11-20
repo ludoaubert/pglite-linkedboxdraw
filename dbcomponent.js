@@ -49,15 +49,39 @@ function drawComponent(id, mydata, db) {
 	const box = boxes[id];
 	const key_distrib = compute_key_distrib(box.fields);
 
-	const titleAttribute = box.title in box2comment ? `title="${box2comment[box.title]}"` : '';
+	const ret = await db.query(`
+ 		SELECT FORMAT('title="%s"', m.message)
+   		FROM graph g
+     		JOIN message_tag m ON m.idmessage=g.to_key
+       		WHERE g.to_table='message_tag' AND g.from_table='box' AND g.idbox=${id}
+ 	`);
 
+	const titleAttribute = ret.rows[0];
+	
+	const titleAttribute = box.title in box2comment ? `title="${box2comment[box.title]}"` : '';
+/*
 	let innerHTML = `<table id="box${id}" contenteditable="true" spellcheck="false" ${titleAttribute}>`;
+*/
+	const ret = await db.query(`
+ 		SELECT FORMAT('<thead>
+				<tr>
+				<th id="b${id}">%1$</th>
+				</tr>
+		    	</thead>
+			<tbody>',
+			title) //%1
+   		FROM box
+     		WHERE idbox=${id}
+ 	`);
+	innerHTML += ret.rows[0];
+/*
 	innerHTML += `<thead>
 			<tr>
 				<th id="b${id}">${box.title}</th>
 			</tr>
 		    </thead>
 		<tbody>`;
+*/
 	for (var fieldIndex=0; fieldIndex < box.fields.length; fieldIndex++)
 	{
 		const field = box.fields[fieldIndex];
