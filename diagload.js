@@ -54,6 +54,19 @@ async function data2contexts(mydata) {
 	const rectdim = rectangles.map(r => hex(r.right-r.left,3)+hex(r.bottom-r.top,3));
 	console.log(rectdim);
 
+	const ret = await db.query(`
+ 		SELECT STRING_AGG(FORMAT('%1$%2$', l.idbox_from, l.idbox_to),'')
+   		FROM link l
+     		WHERE NOT EXISTS (
+     			SELECT *
+			FROM graph g 
+       			JOIN tag t ON t.idtag = g.from_key AND t.type_code='RELATION_CATEGORY' AND t.code='TR2' 
+	  		WHERE g.from_table='tag' AND g.to_table='link' AND g.to_key=l.idlink
+     		);
+ 	`);
+
+	const slinks = ret.rows[0];
+/*
 	const slinks = links.filter(lk => lk.from != lk.to)
 						.filter(lk => lk.category != "TR2")
 						.map(lk => [lk.from, lk.to])
@@ -65,6 +78,7 @@ async function data2contexts(mydata) {
 						.flat()
 						.map(i => hex(i,3))
 						.join('');
+*/
 	console.log(slinks);
 
 	const bombix = Module.cwrap("bombix","string",["string","string","string","string"]);
