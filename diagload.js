@@ -571,7 +571,15 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 	innerHTML += `</g>`;
 
 		const ret = await db.query(`
-  			SELECT
+  			SELECT STRING_AGG(FORMAT('<g id="g_%1$" transform="translate(%4$,%5$)">
+					<rect id="rect_%1$" x="%4$" y="%5$" width="%2$" height="%3$" />
+					<foreignObject id="box%1$" width="%2$" height="%3$">',
+    					r.idrectangle, //%1
+					r.width, //%2
+    					r.height, //%3
+					t.x, //%4
+    					t.y), //%5
+				, '\n')
      			FROM translation t
 			JOIN rectangle r ON t.idrectangle=r.idrectangle
 			WHERE t.context=${selectedContextIndex}
