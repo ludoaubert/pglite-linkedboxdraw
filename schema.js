@@ -101,8 +101,12 @@ CREATE TABLE polyline(
   idpolyline SERIAL PRIMARY KEY,
   context INTEGER DEFAULT 1,
   idlink INTEGER,
+  translation_from INTEGER,
+  translation_to INTEGER,
   points JSON,
   FOREIGN KEY (idlink) REFERENCES link(idlink),
-  UNIQUE(idlink)
+  UNIQUE(idlink),
+  FOREIGN KEY (translation_from) REFERENCES translation(idtranslation),
+  FOREIGN KEY (translation_to) REFERENCES translation(idtranslation)
 );
 `
