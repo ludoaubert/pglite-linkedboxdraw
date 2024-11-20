@@ -295,9 +295,13 @@ function init() {
 			addFieldButton.disabled = (newFieldEditField.value == '' || mydata.boxes[currentBoxIndex].fields.find(f => f.name == newFieldEditField.value)) ? true : false;
 	});
 
-	const colors=['yellow','pink','hotpink','palegreen','red','orange','skyblue','olive','grey','darkviolet'];
-	colorCombo.innerHTML = colors.map(color => '<option>' + color + '</option>')
-				.join('');
+	const ret = await db.query(`
+		SELECT STRING_AGG('<option>' || code || '</option>','' order by code)
+		FROM tag
+		WHERE type_code='COLOR';
+  	`);
+
+	colorCombo.innerHTML = ret;
 
 	displayCurrent();
 }
