@@ -368,13 +368,15 @@ function displayCurrent()
 	for (let {boxCombo_, fieldCombo_, currentBoxIndex_, currentFieldIndex_} of contexts)
 	{
 		if (currentBoxIndex_ == -1 && boxCombo_.value != "")
-			currentBoxIndex_ = mydata.boxes.findIndex(box => box.title == boxCombo_.value);
-
-		const boxComboInnerHTML = mydata.boxes
-								.concat()	//shallow copy
-								.sort((a, b) => a.title.localeCompare(b.title))
-								.map(box => `<option>${box.title}</option>`)
-								.join('');
+		{
+			const ret = await db.query(`SELECT idbox FROM box WHERE title=${boxCombo_.value}`);
+			currentBoxIndex_ = ret.rows[0];
+		}
+		const ret = await db.query(`
+  			SELECT STRING_AGG('<option>' || title || '</option>', '' ORDER BY title)
+     			FROM box;
+     		`);
+		const boxComboInnerHTML = ret.rows[0];
 
 		if (boxCombo_.innerHTML != boxComboInnerHTML)
 		{
