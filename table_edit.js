@@ -387,12 +387,13 @@ function displayCurrent()
 
 		boxCombo_.value = mydata.boxes[currentBoxIndex_]?.title || "";
 
-		const fieldComboInnerHTML = mydata.boxes[currentBoxIndex_]
-									?.fields
-									?.concat() //shallow copy
-									?.sort((a, b) => a.name.localeCompare(b.name))
-									?.map(field => "<option>" + field.name + "</option>")
-									?.join('') || "";
+		const ret = await db.query(`
+  			SELECT STRING_AGG('<option>' || f.name || '</option>', '' ORDER BY f.name)
+     			FROM field f
+   			WHERE f.idbox = '${currentBoxIndex_}'
+  		`);
+
+		const fieldComboInnerHTML = ret.rows[0];
 
 		if (fieldCombo_.innerHTML != fieldComboInnerHTML)
 		{
@@ -401,7 +402,12 @@ function displayCurrent()
 				currentFieldIndex_ = mydata.boxes[currentBoxIndex_]?.fields?.length > 0 ? 0 : -1;
 		}
 
-		currentFieldIndex_ = mydata.boxes[currentBoxIndex_]?.fields?.findIndex(field => field.name == fieldCombo_.value) || -1;
+		const ret = await db.query(`
+  			SELECT idfield
+     			FROM field
+			WHERE idbox=${currentBoxIndex_} AND name='${fieldCombo_.value}'
+  		`);
+		currentFieldIndex_ = ret.rows[0]; // -1;
 
 		contexts[index] = {boxCombo_, fieldCombo_, currentBoxIndex_, currentFieldIndex_};
 		index++;
