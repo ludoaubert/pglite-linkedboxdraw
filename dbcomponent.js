@@ -1,53 +1,5 @@
 
-/*TODO: this function is present also in tableinput.html */
-function compute_key_distrib(fields)
-{
-	var key_distrib = {"PK":0,"FK":0,"PKFK":0};
-
-	for (let field of fields)
-	{
-		if (field.isPrimaryKey && field.isForeignKey)
-			key_distrib["PKFK"]++;
-		else if (field.isPrimaryKey)
-			key_distrib["PK"]++;
-		else if (field.isForeignKey)
-			key_distrib["FK"]++;
-	}
-
-	return key_distrib;
-}
-
-
-function drawComponent(id, mydata, db) {
-
-	const {documentTitle, boxes, values, boxComments, fieldComments, links, fieldColors, pictures} = mydata;
-
-	let field2values = {};
-	for (let {box, field, value} of values)
-	{
-		if (!(`${box}.${field}` in field2values))
-			field2values[`${box}.${field}`] = [];
-		field2values[`${box}.${field}`].push(value);
-	}
-	for (let boxField in field2values)
-	{
-		field2values[boxField].sort();
-	}
-
-	let box2comment = {};
-	for (let {box, comment} of boxComments)
-	{
-		box2comment[box] = comment;
-	}
-
-	let field2comment = {};
-	for (let {box, field, comment} of fieldComments)
-	{
-		field2comment[`${box}.${field}`] = comment;
-	}
-
-	const box = boxes[id];
-	const key_distrib = compute_key_distrib(box.fields);
+function drawComponent(id, db) {
 
 	const ret = await db.query(`
  		SELECT FORMAT('title="%s"', m.message)
@@ -57,11 +9,11 @@ function drawComponent(id, mydata, db) {
  	`);
 
 	const titleAttribute = ret.rows[0];
-	
+/*	
 	const titleAttribute = box.title in box2comment ? `title="${box2comment[box.title]}"` : '';
-/*
-	let innerHTML = `<table id="box${id}" contenteditable="true" spellcheck="false" ${titleAttribute}>`;
 */
+	let innerHTML = `<table id="box${id}" contenteditable="true" spellcheck="false" ${titleAttribute}>`;
+
 	const ret = await db.query(`
  		SELECT FORMAT('<thead>
 				<tr>
@@ -82,82 +34,15 @@ function drawComponent(id, mydata, db) {
 		    </thead>
 		<tbody>`;
 */
-	for (var fieldIndex=0; fieldIndex < box.fields.length; fieldIndex++)
-	{
-		const field = box.fields[fieldIndex];
-
-		var prefix = "";
-
-		if (key_distrib["PKFK"])
-		{
-	//at least one 'PK FK' is present
-			var pk = {"false":"&#160;&#160;", "true":"PK"}[field.isPrimaryKey.toString()];
-			var fk = {"false":"&#160;&#160;", "true":"FK"}[field.isForeignKey.toString()];
-			prefix = `${pk}&#160;${fk}&#160;`;
-		}
-		else if (key_distrib["PK"] || key_distrib["FK"])
-		{
-	//no 'PK FK' is present, but at least one PK|FK is present.
-			var s;
-			if (field.isPrimaryKey)
-				s = "PK";
-			else if (field.isForeignKey)
-				s = "FK";
-			else
-				s = "&#160;&#160;";
-			prefix = `${s}&#160;`;
-		}
-		else
-		{
-	//no 'PK FK' is present. no PK|FK either.
-			prefix = `` ;
-		}
-
-		let leading_blanks = "&#160;&#160;&#160;" ;
-		if (prefix.indexOf(leading_blanks) != 0)
-			leading_blanks = "" ;
-
-		let open_link = "";
-		let close_link = "";
-
-		const link = links.find( link => link.from == id && link.fromField == fieldIndex );
-		if (link !== undefined)
-		{
-			const {to} = link;
-			open_link = `<a href="#${boxes[to].title}">`;
-			close_link = "</a>";
-		}
-
-		let font_weight="";
-		let tooltip = [];
-
-		if (`${box.title}.${field.name}` in field2comment)
-		{
-			tooltip.push(field2comment[`${box.title}.${field.name}`]);
-		}
-
-		if (`${box.title}.${field.name}` in field2values)
-		{
-			font_weight = `style="font-weight: bold;"`;
-			tooltip.push(field2values[`${box.title}.${field.name}`].join("\n"));
-		}
-
-		prefix = prefix.substring(leading_blanks.length);
-
-		const titleAttribute= tooltip.length!=0 ? `title="${tooltip.join('\n')}"` : '';
-
-		if (field?.type == "image")
-		{
-			const pictureIndex = pictures.findIndex(picture => picture.name == field.name);
-			const {name, base64, width, height, zoomPercentage} = pictures[pictureIndex];
-			const style = zoomPercentage == null ? "" : `width: ${zoomPercentage*width/100}px; height: ${zoomPercentage*height/100}px;`;
-			innerHTML += `<tr id="b${id}f${fieldIndex}" contenteditable="false"><td id="b${id}f${fieldIndex}" ${titleAttribute}><img src="data:image/jpg;base64, ${base64}" width="${width}" height="${height}" style="${style}"></td></tr>`;
-		}
-		else
-		{
-			innerHTML += `<tr id="b${id}f${fieldIndex}"><td id="b${id}f${fieldIndex}" ${font_weight} ${titleAttribute}>${leading_blanks}${prefix}${open_link}${field.name}${close_link}</td></tr>`;
-		}
-	}
+	const ret = await db.query(`
+ 		SELECT STRING_AGG(FORMAT('<tr id="b${id}f%1$"><td id="b${id}f%1$">%2$</td></tr>',
+   			idfield, //%1
+   			name), //%2
+      			'\n' | ORDER BY name)
+	 	FROM field
+   		WHERE idbox=${id}
+ 	`);
+	innerHTML += ret.rows[0];
 
 	innerHTML += `</tbody></table>`;
 
