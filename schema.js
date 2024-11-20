@@ -92,7 +92,7 @@ CREATE TABLE translation(
   context INTEGER DEFAULT 1,
   idrectangle INTEGER,
   UNIQUE(idrectangle),
-  UNIQUE(idrectangle, context),
+  UNIQUE(itranslation, context),
   x INTEGER,
   y INTEGER,
   FOREIGN KEY (idrectangle) REFERENCES rectangle(idrectangle)
