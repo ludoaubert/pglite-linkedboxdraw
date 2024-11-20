@@ -1,70 +1,33 @@
 import {mydata} from "./table_edit.js";
 export {compute_box_rectangle};
 
-function compute_key_distrib(fields)
-{
-	var key_distrib = {"PK":0,"FK":0,"PKFK":0};
-
-	for (let {name,isPrimaryKey,isForeignKey} of fields)
-	{
-		if (isPrimaryKey && isForeignKey)
-			key_distrib["PKFK"]++;
-		else if (isPrimaryKey)
-			key_distrib["PK"]++;
-		else if (isForeignKey)
-			key_distrib["FK"]++;
-	}
-
-	return key_distrib;
-}
 
 const MONOSPACE_FONT_PIXEL_WIDTH=7;
 const CHAR_RECT_HEIGHT=16;	// in reality 14,8 + 1 + 1 (top and bottom padding) = 16,8
 const RECTANGLE_BOTTOM_CAP=200;
 
-function compute_column_width(field, key_distrib)
+function compute_box_rectangle(box, db, id)
 {
-	const column_name = field.name;
-
-	var column_width=0;
-
-	if (key_distrib["PKFK"])
-	{
-//at least one 'PK FK' is present
-		column_width = ("PK FK " + column_name).length ;
-	}
-	else if (key_distrib["PK"] || key_distrib["FK"])
-	{
-//no 'PK FK' is present, but at least one PK|FK is present.
-		column_width = ("PK " + column_name).length ;
-	}
-	else
-	{
-//no 'PK FK' is present. no PK|FK either.
-		column_width = column_name.length ;
-	}	
-	
-	return column_width;
-}
-
-function compute_box_rectangle(box)
-{
+	const ret = await db.query(`
+ 		WITH cte(width) AS (
+   			SELECT 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH} FROM box WHERE idbox = ${id}
+    			UNION ALL
+       			SELECT LENGTH(name) * ${MONOSPACE_FONT_PIXEL_WIDTH} FROM field WHERE idbox = ${id}
+		)
+  		SELECT MAX(width)
+    		FROM cte
+ 	`);
+	const max_width = ret.rows[0];
+/*
 	const {title,id,fields} = box;
-
-	const key_distrib = compute_key_distrib(fields) ;
 
 	const widths = [
 		2*4 + title.length * MONOSPACE_FONT_PIXEL_WIDTH,
-		fields.filter(field => field?.type == undefined)
-				.map(field => compute_column_width(field, key_distrib) * MONOSPACE_FONT_PIXEL_WIDTH),
-		fields.filter(field => field?.type == "image")
-				.map(field => field.name)
-				.map(name => mydata.pictures.find(pic => pic.name==name))
-				.map(pic => pic.width)
+		fields.map(field => field.length * MONOSPACE_FONT_PIXEL_WIDTH),
 	].flat();
 	
 	const max_width = Math.max(...widths);
-	
+*/	
 	const heights = [
 		8 + CHAR_RECT_HEIGHT,
 		fields.filter(field => field?.type == undefined)
