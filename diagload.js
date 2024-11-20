@@ -570,34 +570,48 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 	innerHTML += drawLinks(links);
 	innerHTML += `</g>`;
 
-		const ret = await db.query(`
-  			SELECT STRING_AGG(FORMAT('<g id="g_%1$" transform="translate(%4$,%5$)">
+		for (const {id, translation} of translatedBoxes)
+		{
+			const rectangle = rectangles[id];
+
+			const ret = await db.query(`
+  				SELECT FORMAT('<g id="g_%1$" transform="translate(%4$,%5$)">
 					<rect id="rect_%1$" x="%4$" y="%5$" width="%2$" height="%3$" />
 					<foreignObject id="box%1$" width="%2$" height="%3$">',
     					r.idrectangle, //%1
 					r.width, //%2
     					r.height, //%3
 					t.x, //%4
-    					t.y), //%5
-				, '\n')
-     			FROM translation t
-			JOIN rectangle r ON t.idrectangle=r.idrectangle
-			WHERE t.context=${selectedContextIndex}
-  		`);
-
-		for (const {id, translation} of translatedBoxes)
-		{
-			const rectangle = rectangles[id];
-
+    					t.y) //%5
+     				FROM translation t
+				JOIN rectangle r ON t.idrectangle=r.idrectangle
+				WHERE t.context=${selectedContextIndex} AND r.idrectangle=${id}
+  			`);
+			innerHTML += ret.rows[0];
+/*
 			innerHTML += `<g id="g_${id}" transform="translate(${translation.x},${translation.y})">
 			<rect id="rect_${id}" x="${rectangle.left}" y="${rectangle.top}" width="${width(rectangle)}" height="${height(rectangle)}" />
 			<foreignObject id="box${id}" width="${width(rectangle)}" height="${height(rectangle)}">`;
-
+*/
 			innerHTML += drawBoxComponent(id, mydata);
 
+			const ret = await db.query(`
+   				SELECT FORMAT('</foreignObject>
+					<rect id="sizer_%1$" x="%2$" y="%3$" width="4" height="4" />
+					</g>',
+     					r.idrectangle, //%1
+	  				t.x + r.width - 4, //%2
+       					t.y + r.height - 4) //%3
+     				FROM translation t
+	 			JOIN rectangle r ON t.idrectangle=r.idrectangle
+     				WHERE t.context=${selectedContextIndex} AND r.idrectangle=${id}
+   			`);
+			innerHTML += ret.rows[0];
+/*
 			innerHTML += `</foreignObject>`
 			innerHTML += `<rect id="sizer_${id}" x="${rectangle.right-4}" y="${rectangle.bottom-4}" width="4" height="4" />`
 			innerHTML += `</g>`;
+*/
 		}
 
 		innerHTML += `</svg>`;
