@@ -106,8 +106,8 @@ CREATE TABLE polyline(
   points JSON,
   FOREIGN KEY (idlink) REFERENCES link(idlink),
   UNIQUE(idlink),
-  FOREIGN KEY (translation_from) REFERENCES translation(idtranslation),
-  FOREIGN KEY (translation_to) REFERENCES translation(idtranslation),
+  FOREIGN KEY (translation_from, context) REFERENCES translation(idtranslation, context),
+  FOREIGN KEY (translation_to, context) REFERENCES translation(idtranslation, context),
   UNIQUE(translation_from, translation_to)
 );
 `
