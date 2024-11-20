@@ -301,7 +301,7 @@ function init() {
 		WHERE type_code='COLOR';
   	`);
 
-	colorCombo.innerHTML = ret;
+	colorCombo.innerHTML = ret.rows[0];
 
 	displayCurrent();
 }
