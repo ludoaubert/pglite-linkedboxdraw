@@ -55,7 +55,7 @@ async function data2contexts(mydata) {
 	console.log(rectdim);
 
 	const ret = await db.query(`
- 		SELECT STRING_AGG(FORMAT('%1$%2$', l.idbox_from, l.idbox_to),'')
+ 		SELECT STRING_AGG(FORMAT('%1$%2$', LPAD(to_hex(l.idbox_from),3,'0'), LPAD(to_hex(l.idbox_to),3,'0')),'')
    		FROM link l
      		WHERE NOT EXISTS (
      			SELECT *
