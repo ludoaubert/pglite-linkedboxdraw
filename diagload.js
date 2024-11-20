@@ -47,9 +47,25 @@ function hex(i,n) {
 
 async function data2contexts(mydata) {
 
+	const ret = await db.query(`
+ 		WITH cte(idbox, width, height) AS (
+   			SELECT idbox, 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT} FROM box
+    			UNION ALL
+       			SELECT idbox, LENGTH(name) * ${MONOSPACE_FONT_PIXEL_WIDTH}, ${CHAR_RECT_HEIGHT}  FROM field
+		), cte2 AS (
+  			SELECT idbox, MAX(width) AS width, SUM(height) AS height
+    			FROM cte
+      			GROUP BY idbox
+	 	) SELECT jsonb_agg(
+    			jsonb_build_object('left', 0, 'right', width, 'top', 0, 'bottom', min(height, RECTANGLE_BOTTOM_CAP))
+  				) AS rectangles
+		FROM cte2;
+ 	`);
+	const rectangles = JSON.parse(ret.rows[0]);
+	
 	const {boxes, links} = mydata;
 
-	const rectangles = boxes.map(box => compute_box_rectangle(box));
+//	const rectangles = boxes.map(box => compute_box_rectangle(box));
 
 	const rectdim = rectangles.map(r => hex(r.right-r.left,3)+hex(r.bottom-r.top,3));
 	console.log(rectdim);
