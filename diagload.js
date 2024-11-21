@@ -564,7 +564,7 @@ function drawLinks(links)
 }
 
 
-function drawDiagram(drawBoxComponent) {
+async function drawDiagram(drawBoxComponent) {
 
 	const {rectangles} = mycontexts;
 
@@ -597,7 +597,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 		{
 			const rectangle = rectangles[id];
 
-			const ret = await db.query(`
+			const ret1 = await db.query(`
   				SELECT FORMAT('<g id="g_%1$" transform="translate(%4$,%5$)">
 					<rect id="rect_%1$" x="%4$" y="%5$" width="%2$" height="%3$" />
 					<foreignObject id="box%1$" width="%2$" height="%3$">',
@@ -610,7 +610,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 				JOIN rectangle r ON t.idrectangle=r.idrectangle
 				WHERE t.context=${selectedContextIndex} AND r.idrectangle=${id}
   			`);
-			innerHTML += ret.rows[0];
+			innerHTML += ret1.rows[0];
 /*
 			innerHTML += `<g id="g_${id}" transform="translate(${translation.x},${translation.y})">
 			<rect id="rect_${id}" x="${rectangle.left}" y="${rectangle.top}" width="${width(rectangle)}" height="${height(rectangle)}" />
@@ -618,7 +618,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 */
 			innerHTML += drawBoxComponent(id, db);
 
-			const ret = await db.query(`
+			const ret2 = await db.query(`
    				SELECT FORMAT('</foreignObject>
 					<rect id="sizer_%1$" x="%2$" y="%3$" width="4" height="4" />
 					</g>',
@@ -629,7 +629,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 	 			JOIN rectangle r ON t.idrectangle=r.idrectangle
      				WHERE t.context=${selectedContextIndex} AND r.idrectangle=${id}
    			`);
-			innerHTML += ret.rows[0];
+			innerHTML += ret2.rows[0];
 /*
 			innerHTML += `</foreignObject>`
 			innerHTML += `<rect id="sizer_${id}" x="${rectangle.right-4}" y="${rectangle.bottom-4}" width="4" height="4" />`
