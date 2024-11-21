@@ -5,7 +5,6 @@ import {default as createMyModule} from "./latuile-origine.js";
 import {db, init, mydata, data, resetData, displayCurrent, createMutationObserver} from "./table_edit.js";
 import {initClient} from "./client.js";
 import {getFileData, download} from "./iocomponent.js";
-import {compute_box_rectangle} from "./compute_box_rectangles.js"
 import {schema} from "./schema.js"
 import {sample_diagdata} from "./diagdata.js"
 
