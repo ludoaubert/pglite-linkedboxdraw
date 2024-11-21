@@ -189,11 +189,11 @@ async function init() {
 	newFieldEditField.addEventListener("paste", () => {onNewFieldUpdate();});
 
 //avoid duplicate entries
-	newBoxEditField.addEventListener("change", () => {
+	newBoxEditField.addEventListener("change", async () => {
 		const ret = await db.query(`SELECT idbox FROM box WHERE title='${newBoxEditField.value}'`);
 		addBoxButton.disabled = (newBoxEditField.value == '' || ret.rows.length>0) ? true : false;
 	});
-	newFieldEditField.addEventListener("change", () => {
+	newFieldEditField.addEventListener("change", async () => {
 		const ret = await db.query(`SELECT idbox FROM box WHERE title='${boxCombo.value}'`);
 		currentBoxIndex = ret.rows[0];
 		if (currentBoxIndex == -1)
