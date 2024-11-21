@@ -3,7 +3,6 @@ import {sample_contexts} from "./contexts.js";
 
 import {default as createMyModule} from "./latuile-origine.js";
 import {db, init, mydata, data, resetData, displayCurrent} from "./table_edit.js";
-import {initClient} from "./client.js";
 import {getFileData, download} from "./iocomponent.js";
 import {schema} from "./schema.js"
 import {sample_diagdata} from "./diagdata.js"
@@ -749,8 +748,6 @@ window.main = async function main()
 	await db.exec(sample_contexts);
 	await drawDiag();
 	init();
-	initClient();
-	createMutationObserver();
 	
 //making sure svg viewBox is computed in a unified way
 	
