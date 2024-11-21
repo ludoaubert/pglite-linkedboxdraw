@@ -664,7 +664,7 @@ function reverseJsonSafe(text)
 				.replaceAll("\\f", '\f');
 }
 
-function updateFieldComment()
+async function updateFieldComment()
 {
 //TODO: should be an UPDATE or INSERT
 	await db.exec(`
