@@ -306,52 +306,6 @@ async function init() {
 	displayCurrent();
 }
 
-
-function createMutationObserver()
-{
-	var fnCallback = function (mutations)
-	{
-		mutations.forEach(function (mutation) {
-			const tagName = mutation.target.parentElement.tagName;
-			const id = mutation.target.parentElement.id;
-			const data = mutation.target.data;
-			if (tagName=="TD")
-			{
-				const regexpId = /b([0-9]+)f([0-9]+)/;
-				const match = id.match(regexpId);
-				console.log(`box: ${match[1]} / field: ${match[2]}.`);
-				const boxIndex = parseInt(match[1]);
-				const fieldIndex = parseInt(match[2]);
-				mydata.boxes[boxIndex].fields[fieldIndex].name = data;
-			}
-			if (tagName=="TH")
-			{
-				const regexpId = /b([0-9]+)/;
-				const match = id.match(regexpId);
-				console.log(`box: ${match[1]}.`);
-				const boxIndex = parseInt(match[1]);
-				mydata.boxes[boxIndex].title = data;				
-			}
-		});
-	};
-
-	const elTarget = document.querySelector("div#diagram.content");
-
-	var observer = new MutationObserver(fnCallback);
-
-	const objConfig = {
-		childList: false,
-		subtree : true,
-		attributes: true, 
-		characterData : true,
-		attributeFilter : ['style', 'id'],
-		attributeOldValue : false
-	};
-
-    observer.observe(elTarget, objConfig);
-}
-
-
 async function displayCurrent()
 {
 	if (editTitle.value != mydata.documentTitle)
@@ -387,13 +341,13 @@ async function displayCurrent()
 
 		boxCombo_.value = mydata.boxes[currentBoxIndex_]?.title || "";
 
-		const ret = await db.query(`
+		const ret1 = await db.query(`
   			SELECT STRING_AGG('<option>' || f.name || '</option>', '' ORDER BY f.name)
      			FROM field f
    			WHERE f.idbox = '${currentBoxIndex_}'
   		`);
 
-		const fieldComboInnerHTML = ret.rows[0];
+		const fieldComboInnerHTML = ret1.rows[0];
 
 		if (fieldCombo_.innerHTML != fieldComboInnerHTML)
 		{
@@ -402,12 +356,12 @@ async function displayCurrent()
 				currentFieldIndex_ = mydata.boxes[currentBoxIndex_]?.fields?.length > 0 ? 0 : -1;
 		}
 
-		const ret = await db.query(`
+		const ret2 = await db.query(`
   			SELECT idfield
      			FROM field
 			WHERE idbox=${currentBoxIndex_} AND name='${fieldCombo_.value}'
   		`);
-		currentFieldIndex_ = ret.rows[0]; // -1;
+		currentFieldIndex_ = ret2.rows[0]; // -1;
 
 		contexts[index] = {boxCombo_, fieldCombo_, currentBoxIndex_, currentFieldIndex_};
 		index++;
