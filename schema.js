@@ -59,10 +59,13 @@ CREATE TABLE IF NOT EXISTS message_tag(
   message TEXT
 );
 
+CREATE TYPE source_table AS ENUM ('tag', 'message_tag');
+CREATE TYPE target_table AS ENUM ('box', 'field', 'value');
+  
 CREATE TABLE IF NOT EXISTS graph(
-  from_table VARCHAR(128),
+  from_table source_table,
   from_key INTEGER,
-  to_table VARCHAR(128),
+  to_table target_table,
   to_key INTEGER
 );
 
