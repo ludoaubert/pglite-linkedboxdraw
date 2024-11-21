@@ -69,15 +69,12 @@ var colorsCombo ;
 var dropColorButton;
 var addColorButton;
 var updateColorButton;
-var picturesCombo ;
-var pictureZoom ;
-var currentImageDisplay ;
 var applyRepartitionButton;
 
 
 function newDiagram() {
 
-	mydata={documentTitle:"", boxes:[], values:[], boxComments:[], fieldComments:[], links:[], fieldColors:[], pictures:[]};
+	mydata={documentTitle:"", boxes:[], values:[], boxComments:[], fieldComments:[], links:[], fieldColors:[]};
 	const mycontexts_={
 		contexts:[{frame:{left:0,right:1197,top:0,bottom:507}, translatedBoxes:[], links:[]}],
 		rectangles:[]
@@ -96,38 +93,6 @@ function newDiagram() {
 
 	currentColorBoxIndex = -1;
 	currentColorFieldIndex = -1;
-
-	currentPictureIndex = -1;
-}
-
-function addPicture(base64)
-{
-	currentPictureIndex = mydata.pictures.length;
-
-	const name = document.getElementById("add_pic").value
-						.replace(/\\/g, '/')
-						.replace("C:/fakepath/", "");
-	const pic = {name, base64, width:currentImageDisplay.width, height:currentImageDisplay.height, zoomPercentage:null};
-	mydata.pictures.push(pic);
-
-	const pictureComboInnerHTML = mydata.pictures
-				.map(pic => `<option>${pic.name}</option>`)
-				.join('');
-
-	document.getElementById("pictures").innerHTML = pictureComboInnerHTML;
-	document.getElementById("pictures").value = name;	
-}
-
-function loadPicture(blob)
-{	
-	return new Promise((resolve) => {
-		const base64 = btoa(blob);
-		//const base64 = Buffer.from(blob, 'binary').toString('base64');
-		currentImageDisplay.onload = () => {
-			resolve(base64);
-		};
-		currentImageDisplay.src = "data:image/jpg;base64, " + base64;
-	});
 }
 
 async function init() {
@@ -176,9 +141,6 @@ async function init() {
 	dropColorButton = document.getElementById("drop color");
 	addColorButton = document.getElementById("add color");
 	updateColorButton = document.getElementById("update color");
-	picturesCombo = document.getElementById("pictures");
-	pictureZoom = document.getElementById("pic_zoom");
-	currentImageDisplay = document.getElementById("cid");
 	applyRepartitionButton = document.getElementById("apply repartition");
 
 	const innerHTML = ["","0","1","n","0,1","0,n","1,n"].map(c => '<option>' + c + '</option>')
@@ -216,20 +178,6 @@ async function init() {
 
 	let fo = document.querySelector("input[id=fo]");
 	fo.addEventListener("click", () => download(fo.previousElementSibling.value, {data:mydata, contexts:mycontexts}));
-	
-
-	picturesCombo.addEventListener("change", () => {currentPictureIndex = -1; displayCurrent();});
-	pictureZoom.addEventListener("change", () => {
-			mydata.pictures[currentPictureIndex].zoomPercentage = isNaN(pictureZoom.valueAsNumber) ? null : pictureZoom.valueAsNumber;
-			drawDiag();
-		}
-	);
-	let add_pic = document.querySelector("input[id=add_pic]");
-	add_pic.addEventListener("change", () => getFileData(add_pic).then(loadPicture).then(addPicture));
-	let drop_pic = document.querySelector("button[id=drop_pic]");
-	drop_pic.addEventListener("click", () => dropPicture());
-	let add_pic_to_box = document.querySelector("button[id=add_pic_to_box]");
-	add_pic_to_box.addEventListener("click", () => addSelectedPictureToSelectedBox());
 
 	editTitle.addEventListener("change", () => updateTitle());
 	newDiagramButton.addEventListener("click", () => {newDiagram(); displayCurrent(); drawDiag();});
@@ -243,7 +191,6 @@ async function init() {
 	addFieldButton.addEventListener("click", () => addNewFieldToBox()) ;
 	dropFieldButton.addEventListener("click", () => dropFieldFromBox()) ;
 	updateFieldButton.addEventListener("click", () => updateField()) ;
-	addPicToBox2Button.addEventListener("click", () => addSelectedPictureToSelectedBox()) ;
 	updateFieldCommentButton.addEventListener("click", () => updateFieldComment());
 	dropFieldCommentButton.addEventListener("click", () => dropFieldComment());
 	valueCombo.addEventListener("change", () => updateValueAttributes());
@@ -396,20 +343,6 @@ async function displayCurrent()
 	{
 		fieldCommentTextArea.value = reversedFieldComment ;
 	}
-
-	const picturesComboInnerHTML = mydata?.pictures
-									?.map(pic => `<option>${pic.name}</option>`)
-									?.join('') || "";
-
-	if (picturesCombo.innerHTML != picturesComboInnerHTML)
-	{
-		picturesCombo.innerHTML = picturesComboInnerHTML;
-	}
-
-	currentPictureIndex = picturesCombo.selectedIndex;
-
-	displaySelectedPicture();
-
 }
 
 
@@ -861,49 +794,5 @@ function dropColor()
 	mydata.fieldColors = mydata.fieldColors.filter((_, index) => index != colorsCombo.selectedIndex );
 	console.log(mydata.fieldColors);
 	colorsComboOnClick();
-	drawDiag();
-}
-
-
-function dropPicture()
-{
-	currentPictureIndex = picturesCombo.selectedIndex;
-	mydata.pictures.splice(currentPictureIndex, 1);
-	if (currentPictureIndex >= mydata.pictures.length)
-		currentPictureIndex--;
-	const pictureComboInnerHTML = mydata.pictures
-					.map(pic => `<option>${pic.name}</option>"`)
-					.join('');
-
-	picturesCombo.innerHTML = pictureComboInnerHTML;
-	const base64 = mydata?.pictures?.[currentPictureIndex]?.base64 ;
-	currentImageDisplay.src = base64==undefined ? "data:text/plain," : "data:image/jpg;base64, " + base64 ;
-}
-
-function displaySelectedPicture()
-{
-	currentPictureIndex = picturesCombo.selectedIndex ;
-	const base64 = mydata?.pictures?.[currentPictureIndex]?.base64 ;
-	currentImageDisplay.src = base64==undefined ? "data:text/plain," : "data:image/jpg;base64, " + base64 ;
-}
-
-
-function addSelectedPictureToSelectedBox()
-{
-	currentPictureIndex = picturesCombo.selectedIndex;
-	mydata.boxes[currentBoxIndex].fields.push(
-		{
-			name: mydata.pictures[currentPictureIndex].name,
-			isPrimaryKey: false,
-			isForeignKey: false,
-			type:"image"
-		}
-	);
-
-	displayCurrent();
-
-	const rec = compute_box_rectangle(mydata.boxes[currentBoxIndex]);
-	mycontexts.rectangles[currentBoxIndex] = rec;
-
 	drawDiag();
 }
