@@ -593,46 +593,44 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 	innerHTML += drawLinks(links);
 	innerHTML += `</g>`;
 
-		for (const {id, translation} of translatedBoxes)
-		{
-			const rectangle = rectangles[id];
-
 	const ret = await db.query(`
-  		SELECT t.context, b.idbox, FORMAT('<g id="g_%1$" transform="translate(%4$,%5$)">
-			<rect id="rect_%1$" x="%4$" y="%5$" width="%2$" height="%3$" />
-			<foreignObject id="box%1$" width="%2$" height="%3$">
-     			<table id="box%1$" contenteditable="true" spellcheck="false">
-	  		<thead><tr><th id="b%1$">%6$</th></tr></thead>
-       			<tbody>',
-    			r.idbox, //%1
-			r.width, //%2
-    			r.height, //%3
-			t.x, //%4
-    			t.y) //%5
-	 		b.title) //%6
-     		FROM translation t
-		JOIN rectangle r ON t.idrectangle=r.idrectangle
-    		JOIN box b ON r.idbox=b.idbox
-
-	 		UNION ALL
-
-     		SELECT t.context, f.idbox, FORMAT('<tr id="b%1$f%2$"><td id="b%1$f%2$">%3$</td></tr>',
-	  		f.idbox, //%1
-     			f.idfield, //%2
-	  		f.name)  //%3
-		FROM field f
-  		JOIN rectangle r ON r.idbox=f.idbox
-    		JOIN translation t ON t.idrectangle=r.idrectangle
-  		ORDER BY f.name
-   		
-			UNION ALL
-   
-   		SELECT t.context, r.idbox, FORMAT('</tbody></table></foreignObject><rect id="sizer_%1$" x="%2$" y="%3$" width="4" height="4" />',
-     			r.idrectangle, //%1
-	  		t.x + r.width - 4, //%2
-       			t.y + r.height - 4) //%3
-     		FROM translation t
-	 	JOIN rectangle r ON t.idrectangle=r.idrectangle
+ 		WITH cte AS (
+  			SELECT t.context, b.idbox, 1 AS position, FORMAT('<g id="g_%1$" transform="translate(%4$,%5$)">
+				<rect id="rect_%1$" x="%4$" y="%5$" width="%2$" height="%3$" />
+				<foreignObject id="box%1$" width="%2$" height="%3$">
+     				<table id="box%1$" contenteditable="true" spellcheck="false">
+	  			<thead><tr><th id="b%1$">%6$</th></tr></thead>
+       				<tbody>',
+    				r.idbox, //%1
+				r.width, //%2
+    				r.height, //%3
+				t.x, //%4
+    				t.y) //%5
+	 			b.title) /*%6*/ AS html
+     			FROM translation t
+			JOIN rectangle r ON t.idrectangle=r.idrectangle
+    			JOIN box b ON r.idbox=b.idbox
+      				UNION ALL
+     			SELECT t.context, f.idbox, 2 AS position, STRING_AGG(FORMAT('<tr id="b%1$f%2$"><td id="b%1$f%2$">%3$</td></tr>',
+	  			f.idbox, //%1
+     				f.idfield, //%2
+	  			f.name),  /*%3*/
+      				'\n' ORDER BY f.name) AS html
+			FROM field f
+  			JOIN rectangle r ON r.idbox=f.idbox
+    			JOIN translation t ON t.idrectangle=r.idrectangle
+       			GROUP BY t.context, f.idbox
+  				UNION ALL
+   			SELECT t.context, r.idbox, 3 AS position, FORMAT('</tbody></table></foreignObject><rect id="sizer_%1$" x="%2$" y="%3$" width="4" height="4" />',
+     				r.idrectangle, //%1
+	  			t.x + r.width - 4, //%2
+       				t.y + r.height - 4) /*%3*/ AS html
+     			FROM translation t
+	 		JOIN rectangle r ON t.idrectangle=r.idrectangle
+    		)
+      		SELECT STRING_AGG(html, '\n' ORDER BY idbox, position)
+		FROM cte
+  		WHERE context=${selectedContextIndex}
    	`);
 	innerHTML += ret.rows[0];
 	innerHMTL += '</svg>'
