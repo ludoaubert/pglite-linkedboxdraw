@@ -6,7 +6,7 @@ import {download} from "./iocomponent.js";
 import {getFileData} from "./iocomponent.js";
 import {compute_box_rectangle} from "./compute_box_rectangles.js"
 
-export {db, init, mydata, data, resetData, setData, displayCurrent, createMutationObserver};
+export {db, init, mydata, data, resetData, setData, displayCurrent};
 
 const db = new PGlite();
 
