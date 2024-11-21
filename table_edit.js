@@ -4,7 +4,6 @@ import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/i
 import {mycontexts, contexts, resetContexts, setContexts, drawDiag, compute_links, ApplyRepartition, enforce_bounding_rectangle, data2contexts} from "./diagload.js";
 import {download} from "./iocomponent.js";
 import {getFileData} from "./iocomponent.js";
-import {compute_box_rectangle} from "./compute_box_rectangles.js"
 
 export {db, init, mydata, data, resetData, setData, displayCurrent};
 
