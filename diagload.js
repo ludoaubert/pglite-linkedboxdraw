@@ -597,7 +597,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 		{
 			const rectangle = rectangles[id];
 
-			const ret1 = await db.query(`
+			const ret = await db.query(`
   				SELECT FORMAT('<g id="g_%1$" transform="translate(%4$,%5$)">
 					<rect id="rect_%1$" x="%4$" y="%5$" width="%2$" height="%3$" />
 					<foreignObject id="box%1$" width="%2$" height="%3$">',
@@ -609,32 +609,32 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
      				FROM translation t
 				JOIN rectangle r ON t.idrectangle=r.idrectangle
 				WHERE t.context=${selectedContextIndex} AND r.idrectangle=${id}
-  			`);
-			innerHTML += ret1.rows[0];
-/*
-			innerHTML += `<g id="g_${id}" transform="translate(${translation.x},${translation.y})">
-			<rect id="rect_${id}" x="${rectangle.left}" y="${rectangle.top}" width="${width(rectangle)}" height="${height(rectangle)}" />
-			<foreignObject id="box${id}" width="${width(rectangle)}" height="${height(rectangle)}">`;
-*/
-			innerHTML += drawBoxComponent(id, db);
-
-			const ret2 = await db.query(`
-   				SELECT FORMAT('</foreignObject>
-					<rect id="sizer_%1$" x="%2$" y="%3$" width="4" height="4" />
-					</g>',
+    					UNION ALL
+ 				SELECT '<table id="box${id}" contenteditable="true" spellcheck="false">'
+   					UNION ALL
+ 				SELECT FORMAT('<thead><tr><th id="b${id}">%1$</th></tr></thead>', title) FROM box WHERE idbox=${id}
+					UNION ALL
+       				SELECT '<tbody>'
+	 				UNION ALL
+ 				SELECT FORMAT('<tr id="b${id}f%1$"><td id="b${id}f%1$">%2$</td></tr>',idfield, name) ORDER BY name FROM field WHERE idbox=${id}
+   					UNION ALL
+     				SELECT '</tbody>'
+       					UNION ALL
+	 			SELECT '</table>'
+     					UNION ALL
+	  			SELECT '</foreignObject>'
+      					UNION ALL
+   				SELECT FORMAT('<rect id="sizer_%1$" x="%2$" y="%3$" width="4" height="4" />',
      					r.idrectangle, //%1
 	  				t.x + r.width - 4, //%2
        					t.y + r.height - 4) //%3
      				FROM translation t
 	 			JOIN rectangle r ON t.idrectangle=r.idrectangle
      				WHERE t.context=${selectedContextIndex} AND r.idrectangle=${id}
+	 	    			UNION ALL
+				SELECT '</g>'
    			`);
-			innerHTML += ret2.rows[0];
-/*
-			innerHTML += `</foreignObject>`
-			innerHTML += `<rect id="sizer_${id}" x="${rectangle.right-4}" y="${rectangle.bottom-4}" width="4" height="4" />`
-			innerHTML += `</g>`;
-*/
+			innerHTML += ret.rows[0];
 		}
 
 		innerHTML += `</svg>`;
@@ -797,58 +797,6 @@ window.main = async function main()
 		svgElement.setAttribute("viewBox",`${x} ${y} ${width_} ${height_}`);		
 	}
 }
-
-function drawComponent(id, db) {
-
-	const ret = await db.query(`
- 		SELECT FORMAT('title="%s"', m.message)
-   		FROM graph g
-     		JOIN message_tag m ON m.idmessage=g.to_key
-       		WHERE g.to_table='message_tag' AND g.from_table='box' AND g.idbox=${id}
- 	`);
-
-	const titleAttribute = ret.rows[0];
-/*	
-	const titleAttribute = box.title in box2comment ? `title="${box2comment[box.title]}"` : '';
-*/
-	let innerHTML = `<table id="box${id}" contenteditable="true" spellcheck="false" ${titleAttribute}>`;
-
-	const ret = await db.query(`
- 		SELECT FORMAT('<thead>
-				<tr>
-				<th id="b${id}">%1$</th>
-				</tr>
-		    	</thead>
-			<tbody>',
-			title) //%1
-   		FROM box
-     		WHERE idbox=${id}
- 	`);
-	innerHTML += ret.rows[0];
-/*
-	innerHTML += `<thead>
-			<tr>
-				<th id="b${id}">${box.title}</th>
-			</tr>
-		    </thead>
-		<tbody>`;
-*/
-	const ret = await db.query(`
- 		SELECT STRING_AGG(FORMAT('<tr id="b${id}f%1$"><td id="b${id}f%1$">%2$</td></tr>',
-   			idfield, //%1
-   			name), //%2
-      			'\n' | ORDER BY name)
-	 	FROM field
-   		WHERE idbox=${id}
- 	`);
-	innerHTML += ret.rows[0];
-
-	innerHTML += `</tbody></table>`;
-
-	return innerHTML;
-}
-
-
 
 function expressCutLinks(mydata, mycontexts){
 
