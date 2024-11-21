@@ -432,89 +432,50 @@ function onNewFieldUpdate()
 
 async function addNewFieldToBox()
 {
-	currentBoxIndex = mydata.boxes.findIndex(box => box.title == boxCombo.value);
-	currentFieldIndex = mydata.boxes[currentBoxIndex].fields.length;
+	await db.exec(`
+ 		INSERT INTO field(idbox, name)
+   		SELECT idbox, '${newFieldEditField.value}'
+     		FROM box WHERE title='${boxCombo.value}'
+ 	`);
+	const ret1 = await db.query(`SELECT idbox FROM box WHERE title='${boxCombo.value}'`);
+	currentBoxIndex = ret1.rows[0];
+	const ret2 = await db.query(`SELECT idfield FROM field WHERE idbox=${currentBoxIndex} AND name=${newFieldEditField.value}`)
+	currentFieldIndex = ret2.rows[0];
 
-	mydata.boxes[currentBoxIndex].fields.push({
-			name: newFieldEditField.value,
-			isPrimaryKey: isPrimaryKeyCheckBox.checked,
-			isForeignKey: isForeignKeyCheckBox.checked
-		}
-	);
 	console.log(mydata.boxes[currentBoxIndex].fields);
 
 	newFieldEditField.value = "";
-	isPrimaryKeyCheckBox.checked = false;
-	isForeignKeyCheckBox.checked = false;
 
 	displayCurrent();
-
-	const rec = compute_box_rectangle(mydata.boxes[currentBoxIndex]);
-	mycontexts.rectangles[currentBoxIndex] = rec;
-
 	drawDiag();
 }
 
-function updateField()
+async function updateField()
 {
-	currentBoxIndex = mydata.boxes.findIndex(box => box.title == boxCombo.value);
-	currentFieldIndex = mydata.boxes[currentBoxIndex].fields.findIndex(field => field.name == fieldCombo.value);
-
-	mydata.boxes[currentBoxIndex].fields[currentFieldIndex] = {
-		name: fieldCombo.value,
-		isPrimaryKey: isPrimaryKeyCheckBox.checked,
-		isForeignKey: isForeignKeyCheckBox.checked
-	} ;
+	await db.exec(`
+ 		UPDATE field
+   		SET name = '${newFieldEditField.value}'
+     		FROM field f
+       		JOIN box b ON f.idbox=b.idbox
+	 	WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
+ 	`);
 	
-	mydata.values = mydata.values.map( ({box, field, value}) => ({box, field: box == boxCombo.value && field == fieldCombo.value ? newFieldEditField.value : field, value}) );
-	mydata.fieldComments = mydata.fieldComments.map( ({box, field, comment}) => ({box, field: box == boxCombo.value && field == fieldCombo.value ? newFieldEditField.value : field, comment}) );
-	mydata.fieldColors = mydata.fieldColors.map( ({box, field, color}) => ({box, field: box == boxCombo.value && field == fieldCombo.value ? newFieldEditField.value : field, color}) );
-
 	displayCurrent();
-
-	const rec = compute_box_rectangle(mydata.boxes[currentBoxIndex]);
-	mycontexts.rectangles[currentBoxIndex] = rec;
-
 	drawDiag();
 }
 
 
 async function dropFieldFromBox()
 {
-	currentBoxIndex = mydata.boxes.findIndex(box => box.title == boxCombo.value);
-
-	var fields = mydata.boxes[currentBoxIndex].fields ;
-	currentFieldIndex = fields.findIndex(field => field.name == fieldCombo.value);
-	mydata.boxes[currentBoxIndex].fields = fields.filter(field => field.name != fieldCombo.value);
-
-
-	mydata.links = mydata.links.filter(({from, fromField, to, toField}) => !(from==currentBoxIndex && fromField==currentFieldIndex) && !(to==currentBoxIndex && toField==currentFieldIndex));
-	mydata.values = mydata.values.filter(({box, field, value}) => !(box == boxCombo.value && field == fieldCombo.value));
-	mydata.fieldComments = mydata.fieldComments.filter(({box, field, comment}) => !(box == boxCombo.value && field == fieldCombo.value));
-	mydata.fieldColors = mydata.fieldColors.filter(({box, field, color}) => !(box == boxCombo.value && field == fieldCombo.value));
-
-	for (let lk of mydata.links)
-	{
-		if (lk.from == currentBoxIndex && lk.fromField > currentFieldIndex)
-			lk.fromField--;
-		if (lk.to == currentBoxIndex && lk.toField > currentFieldIndex)
-			lk.toField--;
-	}
+	await db.exec(`
+ 		DELETE FROM field f
+   		USING box b
+		WHERE f.idbox=b.idbox AND b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}';
+ 	`);
 
 	currentFieldIndex = -1;
 
 	displayCurrent();
-
-    const rec = compute_box_rectangle(mydata.boxes[currentBoxIndex]);
-    mycontexts.rectangles[currentBoxIndex] = rec;
-
-	const selectedContextIndex = mycontexts.contexts
-					.map(({frame, translatedBoxes, links}) => translatedBoxes.map(({id, translation}) => id))
-					.findIndex(ids => ids.includes(currentBoxIndex) );
-	mycontexts.contexts[selectedContextIndex].links = await compute_links(selectedContextIndex);
-	
-	enforce_bounding_rectangle(selectedContextIndex);
-
 	drawDiag();
 }
 
@@ -523,30 +484,44 @@ function editValueFromField()
 
 }
 
-function addNewValueToField()
+async function addNewValueToField()
 {
-	mydata.values.push({
-		box: boxCombo.value,
-		field: fieldCombo.value,
-		value: newValueEditField.value
-	});
+	await db.exec(`
+ 		INSERT INTO value(data, idfield)
+   		SELECT '${newValueEditField.value}', f.idfield
+     		FROM field f
+       		JOIN box b ON f.idbox = b.idbox
+	 	WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
+ 	`);
 
 	newValueEditField.value = "";
 
 	displayCurrent();
 }
 
-function updateValue()
+async function updateValue()
 {
-	const currentValueIndex = mydata.values.findIndex(({box, field, value}) => box ==  boxCombo.value && field == fieldCombo.value);
-	mydata.values[ currentValueIndex ] = {box, field, value: newValueEditField.value};
+	await db.exec(`
+ 		UPDATE v
+   		SET v.data='${newValueEditField.value}'
+     		FROM value v
+       		JOIN field f ON v.idfield=f.idfield
+	 	JOIN box b ON f.idbox=b.idbox
+   		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
+ 	`);
 
 	displayCurrent();
 }
 
-function dropValueFromField()
+async function dropValueFromField()
 {
-	mydata.values = mydata.values.filter(({box, field, value}) => !(box ==  boxCombo.value && field == fieldCombo.value && value == valueCombo.value));
+	await db.exec(`
+ 		DELETE v
+   		FROM value v
+     		JOIN field f ON v.idfield=f.idfield
+       		JOIN box b ON f.idbox=b.idbox
+	 	WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}' AND v.data='${valueCombo.value}'
+ 	`);
 
 	displayCurrent();
 }
