@@ -216,22 +216,22 @@ async function init() {
 
 //avoid duplicate entries
 	newBoxEditField.addEventListener("change", () => {
-		addBoxButton.disabled = (newBoxEditField.value == '' || mydata.boxes.find(box => box.title == newBoxEditField.value)) ? true : false;
+		const ret = await db.query(`SELECT idbox FROM box WHERE title='${newBoxEditField.value}'`);
+		addBoxButton.disabled = (newBoxEditField.value == '' || ret.rows.length>0) ? true : false;
 	});
 	newFieldEditField.addEventListener("change", () => {
-		currentBoxIndex = mydata.boxes.findIndex(box => box.title == boxCombo.value);
+		const ret = await db.query(`SELECT idbox FROM box WHERE title='${boxCombo.value}'`);
+		currentBoxIndex = ret.rows[0];
 		if (currentBoxIndex == -1)
 			addFieldButton.disabled = true;
 		else
-			addFieldButton.disabled = (newFieldEditField.value == '' || mydata.boxes[currentBoxIndex].fields.find(f => f.name == newFieldEditField.value)) ? true : false;
+		{
+			const ret = await db.query(`SELECT idfield FROM field  WHERE name=${newFieldEditField.value} AND idbox=${currentBoxIndex}`);
+			addFieldButton.disabled = (newFieldEditField.value == '' || ret.rows.length==1) ? true : false;
+		}
 	});
 
-	const ret = await db.query(`
-		SELECT STRING_AGG('<option>' || code || '</option>','' order by code)
-		FROM tag
-		WHERE type_code='COLOR';
-  	`);
-
+	const ret = await db.query(`SELECT STRING_AGG('<option>' || code || '</option>','' order by code) FROM tag WHERE type_code='COLOR'`);
 	colorCombo.innerHTML = ret.rows[0];
 
 	displayCurrent();
@@ -254,45 +254,40 @@ async function displayCurrent()
 	{
 		if (currentBoxIndex_ == -1 && boxCombo_.value != "")
 		{
-			const ret = await db.query(`SELECT idbox FROM box WHERE title=${boxCombo_.value}`);
+			const ret = await db.query(`SELECT idbox FROM box WHERE title='${boxCombo_.value}'`);
 			currentBoxIndex_ = ret.rows[0];
 		}
-		const ret = await db.query(`
-  			SELECT STRING_AGG('<option>' || title || '</option>', '' ORDER BY title)
-     			FROM box;
-     		`);
-		const boxComboInnerHTML = ret.rows[0];
+		const ret1 = await db.query(`SELECT STRING_AGG('<option>' || title || '</option>', '' ORDER BY title) FROM box`);
+		const boxComboInnerHTML = ret1.rows[0];
 
 		if (boxCombo_.innerHTML != boxComboInnerHTML)
 		{
 			boxCombo_.innerHTML = boxComboInnerHTML;
 			if (currentBoxIndex_ == -1)
-				currentBoxIndex_ = mydata.boxes.length > 0 ? 0 : -1;
+			{
+				const ret = await db.query(`SELECT * FROM box`);
+				currentBoxIndex_ = ret.rows.length > 0 ? 0 : -1;
+			}
 		}
 
-		boxCombo_.value = mydata.boxes[currentBoxIndex_]?.title || "";
+		const ret2 = await db.query(`SELECT title FROM box WHERE idbox=${currentBoxIndex_}`);
+		boxCombo_.value = ret2.rows[0];
 
-		const ret1 = await db.query(`
-  			SELECT STRING_AGG('<option>' || f.name || '</option>', '' ORDER BY f.name)
-     			FROM field f
-   			WHERE f.idbox = '${currentBoxIndex_}'
-  		`);
-
-		const fieldComboInnerHTML = ret1.rows[0];
+		const ret3 = await db.query(`SELECT STRING_AGG('<option>' || name || '</option>', '' ORDER BY name) FROM field WHERE idbox = ${currentBoxIndex_}`);
+		const fieldComboInnerHTML = ret3.rows[0];
 
 		if (fieldCombo_.innerHTML != fieldComboInnerHTML)
 		{
 			fieldCombo_.innerHTML = fieldComboInnerHTML;
 			if (currentFieldIndex_ == -1)
-				currentFieldIndex_ = mydata.boxes[currentBoxIndex_]?.fields?.length > 0 ? 0 : -1;
+			{
+				const ret = await db.query(`SELECT COUNT(*) FROM fields WHERE idbox=${currentBoxIndex_}`);
+				currentFieldIndex_ = ret.rows.length > 0 ? 0 : -1;
+			}
 		}
 
-		const ret2 = await db.query(`
-  			SELECT idfield
-     			FROM field
-			WHERE idbox=${currentBoxIndex_} AND name='${fieldCombo_.value}'
-  		`);
-		currentFieldIndex_ = ret2.rows[0]; // -1;
+		const ret4 = await db.query(`SELECT idfield FROM field WHERE idbox=${currentBoxIndex_} AND name='${fieldCombo_.value}'`);
+		currentFieldIndex_ = ret4.rows[0]; // -1;
 
 		contexts[index] = {boxCombo_, fieldCombo_, currentBoxIndex_, currentFieldIndex_};
 		index++;
@@ -307,35 +302,52 @@ async function displayCurrent()
 	currentColorBoxIndex = contexts[3].currentBoxIndex_;
 	currentColorFieldIndex = contexts[3].currentFieldIndex_;
 
-	const isPrimaryKey = mydata.boxes[currentBoxIndex]?.fields[currentFieldIndex]?.isPrimaryKey;
-	const isForeignKey = mydata.boxes[currentBoxIndex]?.fields[currentFieldIndex]?.isForeignKey;
-	isPrimaryKeyCheckBox.checked = isPrimaryKey || false;
-	isForeignKeyCheckBox.checked = isForeignKey || false;
+	const ret1 = await db.query(`SELECT title FROM box WHERE idbox=${currentBoxIndex}`);
+	const boxTitle = ret1.rows[0];
+	const ret2 = await db.query(`SELECT name FROM field WHERE idfield=${currentFieldIndex}`)
+	const fieldName = ret.rows[0];
 
-	const boxTitle = mydata.boxes[currentBoxIndex]?.title;
-	const fieldName = mydata.boxes[currentBoxIndex]?.fields[currentFieldIndex]?.name;
-
-	const valueComboInnerHTML = mydata.values.filter(({box, field, value}) => box == boxTitle && field == fieldName)
-										.map(({box, field, value}) => value)
-										.sort()
-										.map(value => `<option>${value}</option>`)
-										.join('');
+	const ret3 = await db.query(`
+ 		SELECT STRING_AGG('<option>' || v.data || '</option>', '' ORDER BY idvalue)
+   		FROM value v
+     		JOIN field f ON v.idfield=f.idfield
+       		JOIN box b ON b.idbox=f.idbox
+	 	WHERE b.title='${boxTitle}' AND f.name='${fieldName}'
+   	`);
+	const valueComboInnerHTML = ret3.rows[0];
 
 	if (valueCombo.innerHTML != valueComboInnerHTML)
 		valueCombo.innerHTML = valueComboInnerHTML;
 
-	const currentBoxCommentIndex = mydata.boxComments.findIndex(({box, comment}) => box == boxCombo.value);
+	const ret4 = await db.query(`
+ 		SELECT mt.idmessage
+   		FROM box b
+     		JOIN graph g ON g.from_table='box' AND b.idbox=g.from_key AND g.to_table='message_tag'
+       		JOIN message_tag mt ON g.to_key=mt.idmessage
+     		WHERE b.title='${boxCombo.value}'
+  	`);
+	const currentBoxCommentIndex = ret4.rows[0];
 
-	const boxComment = mydata.boxComments[currentBoxCommentIndex]?.comment || "" ;
+	const ret5 = await db.query(`SELECT message FROM message_tag WHERE idmessage=${currentBoxCommentIndex}`);
+	const boxComment = ret5.rows[0];
 	const reversedBoxComment = reverseJsonSafe(boxComment);
 	if (reversedBoxComment != boxCommentTextArea.value)
 	{
 		boxCommentTextArea.value = reversedBoxComment ;
 	}
 
-	const currentFieldCommentIndex = mydata.fieldComments.findIndex(({box, field, comment}) => box == boxCombo.value && field == fieldCombo.value);
+	const ret6 = await db.query(`
+ 		SELECT mt.idmessage
+   		FROM box b
+     		JOIN field f ON f.idbox=b.idbox
+     		JOIN graph g ON g.from_table='field' AND f.idfield=g.from_key AND g.to_table='message_tag'
+       		JOIN message_tag mt ON g.to_key=mt.idmessage
+     		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
+ 	`)
+	const currentFieldCommentIndex = ret6.rows[0];
 
-	const fieldComment = mydata.fieldComments[currentFieldCommentIndex]?.comment || "" ;
+	const ret7 = await db.query(`SELECT message FROM message_tag WHERE idmessage=${currentFieldCommentIndex}`);
+	const fieldComment = ret7.rows[0];
 	const reversedFieldComment = reverseJsonSafe(fieldComment);
 
 	if (reversedFieldComment != fieldCommentTextArea.value)
@@ -351,69 +363,36 @@ function updateTitle()
 }
 
 
-function addNewBox()
+async function addNewBox()
 {
-	currentBoxIndex = mydata.boxes.length;
+	await db.exec(`INSERT INTO box(title) VALUES('${newBoxEditField.value}')`);
+	const ret1 = await db.query(`SELECT idbox FROM box WHERE title='${newBoxEditField.value}'`);
+	currentBoxIndex = ret1.rows[0];
 	currentFieldIndex = -1;
-
-	const box = {title:newBoxEditField.value, id:currentBoxIndex, fields:[]};
-	mydata.boxes.push(box);
 
 	newBoxEditField.value = "";
 
 	displayCurrent();
 
-	const rec = compute_box_rectangle(box);
-	const id = mycontexts.rectangles.length;
-	mycontexts.rectangles.push(rec);
-	mycontexts.contexts[0]?.translatedBoxes?.push({id, translation:{x:0,y:0}});
+	await db.exec(`
+ 		INSERT INTO rectangle(width, height, idbox) 
+   		SELECT 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT}, idbox 
+     		FROM box FROM idbox=${currentBoxIndex};
+
+ 		INSERT INTO translation(context, idrectangle, x, y)
+   		SELECT 1 AS context, r.idrectangle, 0 AS x, 0 AS y
+     		FROM rectangle r
+       		WHERE r.idbox=${currentBoxIndex};
+   	`);
 
 	drawDiag();
 }
 
 
-function dropBox()
+async function dropBox()
 {
 	console.log('dropBox');
-	currentBoxIndex = mydata.boxes.findIndex(box => box.title == boxCombo.value);
-	console.log(currentBoxIndex);
-
-	mydata.boxes = mydata.boxes.filter(box => box.title != boxCombo.value);
-	mydata.links = mydata.links.filter(lk => lk.from != currentBoxIndex && lk.to != currentBoxIndex);
-	mydata.values = mydata.values.filter(({box, field, value}) => box != boxCombo.value);
-	mydata.boxComments = mydata.boxComments.filter(({box, comment}) => box != boxCombo.value);
-	mydata.fieldComments = mydata.fieldComments.filter(({box, field, comment}) => box != boxCombo.value);
-	mydata.fieldColors = mydata.fieldColors.filter(({box, field, color}) => box != boxCombo.value);
-
-	for (let box of mydata.boxes)
-	{
-		if (box.id > currentBoxIndex)
-			box.id--;
-	}
-
-	for (let lk of mydata.links)
-	{
-		if (lk.from > currentBoxIndex)
-			lk.from--;
-		if (lk.to > currentBoxIndex)
-			lk.to--;
-	}
-
-	for (let fc of mydata.fieldColors)
-	{
-		if (fc.index > currentBoxIndex)
-			fc.index--;
-	}
-
-	mycontexts.rectangles.splice(currentBoxIndex, 1);
-	for (let context of mycontexts.contexts)
-	{
-		context.translatedBoxes = context.translatedBoxes.filter(tB => tB.id != currentBoxIndex)
-														.map(({id, translation}) => ({id: id > currentBoxIndex ? id-1 : id, translation}));
-
-		context.links = context.links.filter(({polyline, from, to}) => from != currentBoxIndex && to != currentBoxIndex)
-									.map(({polyline, from, to}) => ({polyline, from: from > currentBoxIndex ? from-1 : from, to: to > currentBoxIndex ? to-1 : to}));
-	}
+	await db.exec(`DELETE FROM box WHERE title='${boxCombo.value}'`);
 
 	currentBoxIndex = -1;
 
@@ -422,20 +401,14 @@ function dropBox()
 }
 
 
-function updateBox()
+async function updateBox()
 {
-	currentBoxIndex = mydata.boxes.findIndex(box => box.title == boxCombo.value);
-	mydata.boxes[currentBoxIndex].title = newBoxEditField.value;
-	
-	mydata.values = mydata.values.map( ({box, field, value}) => ({box: box == boxCombo.value ? newBoxEditField.value : box, field, value}) );
-	mydata.boxComments = mydata.boxComments.map( ({box, comment}) => ({box: box == boxCombo.value ? newBoxEditField.value : box, comment}) );
-	mydata.fieldComments = mydata.fieldComments.map( ({box, field, comment}) => ({box: box == boxCombo.value ? newBoxEditField.value : box, field, comment}) );
-	mydata.fieldColors = mydata.fieldColors.map( ({box, field, color}) => ({box: box == boxCombo.value ? newBoxEditField.value : box, field,color}) );
+	await db.exec(`UPDATE box SET title='${newBoxEditField.value} WHERE title='${boxCombo.value}'`);
 	
 	displayCurrent();
 
-    const rec = compute_box_rectangle(mydata.boxes[currentBoxIndex]);
-    mycontexts.rectangles[currentBoxIndex] = rec;
+    	//const rec = compute_box_rectangle(mydata.boxes[currentBoxIndex]);
+    	//mycontexts.rectangles[currentBoxIndex] = rec;
 
 	drawDiag();
 }
@@ -457,7 +430,7 @@ function onNewFieldUpdate()
 }
 
 
-function addNewFieldToBox()
+async function addNewFieldToBox()
 {
 	currentBoxIndex = mydata.boxes.findIndex(box => box.title == boxCombo.value);
 	currentFieldIndex = mydata.boxes[currentBoxIndex].fields.length;
