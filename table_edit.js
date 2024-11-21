@@ -151,32 +151,6 @@ async function init() {
 			.forEach(button => {
 				button.addEventListener("click", (event) => switchCollapsible(button));
 			});
-	
-	let fi = document.querySelector("input[id=fi]");
-
-	fi.addEventListener("change", (event) => {
-		getFileData(fi).then(function(result){
-			const json = JSON.parse(result);
-			if ("data" in json && "contexts" in json)
-			{
-				setData(json.data);
-				setContexts(json.contexts);
-				drawDiag();
-				currentBoxIndex = -1;
-				displayCurrent();
-			}
-			else if ("documentTitle" in json && "boxes" in json && "links" in json)
-			{
-				setData(json);
-				setContexts(data2contexts(mydata));
-				drawDiag();
-				currentBoxIndex = -1;
-				displayCurrent();
-			}
-	})});
-
-	let fo = document.querySelector("input[id=fo]");
-	fo.addEventListener("click", () => download(fo.previousElementSibling.value, {data:mydata, contexts:mycontexts}));
 
 	editTitle.addEventListener("change", () => updateTitle());
 	newDiagramButton.addEventListener("click", () => {newDiagram(); displayCurrent(); drawDiag();});
