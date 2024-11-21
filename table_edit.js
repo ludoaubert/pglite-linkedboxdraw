@@ -505,36 +505,28 @@ function selectLink()
 
 }
 
-function produce_options(links)
+async function produce_options(links)
 {
 	const ret = await db.query(`
- 		SELECT 
-   		FROM link l
-     		LEFT JOIN box box_from ON box_from.idbox=l.idbox_from
-       		LEFT JOIN box box_to ON box_to.idbox=l.idbox_to
-	 	LEFT JOIN field field_from ON field_from.idfield = l.idfield_from
-   		LEFT JOIN field field_to ON field_to.idfield = l.idfield_to
+ 		WITH cte AS (
+ 			SELECT FORMAT('%s.%s %s.%s', box_from.title, field_from.name, box_to.title, field_to.name) AS option, l.idlink
+   			FROM link l
+     			LEFT JOIN box box_from ON box_from.idbox=l.idbox_from
+       			LEFT JOIN box box_to ON box_to.idbox=l.idbox_to
+	 		LEFT JOIN field field_from ON field_from.idfield = l.idfield_from
+   			LEFT JOIN field field_to ON field_to.idfield = l.idfield_to
+      		)
+		SELECT jsonb_agg(jsonb_build_object('option', option, 'idlink', idlink) ORDER BY option)
   	`);
-	const options = links.map((lk, position) => {
-			const {from, fromField, to, toField} = lk;
-			const fromBox = mydata.boxes[from] ;
-			const fromFieldName = fromField != -1 ? fromBox.fields[fromField].name : "";
-			const toBox = mydata.boxes[to] ;
-			const toFieldName = toField != -1 ? toBox.fields[toField].name : "";
-			return {option:`${fromBox.title}.${fromFieldName} ${toBox.title}.${toFieldName}`, position};
-		})
-		.sort((a, b) => a.option<b.option ? -1 : a.option > b.option ? 1 : 0);
 
-	return options;
+	return JSON.parse(ret.rows[0]);
 }
 
 function linkComboOnClick()
 {
 	const options = produce_options(mydata.links)
 	
-	const innerHTML = options
-				.map(({option, position}) => option) 
-				.map(option => `<option>${option}</option>`)
+	const innerHTML = options.map(({option, idlink}) => `<option>${option}</option>`)
 				.join('');
 
 	if (linkCombo.innerHTML != innerHTML)
@@ -544,22 +536,26 @@ function linkComboOnClick()
 
 async function addNewLink()
 {
+	await db.exec(`
+ 		WITH cte_from AS (
+ 			SELECT b.idbox, f.idfield
+   			FROM box b
+     			LEFT JOIN field f ON f.idbox=b.idbox
+     			WHERE b.title='${fromBoxCombo.value}' AND f.name='${fromFieldCombo.value}'
+		}, cte_to AS (
+   			SELECT b.idbox, f.idfield
+   			FROM box b
+     			LEFT JOIN field f ON f.idbox=b.idbox
+     			WHERE b.title='${toBoxCombo.value}' AND f.name='${toFieldCombo.value}'
+		)
+  		INSERT INTO link(idbox_from, idfield_from, idbox_to, idfield_to)
+    		SELECT cte_from.idbox, cte_from.idfield, cte_to.idbox, cte_to.idfield
+      		FROM cte_from JOIN cte_to
+	`);
 	currentFromBoxIndex = mydata.boxes.findIndex(box => box.title == fromBoxCombo.value);
 	currentFromFieldIndex = mydata.boxes[currentFromBoxIndex].fields.findIndex(field => field.name == fromFieldCombo.value);
 	currentToBoxIndex = mydata.boxes.findIndex(box => box.title == toBoxCombo.value);
 	currentToFieldIndex = mydata.boxes[currentToBoxIndex].fields.findIndex(field => field.name == toFieldCombo.value);
-
-	const lk = {
-		from: currentFromBoxIndex,
-		fromField: currentFromFieldIndex,
-		fromCardinality: fromCardinalityCombo.value,
-		to: currentToBoxIndex,
-		toField: currentToFieldIndex,
-		toCardinality: toCardinalityCombo.value,
-		category:categoryCombo.value
-	};
-
-	mydata.links.push(lk);
 
 	for (let [selectedContextIndex, context] of mycontexts.contexts.entries())
 	{
@@ -577,11 +573,8 @@ async function addNewLink()
 
 async function dropLink()
 {
-	const {option, position} = produce_options(mydata.links)[linkCombo.selectedIndex];
-	
-	const lk = mydata.links[ position ];
-	console.log({lk});
-	mydata.links = mydata.links.filter((_, index) => index != position);
+	const {option, idlink} = produce_options(mydata.links)[linkCombo.selectedIndex];
+	await db.exec(`DELETE FROM link WHERE idlink=${idlink}`);
 	linkComboOnClick();
 
 	for (let [selectedContextIndex, context] of mycontexts.contexts.entries())
@@ -600,32 +593,49 @@ async function dropLink()
 
 
 
-function dropBoxComment()
+async function dropBoxComment()
 {
-	const currentCommentIndex = mydata.boxComments.findIndex(({box, comment}) => box == boxCombo.value);
-	mydata.boxComments = mydata.boxComments.filter((_, index) => index != currentCommentIndex );
+	await db.exec(`
+ 		DELETE m
+   		FROM message_tag m
+     		JOIN graph g ON g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='box'
+       		JOIN box b ON b.idbox=g.to_key
+	 	WHERE b.title = '${boxCombo.value}'
+ 	`);
 	displayCurrent();
 	drawDiag();
 }
 
-function updateBoxComment()
+async function updateBoxComment()
 {
-	const currentBoxCommentIndex = mydata.boxComments.findIndex(({box, comment}) => box == boxCombo.value);
-	const boxComment = {box: boxCombo.value, comment: jsonSafe(boxCommentTextArea.value)} ;
-
+//TODO: should be an UPDATE or INSERT
+	await db.exec(`
+ 		UPDATE m
+   		SET m.message='${jsonSafe(boxCommentTextArea.value)}'
+     		FROM message_tag m
+     		JOIN graph g ON g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='box'
+       		JOIN box b ON b.idbox=g.to_key
+	 	WHERE b.title = '${boxCombo.value}'
+ 	`);
+/*
 	if (currentBoxCommentIndex != -1)
 		mydata.boxComments[ currentBoxCommentIndex ] = boxComment;
 	else
 		mydata.boxComments.push(boxComment);
-
+*/
 	displayCurrent();
 	drawDiag();
 }
 
-function dropFieldComment()
+async function dropFieldComment()
 {
-	const currentFieldCommentIndex = mydata.fieldComments.findIndex(({box, field, comment}) => box == boxCombo.value && field == fieldCombo.value);
-	mydata.fieldComments = mydata.fieldComments.filter((_, index) => index != currentFieldCommentIndex );
+	await db.exec(`
+ 		DELETE m
+     		FROM message_tag m
+     		JOIN graph g ON g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='box'
+       		JOIN box b ON b.idbox=g.to_key
+	 	WHERE b.title = '${boxCombo.value}'
+ 	`);
 	displayCurrent();
 	drawDiag();
 }
@@ -656,14 +666,22 @@ function reverseJsonSafe(text)
 
 function updateFieldComment()
 {
-	const currentFieldCommentIndex = mydata.fieldComments.findIndex(({box, field, comment}) => box == boxCombo.value && field == fieldCombo.value);
-	const fieldComment = {box: boxCombo.value, field: fieldCombo.value, comment: jsonSafe(fieldCommentTextArea.value)};
-
+//TODO: should be an UPDATE or INSERT
+	await db.exec(`
+ 		UPDATE m
+   		SET m.message='${jsonSafe(fieldCommentTextArea.value)}'
+     		FROM message_tag m
+     		JOIN graph g ON g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='field'
+       		JOIN field f ON f.idfield=g.to_key
+       		JOIN box b ON b.idbox=f.idbox
+	 	WHERE b.title = '${boxCombo.value}' AND f.name='${fieldCombo.value}'
+ 	`);
+/*
 	if (currentFieldCommentIndex != -1)
 		mydata.fieldComments[ currentBoxCommentIndex ] = fieldComment;
 	else
 		mydata.fieldComments.push(fieldComment);
-
+*/
 	displayCurrent();
 	drawDiag();
 }
@@ -681,47 +699,45 @@ function colorsComboOnClick()
 }
 
 
-function addNewColor()
+async function addNewColor()
 {
-	currentColorBoxIndex = mydata.boxes.findIndex(box => box.title == colorBoxCombo.value);
-	const box = mydata.boxes[currentColorBoxIndex];
+	await db.exec(`
+ 		INSERT INTO graph(from_table, from_key, to_table, to_key)
+   		SELECT 'tag', idtag, 'field', f.idfield
+     		FROM field f
+       		JOIN box b ON f.idbox=b.idbox
+	 	JOIN tag t ON t.type_code='COLOR' AND code='${colorCombo.value}'
+	 	WHERE b.title='${colorBoxCombo.value}' AND f.name='${colorFieldCombo.value}'
+ 	`);
 
-	currentColorFieldIndex = box.fields.findIndex(field => field.name == colorFieldCombo.value);
-	const field = box.fields[currentColorFieldIndex];
-
-	mydata.fieldColors.push({
-		index: currentColorBoxIndex,
-		box: box.title,
-		field: field.name,
-		color: colorCombo.value
-	})
-
-	console.log(mydata.fieldColors);
-	colorsComboOnClick();
-
-	drawDiag();
-}
-
-function updateColor()
-{
-	const fieldColorIndex = mydata.fieldColors.findIndex(({box, field, color}) => box == boxCombo.value && field == fieldCombo.value);
-	const fc = mydata.fieldColors[fieldColorIndex];
-	mydata.fieldColors[ fieldColorIndex ] = {
-		index: fc.index,
-		box: boxCombo.value,
-		field: fieldCombo.value,
-		color: colorCombo.value
-	};
-	console.log(mydata.fieldColors);
 	colorsComboOnClick();
 	drawDiag();
 }
 
-function dropColor()
+async function updateColor()
 {
+	await db.exec(`
+  		UPDATE g
+    		SET g.from_key=new_tag.idtag
+    		FROM graph g
+     		JOIN field f ON f.idfield = g.to_key AND g.from_table='tag' AND g.to_table='field'
+       		JOIN box b ON f.idbox=b.idbox
+       		JOIN tag old_tag ON old_tag.idtag = g.from_key AND old_tag.type_code='COLOR'
+	 	JOIN tag new_tag ON new_tag.type_code='COLOR' AND new_tag.code='${colorCombo.value}'
+	 	WHERE b.title='${colorBoxCombo.value}' AND f.name='${colorFieldCombo.value}' 
+ 	`);
+	colorsComboOnClick();
+	drawDiag();
+}
+
+async function dropColor()
+{
+/*
+TODO
 	console.log(mydata.fieldColors);
 	mydata.fieldColors = mydata.fieldColors.filter((_, index) => index != colorsCombo.selectedIndex );
 	console.log(mydata.fieldColors);
 	colorsComboOnClick();
 	drawDiag();
+ */
 }
