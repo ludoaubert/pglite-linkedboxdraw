@@ -53,13 +53,14 @@ async function data2contexts(mydata) {
     			UNION ALL
        			SELECT idbox, LENGTH(name) * ${MONOSPACE_FONT_PIXEL_WIDTH}, ${CHAR_RECT_HEIGHT}  FROM field
 		), cte2 AS (
-  			SELECT idbox, MAX(width) AS width, SUM(height) AS height
+  			SELECT idbox, MAX(width) AS width, LEAST(SUM(height), ${RECTANGLE_BOTTOM_CAP}) AS height
     			FROM cte
       			GROUP BY idbox
-	 	) SELECT jsonb_agg(
-    			jsonb_build_object('left', 0, 'right', width, 'top', 0, 'bottom', min(height, RECTANGLE_BOTTOM_CAP))
-  				) AS rectangles
-		FROM cte2;
+	 	), cte3 AS (
+   			SELECT idbox, jsonb_build_object('left', 0, 'right', width, 'top', 0, 'bottom', height) AS rectangle
+      			FROM cte2
+		) SELECT jsonb_agg(rectangle ORDER BY idbox) AS rectangles
+		FROM cte3;
  	`);
 	const rectangles = JSON.parse(ret.rows[0]);
 	
