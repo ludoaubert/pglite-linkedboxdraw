@@ -50,7 +50,7 @@ function hex(i,n) {
 
 async function data2contexts(mydata) {
 
-	const ret = await db.query(`
+	const ret1 = await db.query(`
  		WITH cte(idbox, width, height) AS (
    			SELECT idbox, 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT} FROM box
     			UNION ALL
@@ -66,11 +66,11 @@ async function data2contexts(mydata) {
 		FROM cte3;
  	`);
 
-	const rectangles = JSON.parse(ret.rows[0]);
+	const rectangles = JSON.parse(ret1.rows[0]);
 	const rectdim = rectangles.map(r => hex(r.right-r.left,3)+hex(r.bottom-r.top,3));
 	console.log(rectdim);
 
-	const ret = await db.query(`
+	const ret2 = await db.query(`
  		WITH cte_dense_idbox AS (
    			SELECT idbox, DENSE_RANK() OVER(ORDER BY idbox) AS dr
       			FROM box
@@ -87,7 +87,7 @@ async function data2contexts(mydata) {
      		);
  	`);
 
-	const slinks = ret.rows[0];
+	const slinks = ret2.rows[0];
 	console.log(slinks);
 
 	const bombix = Module.cwrap("bombix","string",["string","string","string","string"]);
