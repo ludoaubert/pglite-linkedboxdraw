@@ -589,11 +589,11 @@ Elements in an SVG document fragment have an implicit drawing order, with the fi
 Subsequent elements are painted on top of previously painted elements.
 Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted over a small part of the link (after the marker actually).
 */
-	innerHTML += `<g id="links_${selectedContextIndex}">`;
-	innerHTML += drawLinks(links);
-	innerHTML += `</g>`;
+		innerHTML += `<g id="links_${selectedContextIndex}">`;
+		innerHTML += drawLinks(links);
+		innerHTML += `</g>`;
 
-	const ret = await db.query(`
+		const ret = await db.query(`
  		WITH cte AS (
   			SELECT t.context, b.idbox, 1 AS position, FORMAT('<g id="g_%1$" transform="translate(%4$,%5$)">
 				<rect id="rect_%1$" x="%4$" y="%5$" width="%2$" height="%3$" />
@@ -631,9 +631,10 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
       		SELECT STRING_AGG(html, '\n' ORDER BY idbox, position)
 		FROM cte
   		WHERE context=${selectedContextIndex}
-   	`);
-	innerHTML += ret.rows[0];
-	innerHMTL += '</svg>'
+   	`	);
+		innerHTML += ret.rows[0];
+		innerHMTL += '</svg>'
+	}
 	return innerHTML;
 }
 
