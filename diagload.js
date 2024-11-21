@@ -693,7 +693,7 @@ async function ApplyRepartition()
 // if a context has become empty, remove it.
 	mycontexts.contexts = mycontexts.contexts.filter(context => context.translatedBoxes.length != 0);
 
-	mycontexts.rectangles = mydata.boxes.map(box => compute_box_rectangle(box));
+//	mycontexts.rectangles = mydata.boxes.map(box => compute_box_rectangle(box));
 
 	for (let [selectedContextIndex, context] of mycontexts.contexts.entries())
 	{
