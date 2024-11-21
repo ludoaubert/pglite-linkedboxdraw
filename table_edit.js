@@ -352,7 +352,7 @@ function createMutationObserver()
 }
 
 
-function displayCurrent()
+async function displayCurrent()
 {
 	if (editTitle.value != mydata.documentTitle)
 		editTitle.value = mydata.documentTitle;
