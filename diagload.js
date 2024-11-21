@@ -66,18 +66,20 @@ async function data2contexts(mydata) {
 		) SELECT jsonb_agg(rectangle ORDER BY idbox) AS rectangles
 		FROM cte3;
  	`);
+
 	const rectangles = JSON.parse(ret.rows[0]);
-	
-	const {boxes, links} = mydata;
-
-//	const rectangles = boxes.map(box => compute_box_rectangle(box));
-
 	const rectdim = rectangles.map(r => hex(r.right-r.left,3)+hex(r.bottom-r.top,3));
 	console.log(rectdim);
 
 	const ret = await db.query(`
- 		SELECT STRING_AGG(FORMAT('%1$%2$', LPAD(to_hex(l.idbox_from),3,'0'), LPAD(to_hex(l.idbox_to),3,'0')),'')
+ 		WITH cte_dense_idbox AS (
+   			SELECT idbox, DENSE_RANK() OVER(ORDER BY idbox) AS dr
+      			FROM box
+		)
+ 		SELECT STRING_AGG(FORMAT('%1$%2$', LPAD(to_hex(d_from.idbox-1),3,'0'), LPAD(to_hex(d_to.idbox-1),3,'0')),'')
    		FROM link l
+     		JOIN cte_dense_idbox d_from ON d_from.idbox = l.idbox_from
+       		JOIN cte_dense_idbox d_to ON d_to.idbox = l.idbox_to
      		WHERE NOT EXISTS (
      			SELECT *
 			FROM graph g 
@@ -87,19 +89,6 @@ async function data2contexts(mydata) {
  	`);
 
 	const slinks = ret.rows[0];
-/*
-	const slinks = links.filter(lk => lk.from != lk.to)
-						.filter(lk => lk.category != "TR2")
-						.map(lk => [lk.from, lk.to])
-						.map(lk => JSON.stringify(lk))
-						.filter(function(lk, pos, self){
-									return self.indexOf(lk) == pos;}
-						) //removing duplicates
-						.map(lk => JSON.parse(lk))
-						.flat()
-						.map(i => hex(i,3))
-						.join('');
-*/
 	console.log(slinks);
 
 	const bombix = Module.cwrap("bombix","string",["string","string","string","string"]);
