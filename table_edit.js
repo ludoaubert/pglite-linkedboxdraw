@@ -507,6 +507,14 @@ function selectLink()
 
 function produce_options(links)
 {
+	const ret = await db.query(`
+ 		SELECT 
+   		FROM link l
+     		LEFT JOIN box box_from ON box_from.idbox=l.idbox_from
+       		LEFT JOIN box box_to ON box_to.idbox=l.idbox_to
+	 	LEFT JOIN field field_from ON field_from.idfield = l.idfield_from
+   		LEFT JOIN field field_to ON field_to.idfield = l.idfield_to
+  	`);
 	const options = links.map((lk, position) => {
 			const {from, fromField, to, toField} = lk;
 			const fromBox = mydata.boxes[from] ;
