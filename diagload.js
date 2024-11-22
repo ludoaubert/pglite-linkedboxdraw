@@ -855,12 +855,15 @@ async function expressCutLinks(){
  	`);
 
 	const ret = await db.query(`
-		SELECT to_table, to_key, t.code AS color
+		SELECT jsonb_agg(build_json_object('id', LEFT(to_table,1) || to_key, 'color', t.code))
   		FROM graph g
     		JOIN tag t ON g.from_table='tag' AND g.from_key=t.idtag
       		WHERE t.type_code='CUT_LINK_COLOR';
+	);
 
-		for (const [id, color] of styleMap)
+ 	const styleMap = JSON.parse(ret.rows[0]);
+  
+	for (const [id, color] of styleMap)
 	{
 		document.getElementById(id).style.backgroundColor = color;
 	}
