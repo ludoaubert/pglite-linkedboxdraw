@@ -4,28 +4,32 @@ const schema=`
 
 CREATE TABLE IF NOT EXISTS diagram(
   iddiagram SERIAL PRIMARY KEY,
-  title VARCHAR(128)
+  title VARCHAR(128),
+  UNIQUE(title)
 );
 
 CREATE TABLE IF NOT EXISTS box(
   idbox SERIAL PRIMARY KEY,
   title VARCHAR(128),
   iddiagram INTEGER,
-  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram)
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
+  UNIQUE(iddiagram, title)
 );
 
 CREATE TABLE IF NOT EXISTS field(
   idfield SERIAL PRIMARY KEY,
   name VARCHAR(128),
   idbox INTEGER,
-  FOREIGN KEY (idbox) REFERENCES box(idbox)
+  FOREIGN KEY (idbox) REFERENCES box(idbox),
+  UNIQUE(idbox, name)
 );
 
 CREATE TABLE IF NOT EXISTS value(
   idvalue SERIAL PRIMARY KEY,
   data TEXT,
   idfield INTEGER,
-  FOREIGN KEY (idfield) REFERENCES field(idfield)
+  FOREIGN KEY (idfield) REFERENCES field(idfield),
+  UNIQUE(idfield, value)
 );
 
 CREATE TABLE IF NOT EXISTS link(
