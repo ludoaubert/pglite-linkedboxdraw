@@ -507,8 +507,8 @@ async function produce_options(links)
  		WITH cte AS (
  			SELECT FORMAT('%s.%s %s.%s', box_from.title, field_from.name, box_to.title, field_to.name) AS option, l.idlink
    			FROM link l
-     			LEFT JOIN box box_from ON box_from.idbox=l.idbox_from
-       			LEFT JOIN box box_to ON box_to.idbox=l.idbox_to
+     			JOIN box box_from ON box_from.idbox=l.idbox_from
+       			JOIN box box_to ON box_to.idbox=l.idbox_to
 	 		LEFT JOIN field field_from ON field_from.idfield = l.idfield_from
    			LEFT JOIN field field_to ON field_to.idfield = l.idfield_to
       		)
@@ -533,20 +533,22 @@ function linkComboOnClick()
 async function addNewLink()
 {
 	await db.exec(`
- 		WITH cte_from AS (
- 			SELECT b.idbox, f.idfield
-   			FROM box b
-     			LEFT JOIN field f ON f.idbox=b.idbox
-     			WHERE b.title='${fromBoxCombo.value}' AND f.name='${fromFieldCombo.value}'
-		}, cte_to AS (
-   			SELECT b.idbox, f.idfield
-   			FROM box b
-     			LEFT JOIN field f ON f.idbox=b.idbox
-     			WHERE b.title='${toBoxCombo.value}' AND f.name='${toFieldCombo.value}'
+ 		WITH cte(side, title, name) AS (
+			SELECT 'from', '${fromBoxCombo.value}', '${fromFieldCombo.value}'
+   				UNION ALL
+       			SELECT 'to', '${toBoxCombo.value}', '${toFieldCombo.value}'
 		)
+ 		WITH cte2 AS (
+ 			SELECT cte.side, b.idbox, b.idfield
+   			FROM cte
+      			JOIN box b ON b.title = cte.title
+     			LEFT JOIN field f ON f.name=cte.name
+		}
   		INSERT INTO link(idbox_from, idfield_from, idbox_to, idfield_to)
     		SELECT cte_from.idbox, cte_from.idfield, cte_to.idbox, cte_to.idfield
-      		FROM cte_from JOIN cte_to
+      		FROM cte2 cte_from
+		JOIN cte2 cte_to
+		WHERE cte_from.side='from' AND cte_to.side='to'
 	`);
 
 	const ret1 = await db.query(`SELECT idbox FROM box WHERE title='${fromBoxCombo.value}'`);
