@@ -483,12 +483,11 @@ async function handleDeselectSizer()
 	const dx = width_ - width(r);
 	const dy = height_ - height(r);
 
-	mycontexts.rectangles[i] = {
-		left: r.left,
-		right: r.right + dx,
-		top: r.top,
-		bottom: r.bottom + dy
-	};
+	await db.exec(`
+ 		UPDATE rectangle
+   		SET width=width + ${dx}, height=height+${dy}
+     		WHERE idbox=${i}
+ 	`);
 
 	enforce_bounding_rectangle(selectedContextIndex);
 
