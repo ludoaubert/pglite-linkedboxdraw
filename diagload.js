@@ -753,6 +753,17 @@ function addEventListeners()
 }
 
 
+async function compute_rectangles(selectedContextIndex)
+{
+	const ret = await db.select(`
+ 		SELECT jsonb_agg(build_json_object('left',t.x,'right',t.x+r.width,'top',t.y,'bottom',t.y+r.height))
+   		FROM rectangle r
+     		JOIN translation t ON t.idrectangle=r.idrectangle
+       		WHERE t.context=${selectedContectIndex}
+ 	`);
+	return JSON.parse(ret.rows[0]);
+}
+
 window.main = async function main()
 {
 	createMyModule().then(function(mymod){
@@ -765,38 +776,21 @@ window.main = async function main()
 	init();
 	
 //making sure svg viewBox is computed in a unified way
-	
-	for (const [selectedContextIndex, context] of mycontexts.contexts.entries())
-	{		
-		const rectangles = context.translatedBoxes
-					.map(tB => {
-						const r = mycontexts.rectangles[tB.id];
-						const {x, y} = tB.translation;
-						return {
-							left: r.left + x,
-							right: r.right + x,
-							top: r.top + y,
-							bottom: r.bottom + y
-						};
-					});
-					
-		const compute_frame = rects => {
-			const frame = {
-				left: Math.min(...rects.map(r => r.left)),
-				right: Math.max(...rects.map(r => r.right)),
-				top: Math.min(...rects.map(r => r.top)),
-				bottom: Math.max(...rects.map(r => r.bottom))
-			};
-			return expand_by(frame, RECT_BORDER + FRAME_MARGIN/2);
-		};
-		
-		const frame = compute_frame(rectangles);
-		context.frame = frame;
 
-		const width_ = width(context.frame);
-		const height_ = height(context.frame);
-		const x = context.frame.left;
-		const y = context.frame.top;
+	const ret = await db.query(`SELECT DISTINCT context FROM translation ORDER BY context`);
+	const contexts = ret.rows;
+	
+	for (const selectedContextIndex of contexts)
+	{		
+		const rectangles = compute_rectangles(selectedContextIndex);
+		const frame = compute_frame(rectangles);
+
+		await db.exec(`UPDATE frame SET width=${width(frame)}, height=${height(frame)}`);
+
+		const width_ = width(frame);
+		const height_ = height(frame);
+		const x = frame.left;
+		const y = frame.top;
 
 		let svgElement = document.querySelector(`svg[id="${selectedContextIndex}"]`);
 		svgElement.setAttribute("width", `${width_}`);
