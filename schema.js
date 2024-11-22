@@ -66,7 +66,8 @@ CREATE TABLE IF NOT EXISTS graph(
   from_table source_table,
   from_key INTEGER,
   to_table target_table,
-  to_key INTEGER
+  to_key INTEGER,
+  UNIQUE(from_table, from_key, to_table, to_key)
 );
 
 -- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('box',1,'message_tag',1);
