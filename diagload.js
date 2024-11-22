@@ -720,7 +720,7 @@ async function ApplyRepartition()
 async function drawRepartition()
 {
 	const ret = await db.query(`
- 		SELECT STRING_AGG(FORMAT(`<tr><td>%2$</td><td>%1$</td><td contenteditable="true">%3$</td></tr>,
+ 		SELECT STRING_AGG(FORMAT(`<tr><td>%2$</td><td>%1$</td><td contenteditable="true">%3$</td></tr>`,
    			b.title, 
       			b.idbox,
 	 		t.context), '' ORDER BY b.title)
