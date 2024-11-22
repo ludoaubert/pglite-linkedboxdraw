@@ -326,9 +326,11 @@ async function displayCurrent()
 }
 
 
-function updateTitle()
+async function updateTitle()
 {
-	mydata.documentTitle=editTitle.value;
+	await db.exec(`
+ 		UPDATE diagram SET title='${editTitle.value}'
+ 	`);
 }
 
 
@@ -475,7 +477,7 @@ async function updateValue()
      		FROM value v
        		JOIN field f ON v.idfield=f.idfield
 	 	JOIN box b ON f.idbox=b.idbox
-   		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
+   		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}' AND v.data='${valueCombo.value}'
  	`);
 
 	displayCurrent();
