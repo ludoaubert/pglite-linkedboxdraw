@@ -58,11 +58,9 @@ async function data2contexts(mydata) {
   			SELECT idbox, MAX(width) AS width, LEAST(SUM(height), ${RECTANGLE_BOTTOM_CAP}) AS height
     			FROM cte
       			GROUP BY idbox
-	 	), cte3 AS (
-   			SELECT idbox, jsonb_build_object('left', 0, 'right', width, 'top', 0, 'bottom', height) AS rectangle
-      			FROM cte2
-		) SELECT jsonb_agg(rectangle ORDER BY idbox) AS rectangles
-		FROM cte3;
+	 	)
+   		SELECT idbox, jsonb_agg(jsonb_build_object('left', 0, 'right', width, 'top', 0, 'bottom', height) ORDER BY idbox) AS rectangle
+      		FROM cte2;
  	`);
 
 	const rectangles = JSON.parse(ret1.rows[0]);
@@ -415,12 +413,12 @@ async function compute_links(selectedContextIndex)
 
 	const ret3 = await db.exec(`
  		WITH cte AS (
-   			SELECT r.idbox, DENSE_RANK() OVER (ORDER BY r.idbox) AS rk
+   			SELECT r.idbox
       			FROM translation t
 	 		JOIN rectangle r ON t.idrectangle=r.idrectangle
     			WHERE t.context=${selectedContextIndex}
 		)
- 		SELECT jsonb_agg(jsonb_build_object('from', cte_from.rk - 1, 'to', cte_to.rk - 1) ORDER BY option)
+ 		SELECT jsonb_agg(jsonb_build_object('from', l.idbox_from, 'to', l.idbox_to) ORDER BY option)
    		FROM link l
      		JOIN cte cte_from ON cte_from.idbox = l.idbox_from
        		JOIN cte cte_to ON cte_to.idbox = l.idbox_to
@@ -435,6 +433,16 @@ async function compute_links(selectedContextIndex)
  	`);
 
 	const links = JSON.parse(ret3.rows[0]);
+
+	const ret4 = await db.exec(`
+    		SELECT jsonb_agg(r.idbox)
+      		FROM translation t
+	 	JOIN rectangle r ON t.idrectangle=r.idrectangle
+    		WHERE t.context=${selectedContextIndex}
+      		ORDER BY r.idbox
+ 	`);
+
+	const ids = ret4.rows[0];
 	
 	const slinks = links
 			.map(lk => [ids.indexOf(lk.from), ids.indexOf(lk.to)])
@@ -442,7 +450,6 @@ async function compute_links(selectedContextIndex)
 			.map(i => hex(i,2))
 			.join('');
 
-//logging call input to produce test data for further investigations...
 	console.log({rectangles, frame, links});
 
 	const bombix = Module.cwrap("bombix","string",["string","string","string","string"])
