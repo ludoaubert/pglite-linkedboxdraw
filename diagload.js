@@ -386,12 +386,10 @@ async function compute_links(selectedContextIndex)
      		JOIN rectangle r ON t.idrectangle=r.idrectangle
        		WHERE t.context=${selectedContextIndex}
  	`);
+
 	const rectangles = JSON.parse(ret1.rows[0]);
 
-	const ret2 = await db.query(`
- 		SELECT jsonb_build_object('left', 0, 'right', width, 'top', 0, 'bottom', height) FROM frame
- 	`);
-	const frame = JSON.parse(ret2.rows[0]);
+	const frame = compute_frame(rectangles);
 	
 // goal is to avoid negative number.
 	const XY_TR = 1000;
