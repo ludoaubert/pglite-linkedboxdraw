@@ -678,52 +678,43 @@ async function ApplyRepartition()
 {
 	const repartitionTable = document.getElementById("repartition");
 
-	var repartition = [];
+	const repartiton = JSON::stringigy(repartitionTable.rows.map(row => ({
+		idbox : parseInt(row.cells[0].innerText),
+		context : parseInt(row.cells[2].innerText)		
+	})));
 
-	for (let row of repartitionTable.rows)
-	{
-	//iterate through rows
-	//rows would be accessed using the "row" variable assigned in the for loop
-		const id = parseInt(row.cells[0].innerText);
-		const n = parseInt(row.cells[2].innerText);
-		repartition[id]=n;
-	}
+	await db.exec(`
+ 		UPDATE t
+   		SET t.context = repartition.context, t.x=FRAME_MARGIN*1.5, t.y=FRAME_MARGIN*1.5
+		FROM translation t
+  		JOIN rectangle r ON r.idrectangle=t.idrectangle
+  		JOIN json_to_recordset('${repartition}') AS repartition("idbox" int, "context" int) ON repartition.idbox=r.idbox
+    		WHERE t.context != repartition.context
+		)
+ 	`);
 
-	const translatedBoxes = mycontexts.contexts.map(({frame,translatedBoxes,links})=>translatedBoxes)
-											.flat();
+	const ret = await db.query(`SELECT DISTINCT context FROM translation ORDER BY context`);
 
-	const nb = 1 + Math.max(...repartition);
+	const contexts = ret.rows;
 
-	mycontexts.contexts = [...Array(nb).keys()].map(i => ({
-			"frame":null,
-			"translatedBoxes":translatedBoxes.filter(({id,translation}) => repartition[id]==i),
-			"links":[]
-			})
-		);
-
-// case when a new box was created. It has not been assigned to a context by the previous algorithm.
-// Below is the code that will detect it and assign it to its context.
-
-	const ids = mycontexts.contexts.map((context, i) => context.translatedBoxes.filter(({id, translation})=>repartition[id]==i))
-									.flat()
-									.map(tB =>tB.id);
-
-	[...repartition.entries()]
-			.filter( ([id,i]) => i!=-1 && !ids.includes(id) )
-			.forEach( ([id,i]) => mycontexts.contexts[i].translatedBoxes.push({id,translation:{x:FRAME_MARGIN*1.5,y:FRAME_MARGIN*1.5}}) );
-
-// if a context has become empty, remove it.
-	mycontexts.contexts = mycontexts.contexts.filter(context => context.translatedBoxes.length != 0);
-
-//	mycontexts.rectangles = mydata.boxes.map(box => compute_box_rectangle(box));
-
-	for (let [selectedContextIndex, context] of mycontexts.contexts.entries())
+	for (const selectedContextIndex of contexts)
 	{
 		enforce_bounding_rectangle(selectedContextIndex);
-		context.links = await compute_links(selectedContextIndex);
-	}
+		const links = await compute_links(selectedContextIndex);
+		const slinks = JSON.stringify(links);
+		await db.exec(`
+  			DELETE FROM polyline;
 
-	console.log(JSON.stringify(mycontexts));
+     			INSERT INTO polyline(idlink, points, idtranslation_from, idtranslation_to)
+			SELECT l.idlink, polyline_.points, t_from.idtranslation, t_to.idtranslation
+  			FROM json_to_recordset('${slinks}) AS polyline_("from" int, "to" int, points json)
+     			JOIN link l ON l.idbox_from=polyline_.from AND l.idbox_to=polyline_.to
+			JOIN rectangle r_from ON r_from.idbox=l.idbox_from
+   			JOIN translation t_from ON t_from.idrectangle=r_from.idrectangle
+      			JOIN rectangle r_to ON r_to.idbox=l.idbox_to
+   			JOIN translation t_to ON t_to.idrectangle=r_to.idrectangle
+  		`);
+	}
 }
 
 
