@@ -583,7 +583,7 @@ async function drawDiagram() {
 
 	const contexts = ret.rows;
 
-	for (const selectedContextIndex of mycontexts.contexts.entries())
+	for (const selectedContextIndex of contexts)
 	{
 		const ret1 = await db.query(`
   			SELECT jsonb_agg(build_json_objet('left',t.x,'right',tx+r.width,'top',t.y,'bottom',t.y+r.height) ORDER BY r.idbox)
