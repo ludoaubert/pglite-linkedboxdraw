@@ -576,7 +576,7 @@ function drawLinks(links)
 }
 
 
-async function drawDiagram(drawBoxComponent) {
+async function drawDiagram() {
 
 	const {rectangles} = mycontexts;
 
@@ -654,7 +654,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 async function drawDiag()
 {
 	document.getElementById("repartition").innerHTML = drawRepartition();
-	document.getElementById("diagram").innerHTML = await drawDiagram(drawComponent);
+	document.getElementById("diagram").innerHTML = await drawDiagram();
 	addEventListeners();
 	const styleMap = expressCutLinks(mydata, mycontexts);
 	for (const [id, color] of styleMap)
