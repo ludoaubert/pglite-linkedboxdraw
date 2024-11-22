@@ -435,11 +435,10 @@ async function compute_links(selectedContextIndex)
 	const links = JSON.parse(ret3.rows[0]);
 
 	const ret4 = await db.exec(`
-    		SELECT jsonb_agg(r.idbox)
+    		SELECT jsonb_agg(r.idbox ORDER BY r.idbox)
       		FROM translation t
 	 	JOIN rectangle r ON t.idrectangle=r.idrectangle
     		WHERE t.context=${selectedContextIndex}
-      		ORDER BY r.idbox
  	`);
 
 	const ids = ret4.rows[0];
