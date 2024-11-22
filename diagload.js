@@ -678,7 +678,7 @@ async function ApplyRepartition()
 {
 	const repartitionTable = document.getElementById("repartition");
 
-	const repartiton = JSON::stringigy(repartitionTable.rows.map(row => ({
+	const repartiton = JSON.stringigy(repartitionTable.rows.map(row => ({
 		idbox : parseInt(row.cells[0].innerText),
 		context : parseInt(row.cells[2].innerText)		
 	})));
