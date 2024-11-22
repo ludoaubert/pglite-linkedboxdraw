@@ -666,7 +666,7 @@ async function drawDiag()
 	document.getElementById("repartition").innerHTML = drawRepartition();
 	document.getElementById("diagram").innerHTML = await drawDiagram();
 	addEventListeners();
-	const styleMap = expressCutLinks(mydata, mycontexts);
+	const styleMap = expressCutLinks();
 	for (const [id, color] of styleMap)
 	{
 		document.getElementById(id).style.backgroundColor = color;
@@ -809,33 +809,24 @@ window.main = async function main()
 	}
 }
 
-function expressCutLinks(mydata, mycontexts){
+async function expressCutLinks(){
 
-	const {documentTitle, boxes, values, boxComments, fieldComments, links, fieldColors} = mydata;
+	await db.query(`
+ 		SELECT 
+   		FROM link l
+     		JOIN rectangle r_from ON r_from.idbox=l.idbox_from
+       		JOIN rectangle t_to ON r_to.idbox=l.idbox_to
+	 	JOIN translation t_from ON t_from.idrectangle=r_from.idrectangle
+	 	JOIN translation t_to ON t_to.idrectangle=r_to.idrectangle
+   		WHERE t_from.context != t_to.context AND l.idfield_from IS NOT NULL AND l.idfield_to IS NOT NULL
+     			OR EXISTS(
+	     			SELECT *
+				FROM graph g 
+       				JOIN tag t ON t.idtag = g.from_key AND t.type_code='RELATION_CATEGORY' AND t.code='TR2' 
+	  			WHERE g.from_table='tag' AND g.to_table='link' AND g.to_key=l.idlink
+			)
+ 	`)
 
-// listing unexpressed links - beginning
-
-	let repartition=[];
-
-	for (let id=0; id < mycontexts.rectangles.length; id++)
-	{
-		repartition[id] = -1;
-	}
-
-	for (const [i, context] of mycontexts.contexts.entries())
-	{
-		for (const {id,translation} of context.translatedBoxes)
-		{
-			repartition[id]=i;
-		}
-	}
-	console.log(repartition);
-
-	document.title = documentTitle;
-
-	const cut_links = links.filter(link => link.category=="TR2" || repartition[link.from] != repartition[link.to])
-				.filter(link => link.fromField!=-1 && link.toField!=-1);
-	console.log(cut_links);
 
 // listing unexpressed link targets - beginning
 	const cut_link_targets = [... new Set(cut_links.map( link => `${link.to}.${link.toField}`))];
