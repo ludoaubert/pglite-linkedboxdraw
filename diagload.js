@@ -653,7 +653,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 
 async function drawDiag()
 {
-	document.getElementById("repartition").innerHTML = drawRepartition(mydata, mycontexts);
+	document.getElementById("repartition").innerHTML = drawRepartition();
 	document.getElementById("diagram").innerHTML = await drawDiagram(drawComponent);
 	addEventListeners();
 	const styleMap = expressCutLinks(mydata, mycontexts);
@@ -717,21 +717,19 @@ async function ApplyRepartition()
 }
 
 
-function drawRepartition(mydata, mycontexts){
+async function drawRepartition()
+{
+	const ret = await db.query(`
+ 		SELECT STRING_AGG(FORMAT('<tr><td>%2$</td><td>%1$</td><td contenteditable="true">%3$</td></tr>',
+   			b.title, 
+      			b.idbox,
+	 		t.context), '' ORDER BY b.title)
+   		FROM box b
+     		JOIN rectangle r ON r.idbox=b.idbox
+       		JOIN translation t ON t.idrectangle=r.idrectangle
+ 	`);
 
-	const repartitionEntries = mycontexts.contexts.map((context, selectedContextIndex) => context.translatedBoxes.map(({id, translation}) => ({boxName:mydata.boxes[id].title,id,selectedContextIndex})))
-												.flat(1);
-
-	const innerHTML = repartitionEntries.sort((a, b)=>{return a.boxName < b.boxName ? -1 : a.boxName > b.boxName ? 1 : 0;})
-					.map(({boxName, id, selectedContextIndex}) => `
-			<tr>
-			  <td>${id}</td>
-              <td>${boxName}</td>
-			  <td contenteditable="true">${selectedContextIndex}</td>
-            </tr>
-			`)
-					.join('');
-
+	const innerHTML = ret.rows[0];
 	return innerHTML;
 }
 
