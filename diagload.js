@@ -381,22 +381,21 @@ function enforce_bounding_rectangle(selectedContextIndex, r=null)
 
 async function compute_links(selectedContextIndex)
 {
-	const {frame, translatedBoxes, links_} = mycontexts.contexts[selectedContextIndex];
+	const ret1 = await db.query(`
+ 		SELECT jsonb_agg(jsonb_build_object('left', t.x, 'right', t.x+r.width, 'top', t.y, 'bottom', t.y+r.height) ORDER BY r.idbox)
+   		FROM translation t
+     		JOIN rectangle r ON t.idrectangle=r.idrectangle
+       		WHERE t.context=${selectedContextIndex}
+ 	`);
+	const rectangles = JSON.parse(ret1.rows[0]);
+
+	const ret2 = await db.query(`
+ 		SELECT jsonb_build_object('left', 0, 'right', width, 'top', 0, 'bottom', height) FROM frame
+ 	`);
+	const frame = JSON.parse(ret2.rows[0]);
 	
 // goal is to avoid negative number.
 	const XY_TR = 1000;
-
-	const rectangles = translatedBoxes
-				.map(tB => {
-					const r = mycontexts.rectangles[tB.id];
-					const {x, y} = tB.translation;
-					return {
-						left: r.left + x,
-						right: r.right + x,
-						top: r.top + y,
-						bottom: r.bottom + y
-					};
-				});
 
 	const rectdim = rectangles.map(r => [r.right-r.left, r.bottom-r.top])
 				.flat()
@@ -413,29 +412,38 @@ async function compute_links(selectedContextIndex)
 				.map(i => i + XY_TR)		//protection against negative numbers
 				.map(i => hex(i,4))
 				.join('');
-	console.log(sframe);
 
-	const ids = translatedBoxes
-				.map(tB => tB.id);
+	const ret3 = await db.exec(`
+ 		WITH cte AS (
+   			SELECT r.idbox, DENSE_RANK() OVER (ORDER BY r.idbox) AS rk
+      			FROM translation t
+	 		JOIN rectangle r ON t.idrectangle=r.idrectangle
+    			WHERE t.context=${selectedContextIndex}
+		)
+ 		SELECT jsonb_agg(jsonb_build_object('from', cte_from.rk - 1, 'to', cte_to.rk - 1) ORDER BY option)
+   		FROM link l
+     		JOIN cte cte_from ON cte_from.idbox = l.idbox_from
+       		JOIN cte cte_to ON cte_to.idbox = l.idbox_to
+       			AND l.idbox_from != l.idbox_to
+       			AND NOT EXISTS (
+	  			SELECT * 
+      				FROM graph g
+	  			JOIN tag t ON g.from_key = t.idtag
+	  			WHERE g.to_table='link' AND g.to_key=l.idlink AND g.from_table='tag' 
+      					AND t.type_code='RELATION_CATEGORY' AND t.code='TR2'
+      			)
+ 	`);
 
-	const slinks = mydata.links
-				.filter(lk => lk.from != lk.to)
-				.filter(lk => lk.category != "TR2")
-				.map(lk => ({from:lk.from, to:lk.to}))
-				.filter(lk => ids.indexOf(lk.from) != -1 && ids.indexOf(lk.to) != -1)
-				.map(lk => [ids.indexOf(lk.from), ids.indexOf(lk.to)])
-				.map(lk => JSON.stringify(lk))
-				.filter(function(lk, pos, self){
-									return self.indexOf(lk) == pos;}
-					) //removing duplicates
-				.map(lk => JSON.parse(lk))
-				.flat()
-				.map(i => hex(i,2))
-				.join('');
-	console.log(slinks);
+	const links = JSON.parse(ret3.rows[0]);
+	
+	const slinks = links
+			.map(lk => [ids.indexOf(lk.from), ids.indexOf(lk.to)])
+			.flat()
+			.map(i => hex(i,2))
+			.join('');
 
 //logging call input to produce test data for further investigations...
-	console.log({rectangles, frame});
+	console.log({rectangles, frame, links});
 
 	const bombix = Module.cwrap("bombix","string",["string","string","string","string"])
 	const jsonResponse = await bombix(rectdim, translations, sframe, slinks);
