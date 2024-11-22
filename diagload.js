@@ -666,11 +666,7 @@ async function drawDiag()
 	document.getElementById("repartition").innerHTML = drawRepartition();
 	document.getElementById("diagram").innerHTML = await drawDiagram();
 	addEventListeners();
-	const styleMap = expressCutLinks();
-	for (const [id, color] of styleMap)
-	{
-		document.getElementById(id).style.backgroundColor = color;
-	}
+	updateCutLinks();
 }
 
 
@@ -811,48 +807,61 @@ window.main = async function main()
 
 async function expressCutLinks(){
 
-	await db.query(`
- 		SELECT 
-   		FROM link l
-     		JOIN rectangle r_from ON r_from.idbox=l.idbox_from
-       		JOIN rectangle t_to ON r_to.idbox=l.idbox_to
-	 	JOIN translation t_from ON t_from.idrectangle=r_from.idrectangle
-	 	JOIN translation t_to ON t_to.idrectangle=r_to.idrectangle
-   		WHERE t_from.context != t_to.context AND l.idfield_from IS NOT NULL AND l.idfield_to IS NOT NULL
-     			OR EXISTS(
-	     			SELECT *
-				FROM graph g 
-       				JOIN tag t ON t.idtag = g.from_key AND t.type_code='RELATION_CATEGORY' AND t.code='TR2' 
-	  			WHERE g.from_table='tag' AND g.to_table='link' AND g.to_key=l.idlink
-			)
- 	`)
+	await db.exec(`
 
+		DELETE g
+  		FROM graph g
+    		JOIN tag t ON g.from_table='tag' AND g.from_key=t.idtag
+      		WHERE t.type_code='CUT_LINK_COLOR';
 
-// listing unexpressed link targets - beginning
-	const cut_link_targets = [... new Set(cut_links.map( link => `${link.to}.${link.toField}`))];
-	console.log(cut_link_targets);
-//https://www.w3.org/wiki/CSS/Properties/color/keywords
-	const cut_link_colors = ['lime','fuchsia','teal','aqua','aquamarine','coral','cornflowerblue','darkgray','darkkhaki']
+ 		WITH cte_cut_link AS (
+ 			SELECT l.*, DENSE_RANK()-1 OVER (ORDER BY idbox_to, idfield_to) rk
+   			FROM link l
+     			JOIN rectangle r_from ON r_from.idbox=l.idbox_from
+       			JOIN rectangle t_to ON r_to.idbox=l.idbox_to
+	 		JOIN translation t_from ON t_from.idrectangle=r_from.idrectangle
+	 		JOIN translation t_to ON t_to.idrectangle=r_to.idrectangle
+   			WHERE t_from.context != t_to.context AND l.idfield_from IS NOT NULL AND l.idfield_to IS NOT NULL
+     				OR EXISTS(
+	     				SELECT *
+					FROM graph g 
+       					JOIN tag t ON t.idtag = g.from_key AND t.type_code='RELATION_CATEGORY' AND t.code='TR2' 
+	  				WHERE g.from_table='tag' AND g.to_table='link' AND g.to_key=l.idlink
+				)
+    		), cut_link_color AS (
+  			SELECT idtag, code AS color, ROW_NUMBER()-1 OVER (ORDER BY idtag) AS rn, COUNT(*) AS nb 
+     			FROM tag
+			WHERE type_code='CUT_LINK_COLOR'
+		), colored_cut_link AS (
+  			SELECT * 
+    			FROM cte_cut_link l
+      			JOIN cut_link_color c ON c.rn = l.rk % c.nb
+	 	), cte(from_table, from_key, to_table, to_key) AS (
+   			SELECT 'tag', idtag, 'box', idbox_from
+      			FROM colored_cut_link
+	 			UNION ALL
+     			SELECT 'tag', idtag, 'field', idfield_from
+      			FROM colored_cut_link
+	 			UNION ALL
+     			SELECT 'tag', idtag, 'box', idbox_to
+			FROM colored_cut_link
+   				UNION ALL
+       			SELECT 'tag', idtag, 'field', idfield_to
+      			FROM colored_cut_link
+		)
+  		INSERT INTO graph(from_table, from_key, to_table, to_key)
+    		SELECT from_table, from_key, to_table, to_key
+      		FROM cte;
+ 	`);
 
-	const colormap = new Map(
-		[...cut_link_targets.entries()].map(([i, to_toField]) => ([to_toField, cut_link_colors[i % cut_link_colors.length]]))
-	);
-	console.log(colormap);
+	const ret = await db.query(`
+		SELECT to_table, to_key, t.code AS color
+  		FROM graph g
+    		JOIN tag t ON g.from_table='tag' AND g.from_key=t.idtag
+      		WHERE t.type_code='CUT_LINK_COLOR';
 
-// listing unexpressed link targets - end
-
-	const styleMap = new Map(
-		[...fieldColors.map( ({box,field,color})=>({index:boxes.findIndex(b => b.title==box), field, color}) ),
-		...cut_links.map( ({from,fromField,fromCardinality,to,toField,toCardinality}) => ([
-			{index:from, field:`${boxes[from].fields[fromField].name}`, color:colormap.get(`${to}.${toField}`)},
-			{index:to, field:`${boxes[to].fields[toField].name}`, color:colormap.get(`${to}.${toField}`)}])
-			)
-		]
-		.flat()
-		.map(({index, field, color}) => {
-			const fieldIndex = boxes[index].fields.findIndex(f => f.name == field);
-			return [`b${index}f${fieldIndex}`, color];
-		}));
-
-	return styleMap;
+		for (const [id, color] of styleMap)
+	{
+		document.getElementById(id).style.backgroundColor = color;
+	}
 }
