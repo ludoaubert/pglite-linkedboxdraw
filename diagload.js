@@ -578,13 +578,24 @@ function drawLinks(links)
 
 async function drawDiagram() {
 
-	const {rectangles} = mycontexts;
-
 	var innerHTML = "";
 
-	for (const [selectedContextIndex, {title, frame, translatedBoxes, links}] of mycontexts.contexts.entries())
-	{
+	const ret = await db.query(`SELECT DISTINCT context FROM translation ORDER BY context`);
 
+	const contexts = ret.rows;
+
+	for (const selectedContextIndex of mycontexts.contexts.entries())
+	{
+		const ret1 = await db.query(`
+  			SELECT jsonb_agg(build_json_objet('left',t.x,'right',tx+r.width,'top',t.y,'bottom',t.y+r.height) ORDER BY r.idbox)
+     			FROM rectangle r
+			JOIN translation t ON t.idrectangle=r.idrectangle
+   			WHERE t.context=${selectedContextIndex}
+  		`);
+		const rectangles = JSON.parse(ret1.rows[0]);
+		const frame = compute_frame(rectangles);
+		const links = compute_links(selectedContextIndex);
+		
 		innerHTML += `<svg id="${selectedContextIndex}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width(frame)}" height="${height(frame)}" viewBox="${frame.left} ${frame.top} ${width(frame)} ${height(frame)}" title="" >
       <defs>
 		<marker id="markerArrow"
