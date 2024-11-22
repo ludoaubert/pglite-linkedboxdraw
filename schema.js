@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS value(
   data VARCHAR(128),
   idfield INTEGER,
   FOREIGN KEY (idfield) REFERENCES field(idfield),
-  UNIQUE(idfield, value)
+  UNIQUE(idfield, data)
 );
 
 CREATE TABLE IF NOT EXISTS link(
@@ -51,13 +51,13 @@ CREATE TABLE IF NOT EXISTS tag(
   code VARCHAR(128),
   UNIQUE(type_code,code)
 );
-/*
+
 INSERT INTO tag(type_code, code) VALUES
 ('KEY','PRIMARY_KEY'),('KEY','FOREIGN_KEY'),
 ('CONSTRAINT','UNIQUE'),
 ('COLOR','yellow'),('COLOR','pink'),('COLOR','hotpink'),('COLOR','palegreen'),('COLOR','red'),('COLOR','orange'),('COLOR','skyblue'),('COLOR','olive'),('COLOR','grey'),('COLOR','darkviolet'),
 ('RELATION_CATEGORY','TR2');
-*/
+
 CREATE TABLE IF NOT EXISTS message_tag(
   idmessage SERIAL PRIMARY KEY,
   message TEXT
