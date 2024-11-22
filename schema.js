@@ -74,8 +74,8 @@ CREATE TABLE IF NOT EXISTS graph(
   UNIQUE(from_table, from_key, to_table, to_key)
 );
 
--- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('box',1,'message_tag',1);
--- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('field',1,'tag',1);
+-- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('message_tag',1,'box',1);
+-- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('tag',1,'field',1);
 
 CREATE TABLE IF NOT EXISTS frame(
   idframe SERIAL PRIMARY KEY,
