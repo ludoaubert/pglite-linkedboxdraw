@@ -276,17 +276,12 @@ async function displayCurrent()
 	currentColorBoxIndex = contexts[3].currentBoxIndex_;
 	currentColorFieldIndex = contexts[3].currentFieldIndex_;
 
-	const ret1 = await db.query(`SELECT title FROM box WHERE idbox=${currentBoxIndex}`);
-	const boxTitle = ret1.rows[0];
-	const ret2 = await db.query(`SELECT name FROM field WHERE idfield=${currentFieldIndex}`)
-	const fieldName = ret.rows[0];
-
 	const ret3 = await db.query(`
- 		SELECT STRING_AGG('<option>' || v.data || '</option>', '' ORDER BY idvalue)
+ 		SELECT STRING_AGG('<option>' || v.data || '</option>', '' ORDER BY v.data)
    		FROM value v
      		JOIN field f ON v.idfield=f.idfield
        		JOIN box b ON b.idbox=f.idbox
-	 	WHERE b.title='${boxTitle}' AND f.name='${fieldName}'
+	 	WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
    	`);
 	const valueComboInnerHTML = ret3.rows[0];
 
@@ -416,8 +411,6 @@ async function addNewFieldToBox()
 	const ret2 = await db.query(`SELECT idfield FROM field WHERE idbox=${currentBoxIndex} AND name=${newFieldEditField.value}`)
 	currentFieldIndex = ret2.rows[0];
 
-	console.log(mydata.boxes[currentBoxIndex].fields);
-
 	newFieldEditField.value = "";
 
 	displayCurrent();
@@ -442,9 +435,10 @@ async function updateField()
 async function dropFieldFromBox()
 {
 	await db.exec(`
- 		DELETE FROM field f
-   		USING box b
-		WHERE f.idbox=b.idbox AND b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}';
+ 		DELETE f
+   		FROM field f
+   		JOIN box b ON f.idbox=b.idbox
+		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}';
  	`);
 
 	currentFieldIndex = -1;
@@ -552,10 +546,15 @@ async function addNewLink()
     		SELECT cte_from.idbox, cte_from.idfield, cte_to.idbox, cte_to.idfield
       		FROM cte_from JOIN cte_to
 	`);
-	currentFromBoxIndex = mydata.boxes.findIndex(box => box.title == fromBoxCombo.value);
-	currentFromFieldIndex = mydata.boxes[currentFromBoxIndex].fields.findIndex(field => field.name == fromFieldCombo.value);
-	currentToBoxIndex = mydata.boxes.findIndex(box => box.title == toBoxCombo.value);
-	currentToFieldIndex = mydata.boxes[currentToBoxIndex].fields.findIndex(field => field.name == toFieldCombo.value);
+
+	const ret1 = await db.query(`SELECT idbox FROM box WHERE title='${fromBoxCombo.value}'`);
+	currentFromBoxIndex = ret1.rows[0];
+	const ret2 = await db.query(`SELECT idfield FROM field WHERE idbox=${currentFromBoxIndex} AND name='${fromFieldCombo.value}'`);
+	currentFromFieldIndex = ret2.rows[0];
+	const ret3 = await db.query(`SELECT idbox FROM box WHERE title='${toBoxCombo.value}'`);
+	currentToBoxIndex = ret3.rows[0];
+	const ret4 = await db.query(`SELECT idfield FROM field WHERE idbox=${currentToBoxIndex} AND name='${toFieldCombo.value}'`);
+	currentToFieldIndex = ret4.rows[0];
 
 	for (let [selectedContextIndex, context] of mycontexts.contexts.entries())
 	{
