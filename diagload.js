@@ -294,6 +294,17 @@ function expand_by(rect, margin)
 	};
 }
 
+function compute_frame(rects)
+{
+	const frame = {
+		left: Math.min(...rects.map(r => r.left)),
+		right: Math.max(...rects.map(r => r.right)),
+		top: Math.min(...rects.map(r => r.top)),
+		bottom: Math.max(...rects.map(r => r.bottom))
+	};
+	return expand_by(frame, RECT_BORDER + FRAME_MARGIN/2);
+}
+
 function enforce_bounding_rectangle(selectedContextIndex, r=null)
 {
 	let context = mycontexts.contexts[selectedContextIndex];
@@ -320,16 +331,6 @@ function enforce_bounding_rectangle(selectedContextIndex, r=null)
 						bottom: translateY + height
 					};
 				});
-				
-	const compute_frame = rects => {
-		const frame = {
-			left: Math.min(...rects.map(r => r.left)),
-			right: Math.max(...rects.map(r => r.right)),
-			top: Math.min(...rects.map(r => r.top)),
-			bottom: Math.max(...rects.map(r => r.bottom))
-		};
-		return expand_by(frame, RECT_BORDER + FRAME_MARGIN/2);
-	};
 	
 	const frame = compute_frame(rectangles);
 	
