@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS field(
 
 CREATE TABLE IF NOT EXISTS value(
   idvalue SERIAL PRIMARY KEY,
-  data TEXT,
+  data VARCHAR(128),
   idfield INTEGER,
   FOREIGN KEY (idfield) REFERENCES field(idfield),
   UNIQUE(idfield, value)
