@@ -97,7 +97,7 @@ async function data2contexts(mydata) {
 	mycontexts.rectangles = rectangles;
 	
 	for (const [selectedContextIndex, context] of mycontexts.contexts.entries())
-		context.links = await compute_links(selectedContextIndex);
+		context.links = await (selectedContextIndex);
 	
 	return mycontexts;
 }
@@ -378,7 +378,7 @@ function enforce_bounding_rectangle(selectedContextIndex, r=null)
 }
 
 
-async function compute_links(selectedContextIndex)
+async function (selectedContextIndex)
 {
 	const ret1 = await db.query(`
  		SELECT json_agg(jsonb_build_object('left', t.x, 'right', t.x+r.width, 'top', t.y, 'bottom', t.y+r.height) ORDER BY r.idbox)
@@ -587,7 +587,7 @@ async function drawDiagram() {
 	{
 		const rectangles = await compute_rectangles(selectedContextIndex);
 		const frame = compute_frame(rectangles);
-		const links = compute_links(selectedContextIndex);
+		const links = await compute_links(selectedContextIndex);
 		
 		innerHTML += `<svg id="${selectedContextIndex}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width(frame)}" height="${height(frame)}" viewBox="${frame.left} ${frame.top} ${width(frame)} ${height(frame)}" title="" >
       <defs>
