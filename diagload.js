@@ -750,7 +750,7 @@ function addEventListeners()
 async function compute_rectangles(selectedContextIndex)
 {
 	const ret = await db.query(`
- 		SELECT jsonb_agg(build_json_object('left',t.x,'right',t.x+r.width,'top',t.y,'bottom',t.y+r.height) ORDER BY r.idbox)
+ 		SELECT jsonb_agg(json_build_object('left',t.x,'right',t.x+r.width,'top',t.y,'bottom',t.y+r.height) ORDER BY r.idbox)
    		FROM rectangle r
 		JOIN translation t ON t.idrectangle=r.idrectangle
 		WHERE t.context=${selectedContextIndex}
@@ -843,7 +843,7 @@ async function expressCutLinks(){
  	`);
 
 	const ret = await db.query(`
-		SELECT jsonb_agg(build_json_object('id', LEFT(to_table,1) || to_key, 'color', t.code))
+		SELECT jsonb_agg(json_build_object('id', LEFT(to_table,1) || to_key, 'color', t.code))
   		FROM graph g
     		JOIN tag t ON g.from_table='tag' AND g.from_key=t.idtag
       		WHERE t.type_code='CUT_LINK_COLOR';
