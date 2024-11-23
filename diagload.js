@@ -853,7 +853,7 @@ async function expressCutLinks(){
   		FROM graph g
     		JOIN tag t ON g.from_table='tag' AND g.from_key=t.idtag
       		WHERE t.type_code='CUT_LINK_COLOR';
-	);
+	`);
 
  	const styleMap = JSON.parse(ret.rows[0]);
   
