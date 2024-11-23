@@ -585,7 +585,7 @@ async function drawDiagram() {
 
 	for (const {context:selectedContextIndex} of contexts)
 	{
-		const rectangles = await compute_rectangles(selectedContextIndex);
+		const rectangles = compute_rectangles(selectedContextIndex);
 		const frame = compute_frame(rectangles);
 		const links = compute_links(selectedContextIndex);
 		
