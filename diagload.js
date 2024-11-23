@@ -59,11 +59,11 @@ async function data2contexts(mydata) {
     			FROM cte
       			GROUP BY idbox
 	 	)
-   		SELECT idbox, json_agg(jsonb_build_object('left', 0, 'right', width, 'top', 0, 'bottom', height) ORDER BY idbox) AS rectangle
+   		SELECT json_agg(jsonb_build_object('left', 0, 'right', width, 'top', 0, 'bottom', height) ORDER BY idbox) AS rectangle
       		FROM cte2;
  	`);
 
-	const rectangles = JSON.parse(ret1.rows[0]);
+	const rectangles = JSON.parse(ret1.rows[0].json_agg);
 	const rectdim = rectangles.map(r => hex(r.right-r.left,3)+hex(r.bottom-r.top,3));
 	console.log(rectdim);
 
@@ -387,7 +387,7 @@ async function compute_links(selectedContextIndex)
        		WHERE t.context=${selectedContextIndex}
  	`);
 
-	const rectangles = JSON.parse(ret1.rows[0]);
+	const rectangles = JSON.parse(ret1.rows[0].json_agg);
 
 	const frame = compute_frame(rectangles);
 	
@@ -431,7 +431,7 @@ async function compute_links(selectedContextIndex)
       			)
  	`);
 
-	const links = JSON.parse(ret3.rows[0]);
+	const links = JSON.parse(ret3.rows[0].json_agg);
 
 	const ret4 = await db.exec(`
     		SELECT json_agg(r.idbox ORDER BY r.idbox)
@@ -440,7 +440,7 @@ async function compute_links(selectedContextIndex)
     		WHERE t.context=${selectedContextIndex}
  	`);
 
-	const ids = ret4.rows[0];
+	const ids = JSON.parse(ret4.rows[0].json_agg);
 	
 	const slinks = links
 			.map(lk => [ids.indexOf(lk.from), ids.indexOf(lk.to)])
@@ -849,7 +849,7 @@ async function expressCutLinks(){
       		WHERE t.type_code='CUT_LINK_COLOR';
 	`);
 
- 	const styleMap = JSON.parse(ret.rows[0]);
+ 	const styleMap = JSON.parse(ret.rows[0].json_agg);
   
 	for (const [id, color] of styleMap)
 	{
