@@ -585,13 +585,7 @@ async function drawDiagram() {
 
 	for (const selectedContextIndex of contexts)
 	{
-		const ret1 = await db.query(`
-  			SELECT jsonb_agg(build_json_objet('left',t.x,'right',tx+r.width,'top',t.y,'bottom',t.y+r.height) ORDER BY r.idbox)
-     			FROM rectangle r
-			JOIN translation t ON t.idrectangle=r.idrectangle
-   			WHERE t.context=${selectedContextIndex}
-  		`);
-		const rectangles = JSON.parse(ret1.rows[0]);
+		const rectangles = compute_rectangles(selectedContextIndex);
 		const frame = compute_frame(rectangles);
 		const links = compute_links(selectedContextIndex);
 		
@@ -756,7 +750,7 @@ function addEventListeners()
 async function compute_rectangles(selectedContextIndex)
 {
 	const ret = await db.select(`
- 		SELECT jsonb_agg(build_json_object('left',t.x,'right',t.x+r.width,'top',t.y,'bottom',t.y+r.height))
+ 		SELECT jsonb_agg(build_json_object('left',t.x,'right',t.x+r.width,'top',t.y,'bottom',t.y+r.height) ORDER BY r.idbox)
    		FROM rectangle r
      		JOIN translation t ON t.idrectangle=r.idrectangle
        		WHERE t.context=${selectedContectIndex}
