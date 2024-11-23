@@ -421,7 +421,7 @@ async function compute_links(selectedContextIndex)
    		FROM link l
      		JOIN cte cte_from ON cte_from.idbox = l.idbox_from
        		JOIN cte cte_to ON cte_to.idbox = l.idbox_to
-       			AND l.idbox_from != l.idbox_to
+       		WHERE l.idbox_from != l.idbox_to
        			AND NOT EXISTS (
 	  			SELECT * 
       				FROM graph g
