@@ -755,7 +755,7 @@ async function compute_rectangles(selectedContextIndex)
 		JOIN translation t ON t.idrectangle=r.idrectangle
 		WHERE t.context=${selectedContextIndex}
 	`);
-	return JSON.parse(ret.fields);
+	return JSON.parse(ret.rows[0].json_agg);
 }
 
 window.main = async function main()
