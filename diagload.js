@@ -378,7 +378,7 @@ function enforce_bounding_rectangle(selectedContextIndex, r=null)
 }
 
 
-async function (selectedContextIndex)
+async function compute_links(selectedContextIndex)
 {
 	const ret1 = await db.query(`
  		SELECT json_agg(jsonb_build_object('left', t.x, 'right', t.x+r.width, 'top', t.y, 'bottom', t.y+r.height) ORDER BY r.idbox)
