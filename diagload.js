@@ -412,12 +412,12 @@ async function compute_links(selectedContextIndex)
 
 	const ret3 = await db.exec(`
  		WITH cte AS (
-   			SELECT r.idbox
+   			SELECT r.idbox, DENSE_RANK() OVER(ORDER BY r.idbox) rk
       			FROM translation t
 	 		JOIN rectangle r ON t.idrectangle=r.idrectangle
     			WHERE t.context=${selectedContextIndex}
 		)
- 		SELECT json_agg(jsonb_build_object('from', l.idbox_from, 'to', l.idbox_to) ORDER BY option)
+ 		SELECT json_agg(json_build_object('from', cte_from.rk-1, 'to', cte_to.rk-1) ORDER BY l.idlink)
    		FROM link l
      		JOIN cte cte_from ON cte_from.idbox = l.idbox_from
        		JOIN cte cte_to ON cte_to.idbox = l.idbox_to
