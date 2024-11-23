@@ -583,7 +583,7 @@ async function drawDiagram() {
 
 	const contexts = ret.rows;
 
-	for (const selectedContextIndex of contexts)
+	for (const {context:selectedContextIndex} of contexts)
 	{
 		const rectangles = compute_rectangles(selectedContextIndex);
 		const frame = compute_frame(rectangles);
