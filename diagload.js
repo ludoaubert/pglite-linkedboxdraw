@@ -692,7 +692,7 @@ async function ApplyRepartition()
 	updatePolylines();
 }
 
-async function updatePolylines(selectedContextIndex)
+async function updateContextPolylines(selectedContextIndex)
 {
 	enforce_bounding_rectangle(selectedContextIndex);
 	const links = await compute_links(selectedContextIndex);
@@ -719,7 +719,7 @@ async function updatePolylines()
 
 	for (const selectedContextIndex of contexts)
 	{
-		updatePolylines(selectedContextIndex);
+		updateContextPolylines(selectedContextIndex);
 	}
 }
 
