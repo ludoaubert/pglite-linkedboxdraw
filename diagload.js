@@ -63,7 +63,7 @@ async function data2contexts(mydata) {
       		FROM cte2;
  	`);
 
-	const rectangles = JSON.parse(ret1.rows[0].json_agg);
+	const rectangles = ret1.rows[0].json_agg;
 	const rectdim = rectangles.map(r => hex(r.right-r.left,3)+hex(r.bottom-r.top,3));
 	console.log(rectdim);
 
@@ -387,7 +387,7 @@ async function compute_links(selectedContextIndex)
        		WHERE t.context=${selectedContextIndex}
  	`);
 
-	const rectangles = JSON.parse(ret1.rows[0].json_agg);
+	const rectangles = ret1.rows[0].json_agg;
 
 	const frame = compute_frame(rectangles);
 	
@@ -431,7 +431,7 @@ async function compute_links(selectedContextIndex)
       			)
  	`);
 
-	const links = JSON.parse(ret3.rows[0].json_agg);
+	const links = ret3.rows[0].json_agg;
 
 	const ret4 = await db.exec(`
     		SELECT json_agg(r.idbox ORDER BY r.idbox)
@@ -440,7 +440,7 @@ async function compute_links(selectedContextIndex)
     		WHERE t.context=${selectedContextIndex}
  	`);
 
-	const ids = JSON.parse(ret4.rows[0].json_agg);
+	const ids = ret4.rows[0].json_agg;
 	
 	const slinks = links
 			.map(lk => [ids.indexOf(lk.from), ids.indexOf(lk.to)])
@@ -755,7 +755,7 @@ async function compute_rectangles(selectedContextIndex)
 		JOIN translation t ON t.idrectangle=r.idrectangle
 		WHERE t.context=${selectedContextIndex}
 	`);
-	return JSON.parse(ret.rows[0].json_agg);
+	return ret.rows[0].json_agg;
 }
 
 window.main = async function main()
@@ -849,7 +849,7 @@ async function expressCutLinks(){
       		WHERE t.type_code='CUT_LINK_COLOR';
 	`);
 
- 	const styleMap = JSON.parse(ret.rows[0].json_agg);
+ 	const styleMap = ret.rows[0].json_agg;
   
 	for (const [id, color] of styleMap)
 	{
