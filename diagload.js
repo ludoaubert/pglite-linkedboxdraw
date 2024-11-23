@@ -410,14 +410,14 @@ async function compute_links(selectedContextIndex)
 				.map(i => hex(i,4))
 				.join('');
 
-	const ret3 = await db.exec(`
+	const ret3 = await db.query(`
  		WITH cte AS (
-   			SELECT r.idbox, DENSE_RANK() OVER(ORDER BY r.idbox) rk
+   			SELECT r.idbox
       			FROM translation t
 	 		JOIN rectangle r ON t.idrectangle=r.idrectangle
     			WHERE t.context=${selectedContextIndex}
 		)
- 		SELECT json_agg(json_build_object('from', cte_from.rk-1, 'to', cte_to.rk-1) ORDER BY l.idlink)
+ 		SELECT json_agg(json_build_object('from', l.idbox_from, 'to', l.idbox_to) ORDER BY l.idlink)
    		FROM link l
      		JOIN cte cte_from ON cte_from.idbox = l.idbox_from
        		JOIN cte cte_to ON cte_to.idbox = l.idbox_to
@@ -433,7 +433,7 @@ async function compute_links(selectedContextIndex)
 
 	const links = ret3.rows[0].json_agg;
 
-	const ret4 = await db.exec(`
+	const ret4 = await db.query(`
     		SELECT json_agg(r.idbox ORDER BY r.idbox)
       		FROM translation t
 	 	JOIN rectangle r ON t.idrectangle=r.idrectangle
