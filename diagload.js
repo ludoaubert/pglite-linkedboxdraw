@@ -59,7 +59,7 @@ async function data2contexts(mydata) {
     			FROM cte
       			GROUP BY idbox
 	 	)
-   		SELECT idbox, jsonb_agg(jsonb_build_object('left', 0, 'right', width, 'top', 0, 'bottom', height) ORDER BY idbox) AS rectangle
+   		SELECT idbox, json_agg(jsonb_build_object('left', 0, 'right', width, 'top', 0, 'bottom', height) ORDER BY idbox) AS rectangle
       		FROM cte2;
  	`);
 
@@ -381,7 +381,7 @@ function enforce_bounding_rectangle(selectedContextIndex, r=null)
 async function compute_links(selectedContextIndex)
 {
 	const ret1 = await db.query(`
- 		SELECT jsonb_agg(jsonb_build_object('left', t.x, 'right', t.x+r.width, 'top', t.y, 'bottom', t.y+r.height) ORDER BY r.idbox)
+ 		SELECT json_agg(jsonb_build_object('left', t.x, 'right', t.x+r.width, 'top', t.y, 'bottom', t.y+r.height) ORDER BY r.idbox)
    		FROM translation t
      		JOIN rectangle r ON t.idrectangle=r.idrectangle
        		WHERE t.context=${selectedContextIndex}
@@ -417,7 +417,7 @@ async function compute_links(selectedContextIndex)
 	 		JOIN rectangle r ON t.idrectangle=r.idrectangle
     			WHERE t.context=${selectedContextIndex}
 		)
- 		SELECT jsonb_agg(jsonb_build_object('from', l.idbox_from, 'to', l.idbox_to) ORDER BY option)
+ 		SELECT json_agg(jsonb_build_object('from', l.idbox_from, 'to', l.idbox_to) ORDER BY option)
    		FROM link l
      		JOIN cte cte_from ON cte_from.idbox = l.idbox_from
        		JOIN cte cte_to ON cte_to.idbox = l.idbox_to
@@ -434,7 +434,7 @@ async function compute_links(selectedContextIndex)
 	const links = JSON.parse(ret3.rows[0]);
 
 	const ret4 = await db.exec(`
-    		SELECT jsonb_agg(r.idbox ORDER BY r.idbox)
+    		SELECT json_agg(r.idbox ORDER BY r.idbox)
       		FROM translation t
 	 	JOIN rectangle r ON t.idrectangle=r.idrectangle
     		WHERE t.context=${selectedContextIndex}
@@ -750,7 +750,7 @@ function addEventListeners()
 async function compute_rectangles(selectedContextIndex)
 {
 	const ret = await db.query(`
- 		SELECT jsonb_agg(json_build_object('left',t.x,'right',t.x+r.width,'top',t.y,'bottom',t.y+r.height) ORDER BY r.idbox)
+ 		SELECT json_agg(json_build_object('left',t.x,'right',t.x+r.width,'top',t.y,'bottom',t.y+r.height) ORDER BY r.idbox)
    		FROM rectangle r
 		JOIN translation t ON t.idrectangle=r.idrectangle
 		WHERE t.context=${selectedContextIndex}
@@ -843,7 +843,7 @@ async function expressCutLinks(){
  	`);
 
 	const ret = await db.query(`
-		SELECT jsonb_agg(json_build_object('id', LEFT(to_table,1) || to_key, 'color', t.code))
+		SELECT json_agg(json_build_object('id', LEFT(to_table,1) || to_key, 'color', t.code))
   		FROM graph g
     		JOIN tag t ON g.from_table='tag' AND g.from_key=t.idtag
       		WHERE t.type_code='CUT_LINK_COLOR';
