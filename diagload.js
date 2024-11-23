@@ -753,7 +753,7 @@ async function compute_rectangles(selectedContextIndex)
  		SELECT jsonb_agg(build_json_object('left',t.x,'right',t.x+r.width,'top',t.y,'bottom',t.y+r.height) ORDER BY r.idbox)
    		FROM rectangle r
      		JOIN translation t ON t.idrectangle=r.idrectangle
-       		WHERE t.context=${selectedContectIndex}
+       		WHERE t.context=${selectedContextIndex}
  	`);
 	return JSON.parse(ret.rows[0]);
 }
