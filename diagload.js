@@ -657,7 +657,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 
 async function drawDiag()
 {
-	document.getElementById("repartition").innerHTML = drawRepartition();
+	document.getElementById("repartition").innerHTML = await drawRepartition();
 	document.getElementById("diagram").innerHTML = await drawDiagram();
 	addEventListeners();
 	updateCutLinks();
