@@ -727,7 +727,7 @@ async function drawRepartition()
        		JOIN translation t ON t.idrectangle=r.idrectangle
  	`);
 
-	const innerHTML = JSON.stringify(ret.rows[0].string_agg);
+	const innerHTML = ret.rows[0].string_agg;
 	return innerHTML;
 }
 
