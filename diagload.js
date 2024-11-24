@@ -760,9 +760,7 @@ async function compute_rectangles(selectedContextIndex)
 
 window.main = async function main()
 {
-	createMyModule().then(function(mymod){
-		Module = mymod;
-	});
+	Module = await createMyModule();
 	await db.exec(schema);
 	await db.exec(sample_diagdata);
 	await db.exec(sample_contexts);
