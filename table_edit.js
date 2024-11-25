@@ -212,8 +212,10 @@ async function init() {
 
 async function displayCurrent()
 {
-	if (editTitle.value != mydata.documentTitle)
-		editTitle.value = mydata.documentTitle;
+	const ret = await db.query(`SELECT title FROM diagram WHERE iddiagram=1`);
+	const documentTitle = ret.rows[0].title ;
+	if (editTitle.value != documentTitle)
+		editTitle.value = documentTitle;
 
 	let contexts = [
 		{boxCombo_:boxCombo, fieldCombo_:fieldCombo, currentBoxIndex_:currentBoxIndex, currentFieldIndex_:currentFieldIndex},
