@@ -819,8 +819,20 @@ async function updateCutLinks(){
   			SELECT * 
     			FROM cte_cut_link l
       			JOIN cut_link_color c ON c.rn = l.rk % c.nb
-	 	)
-      		SELECT * FROM colored_cut_link
+	 	), cte(from_table, from_key, to_table, to_key) AS (
+   			SELECT 'tag', idtag, 'box', idbox_from
+      			FROM colored_cut_link
+	 			UNION ALL
+     			SELECT 'tag', idtag, 'field', idfield_from
+      			FROM colored_cut_link
+	 			UNION ALL
+     			SELECT 'tag', idtag, 'box', idbox_to
+			FROM colored_cut_link
+   				UNION ALL
+       			SELECT 'tag', idtag, 'field', idfield_to
+      			FROM colored_cut_link
+		)
+      		SELECT * FROM cte
 	`);
 	const bibi = ret;
 /*
