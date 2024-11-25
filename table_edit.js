@@ -33,7 +33,6 @@ var fieldCombo ;
 var addFieldButton ;
 var dropFieldButton ;
 var updateFieldButton ;
-var addPicToBox2Button ;
 var valueCombo ;
 var editValueButton;
 var addValueButton;
@@ -105,8 +104,7 @@ async function init() {
 	fieldCombo = document.getElementById("fields");
 	addFieldButton = document.getElementById("add field");
 	dropFieldButton = document.getElementById("drop field");
-	updateFieldButton = document.getElementById("update field");;
-	addPicToBox2Button = document.getElementById("add pic to box 2");;
+	updateFieldButton = document.getElementById("update field");
 	valueCombo = document.getElementById("values");
 	editValueButton = document.getElementById("edit value");
 	addValueButton = document.getElementById("add value");
