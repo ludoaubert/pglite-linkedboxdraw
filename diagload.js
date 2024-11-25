@@ -811,8 +811,12 @@ async function updateCutLinks(){
        					JOIN tag t ON t.idtag = g.from_key AND t.type_code='RELATION_CATEGORY' AND t.code='TR2' 
 	  				WHERE g.from_table='tag' AND g.to_table='link' AND g.to_key=l.idlink
 				)
-    		)
-      		SELECT * FROM cte_cut_link
+    		), cut_link_color AS (
+  			SELECT idtag, code AS color, ROW_NUMBER() OVER (ORDER BY idtag) - 1 AS rn, COUNT(*) AS nb 
+     			FROM tag
+			WHERE type_code='CUT_LINK_COLOR'
+		)
+      		SELECT * FROM cut_link_color
 	`);
 	const bibi = ret;
 /*
