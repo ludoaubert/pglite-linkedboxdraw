@@ -669,7 +669,24 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
      			FROM translation t
 			JOIN rectangle r ON t.idrectangle=r.idrectangle
     			JOIN box b ON r.idbox=b.idbox
- 
+       				UNION ALL
+     			SELECT t.context, f.idbox, 2 AS position, STRING_AGG(FORMAT('<tr id="b%1$sf%2$s"><td id="b%1$sf%2$s">%3$s</td></tr>',
+	  			f.idbox, --%1
+     				f.idfield, --%2
+	  			f.name),  --%3
+      				'\n' ORDER BY f.name) AS html
+			FROM field f
+  			JOIN rectangle r ON r.idbox=f.idbox
+    			JOIN translation t ON t.idrectangle=r.idrectangle
+       			GROUP BY t.context, f.idbox
+  				UNION ALL
+   			SELECT t.context, r.idbox, 3 AS position, FORMAT('</tbody></table></foreignObject><rect id="sizer_%1$s" x="%2$s" y="%3$s" width="4" height="4" />',
+     				r.idrectangle, --%1
+	  			t.x + r.width - 4, --%2
+       				t.y + r.height - 4) --%3 
+					AS html
+     			FROM translation t
+	 		JOIN rectangle r ON t.idrectangle=r.idrectangle
    	`	);
 		
 		innerHTML += ret.rows[0];
