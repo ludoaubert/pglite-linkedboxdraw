@@ -1,4 +1,3 @@
-//import sample_contexts from "./contexts.json" with {type: "json"};
 import {sample_contexts} from "./contexts.js";
 
 import {default as createMyModule} from "./latuile-origine.js";
@@ -536,7 +535,7 @@ const RECT_STROKE_WIDTH = 6;
 
 function drawLinks(links)
 {
-	var innerHTML = "";
+	let innerHTML = "";
 
 	for (const {from, to, polyline} of links)
 	{
@@ -577,7 +576,7 @@ function drawLinks(links)
 
 async function drawDiagram() {
 
-	var innerHTML = "";
+	let innerHTML = "";
 
 	const ret = await db.query(`SELECT DISTINCT context FROM translation ORDER BY context`);
 
