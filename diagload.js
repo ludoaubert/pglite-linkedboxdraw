@@ -651,7 +651,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
   		WHERE context=${selectedContextIndex}
    	`	);
 		
-		innerHTML += ret.rows[0];
+		innerHTML += ret.rows[0].string_agg;
 		innerHMTL += '</svg>'
 	}
 	return innerHTML;
