@@ -626,6 +626,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
      			FROM translation t
 			JOIN rectangle r ON t.idrectangle=r.idrectangle
     			JOIN box b ON r.idbox=b.idbox
+/*
       				UNION ALL
      			SELECT t.context, f.idbox, 2 AS position, STRING_AGG(FORMAT('<tr id="b%1$f%2$"><td id="b%1$f%2$">%3$</td></tr>',
 	  			f.idbox, --%1
@@ -643,6 +644,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
        				t.y + r.height - 4) /*%3*/ AS html
      			FROM translation t
 	 		JOIN rectangle r ON t.idrectangle=r.idrectangle
+*/
     		)
       		SELECT context, html, idbox, position
 		--SELECT STRING_AGG(html, '\n' ORDER BY idbox, position)
