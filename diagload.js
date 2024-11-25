@@ -798,7 +798,7 @@ async function updateCutLinks(){
 	await db.exec(`
 
 		DELETE FROM graph
-  		WHERE from_table='tag' AND from_key IN (
+  		WHERE from_table::text='tag' AND from_key IN (
   			SELECT idtag
      			FROM tag
 			WHERE type_code='CUT_LINK_COLOR'
@@ -816,7 +816,7 @@ async function updateCutLinks(){
 	     				SELECT *
 					FROM graph g 
        					JOIN tag t ON t.idtag = g.from_key AND t.type_code='RELATION_CATEGORY' AND t.code='TR2' 
-	  				WHERE g.from_table='tag' AND g.to_table='link' AND g.to_key=l.idlink
+	  				WHERE g.from_table::text='tag' AND g.to_table::text='link' AND g.to_key=l.idlink
 				)
     		), cut_link_color AS (
   			SELECT idtag, code AS color, ROW_NUMBER() OVER (ORDER BY idtag) - 1 AS rn, COUNT(*) OVER() AS nb 
