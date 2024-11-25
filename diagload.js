@@ -854,7 +854,7 @@ async function updateCutLinks(){
       		WHERE t.type_code='CUT_LINK_COLOR';
 	`);
 
- 	const styleMap = ret.rows[0].json_agg;
+ 	const styleMap = ret.rows[0].coalesce;
   
 	for (const [id, color] of styleMap)
 	{
