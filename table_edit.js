@@ -233,7 +233,7 @@ async function displayCurrent()
 			currentBoxIndex_ = ret.rows[0];
 		}
 		const ret1 = await db.query(`SELECT STRING_AGG('<option>' || title || '</option>', '' ORDER BY title) FROM box`);
-		const boxComboInnerHTML = ret1.rows[0];
+		const boxComboInnerHTML = ret1.rows[0].string_agg;
 
 		if (boxCombo_.innerHTML != boxComboInnerHTML)
 		{
