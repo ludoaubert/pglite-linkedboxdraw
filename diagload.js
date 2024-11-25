@@ -805,7 +805,7 @@ async function updateCutLinks(){
    		);
 
  		WITH cte_cut_link AS (
- 			SELECT l.*, DENSE_RANK()-1 OVER (ORDER BY idbox_to, idfield_to) rk
+ 			SELECT l.*, DENSE_RANK() OVER (ORDER BY idbox_to, idfield_to) - 1 rk
    			FROM link l
      			JOIN rectangle r_from ON r_from.idbox=l.idbox_from
        			JOIN rectangle t_to ON r_to.idbox=l.idbox_to
@@ -819,7 +819,7 @@ async function updateCutLinks(){
 	  				WHERE g.from_table='tag' AND g.to_table='link' AND g.to_key=l.idlink
 				)
     		), cut_link_color AS (
-  			SELECT idtag, code AS color, ROW_NUMBER()-1 OVER (ORDER BY idtag) AS rn, COUNT(*) AS nb 
+  			SELECT idtag, code AS color, ROW_NUMBER() OVER (ORDER BY idtag) - 1 AS rn, COUNT(*) AS nb 
      			FROM tag
 			WHERE type_code='CUT_LINK_COLOR'
 		), colored_cut_link AS (
