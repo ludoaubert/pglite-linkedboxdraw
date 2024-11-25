@@ -142,8 +142,9 @@ async function init() {
 	updateColorButton = document.getElementById("update color");
 	applyRepartitionButton = document.getElementById("apply repartition");
 
-	const innerHTML = ["","0","1","n","0,1","0,n","1,n"].map(c => '<option>' + c + '</option>')
-							.join('');
+	const ret1 = await db.query(`SELECT string_agg('<option>' || code || '</option>', '' ORDER BY code) FROM tag WHERE type_code='RELATION_CARDINALITY'`);
+	const innerHTML = ret1.rows[0].string_agg;
+
 	fromCardinalityCombo.innerHTML = innerHTML;
 	toCardinalityCombo.innerHTML = innerHTML;
 
