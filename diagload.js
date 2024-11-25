@@ -846,7 +846,9 @@ async function updateCutLinks(){
  	`);
 
 	const ret = await db.query(`
-		SELECT json_agg(json_build_object('id', LEFT(g.to_table::text, 1) || g.to_key, 'color', t.code) ORDER BY g.idgraph)
+		SELECT coalesce(
+  			json_agg(json_build_object('id', LEFT(g.to_table::text, 1) || g.to_key, 'color', t.code) ORDER BY g.idgraph),
+     			'[]'::json)
   		FROM graph g
     		JOIN tag t ON g.from_table='tag' AND g.from_key=t.idtag
       		WHERE t.type_code='CUT_LINK_COLOR';
