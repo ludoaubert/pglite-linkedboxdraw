@@ -796,7 +796,7 @@ window.main = async function main()
 async function updateCutLinks(){
 
 
-	const ret = db.query(`
+	const ret = await db.query(`
  		WITH cte_cut_link AS (
  			SELECT l.*, DENSE_RANK() OVER (ORDER BY idbox_to, idfield_to) - 1 rk
    			FROM link l
