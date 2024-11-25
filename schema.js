@@ -68,6 +68,7 @@ CREATE TYPE source_table AS ENUM ('tag', 'message_tag');
 CREATE TYPE target_table AS ENUM ('box', 'field', 'value', 'link');
   
 CREATE TABLE IF NOT EXISTS graph(
+  idgraph SERIAL PRIMARY KEY,
   from_table source_table,
   from_key INTEGER,
   to_table target_table,
