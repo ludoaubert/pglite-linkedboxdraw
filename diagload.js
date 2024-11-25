@@ -798,7 +798,7 @@ async function updateCutLinks(){
 
 	const ret = await db.query(`
  		WITH cut_link_color AS (
-  			SELECT idtag, code AS color, ROW_NUMBER() OVER (ORDER BY idtag) - 1 AS rn--, COUNT(*) AS nb 
+  			SELECT idtag, code AS color, ROW_NUMBER() OVER (ORDER BY idtag) - 1 AS rn, COUNT(*) AS nb_sexe
      			FROM tag
 			WHERE type_code='CUT_LINK_COLOR'
 		)
