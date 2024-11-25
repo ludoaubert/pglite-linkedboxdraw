@@ -848,7 +848,7 @@ async function updateCutLinks(){
 	  				WHERE g.from_table='tag' AND g.to_table='link' AND g.to_key=l.idlink
 				)
     		), cut_link_color AS (
-  			SELECT idtag, code AS color, ROW_NUMBER() OVER (ORDER BY idtag) - 1 AS rn, COUNT(*) OVER AS nb 
+  			SELECT idtag, code AS color, ROW_NUMBER() OVER (ORDER BY idtag) - 1 AS rn, COUNT(*) OVER() AS nb 
      			FROM tag
 			WHERE type_code='CUT_LINK_COLOR'
 		), colored_cut_link AS (
