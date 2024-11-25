@@ -663,7 +663,7 @@ async function drawDiag()
 	document.getElementById("repartition").innerHTML = await drawRepartition();
 	document.getElementById("diagram").innerHTML = await drawDiagram();
 	addEventListeners();
-	updateCutLinks();
+	await updateCutLinks();
 }
 
 
