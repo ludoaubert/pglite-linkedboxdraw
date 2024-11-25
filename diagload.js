@@ -621,7 +621,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 				r.width, --%2
     				r.height, --%3
 				t.x, --%4
-    				t.y) --%5
+    				t.y, --%5
 	 			b.title) /*%6*/ AS html
      			FROM translation t
 			JOIN rectangle r ON t.idrectangle=r.idrectangle
