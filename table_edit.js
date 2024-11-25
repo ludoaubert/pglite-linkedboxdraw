@@ -207,7 +207,7 @@ async function init() {
 	const ret = await db.query(`SELECT STRING_AGG('<option>' || code || '</option>','' order by code) FROM tag WHERE type_code='COLOR'`);
 	colorCombo.innerHTML = ret.rows[0].string_agg;
 
-	displayCurrent();
+	await displayCurrent();
 }
 
 async function displayCurrent()
