@@ -291,8 +291,8 @@ async function displayCurrent()
 	const ret4 = await db.query(`
  		SELECT mt.idmessage
    		FROM box b
-     		JOIN graph g ON g.from_table='box' AND b.idbox=g.from_key AND g.to_table='message_tag'
-       		JOIN message_tag mt ON g.to_key=mt.idmessage
+     		JOIN graph g ON g.to_table='box' AND b.idbox=g.to_key AND g.from_table='message_tag'
+       		JOIN message_tag mt ON g.from_key=mt.idmessage
      		WHERE b.title='${boxCombo.value}'
   	`);
 	const currentBoxCommentIndex = ret4.rows[0];
@@ -309,8 +309,8 @@ async function displayCurrent()
  		SELECT mt.idmessage
    		FROM box b
      		JOIN field f ON f.idbox=b.idbox
-     		JOIN graph g ON g.from_table='field' AND f.idfield=g.from_key AND g.to_table='message_tag'
-       		JOIN message_tag mt ON g.to_key=mt.idmessage
+     		JOIN graph g ON g.to_table='field' AND f.idfield=g.to_key AND g.from_table='message_tag'
+       		JOIN message_tag mt ON g.from_key=mt.idmessage
      		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
  	`)
 	const currentFieldCommentIndex = ret6.rows[0];
