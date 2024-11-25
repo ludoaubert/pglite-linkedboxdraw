@@ -841,7 +841,7 @@ async function updateCutLinks(){
       			FROM colored_cut_link
 		)
   		INSERT INTO graph(from_table, from_key, to_table, to_key)
-    		SELECT from_table, from_key, to_table, to_key
+    		SELECT DISTINCT from_table, from_key, to_table, to_key
       		FROM cte;
  	`);
 
