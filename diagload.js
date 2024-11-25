@@ -795,6 +795,27 @@ window.main = async function main()
 
 async function updateCutLinks(){
 
+
+	const ret = db.query(`
+ 		WITH cte_cut_link AS (
+ 			SELECT l.*, DENSE_RANK() OVER (ORDER BY idbox_to, idfield_to) - 1 rk
+   			FROM link l
+     			JOIN rectangle r_from ON r_from.idbox=l.idbox_from
+       			JOIN rectangle r_to ON r_to.idbox=l.idbox_to
+	 		JOIN translation t_from ON t_from.idrectangle=r_from.idrectangle
+	 		JOIN translation t_to ON t_to.idrectangle=r_to.idrectangle
+   			WHERE t_from.context != t_to.context AND l.idfield_from IS NOT NULL AND l.idfield_to IS NOT NULL
+     				AND NOT EXISTS(
+	     				SELECT *
+					FROM graph g 
+       					JOIN tag t ON t.idtag = g.from_key AND t.type_code='RELATION_CATEGORY' AND t.code='TR2' 
+	  				WHERE g.from_table='tag' AND g.to_table='link' AND g.to_key=l.idlink
+				)
+    		)
+      		SELECT * FROM cte_cut_link
+	`);
+	const bibi = ret;
+/*
 	await db.exec(`
 
 		DELETE FROM graph
@@ -857,4 +878,5 @@ async function updateCutLinks(){
 	{
 		document.getElementById(id).style.backgroundColor = color;
 	}
+*/
 }
