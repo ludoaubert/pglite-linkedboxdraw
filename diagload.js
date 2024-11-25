@@ -774,7 +774,7 @@ window.main = async function main()
 	const ret = await db.query(`SELECT DISTINCT context FROM translation ORDER BY context`);
 	const contexts = ret.rows;
 	
-	for (const selectedContextIndex of contexts)
+	for (const {context:selectedContextIndex} of contexts)
 	{		
 		const rectangles = compute_rectangles(selectedContextIndex);
 		const frame = compute_frame(rectangles);
