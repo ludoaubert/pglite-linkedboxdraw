@@ -828,7 +828,7 @@ async function updateCutLinks(){
     			FROM cte_cut_link l
       			JOIN cut_link_color c ON c.rn = l.rk % c.nb
 	 	), cte(from_table, from_key, to_table, to_key) AS (
-   			SELECT 'tag', idtag, 'box', idbox_from
+   			SELECT 'tag'::source_table, idtag, 'box'::target_table, idbox_from
       			FROM colored_cut_link
 	 			UNION ALL
      			SELECT 'tag', idtag, 'field', idfield_from
