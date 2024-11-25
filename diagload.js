@@ -856,7 +856,7 @@ async function updateCutLinks(){
 
  	const styleMap = ret.rows[0].coalesce;
   
-	for (const [id, color] of styleMap)
+	for (const {id, color} of styleMap)
 	{
 		document.getElementById(id).style.backgroundColor = color;
 	}
