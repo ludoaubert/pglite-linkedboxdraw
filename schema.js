@@ -57,7 +57,8 @@ INSERT INTO tag(type_code, code) VALUES
 ('CONSTRAINT','UNIQUE'),
 ('COLOR','yellow'),('COLOR','pink'),('COLOR','hotpink'),('COLOR','palegreen'),('COLOR','red'),('COLOR','orange'),('COLOR','skyblue'),('COLOR','olive'),('COLOR','grey'),('COLOR','darkviolet'),
 ('CUT_LINK_COLOR','lime'),('CUT_LINK_COLOR','fuchsia'),('CUT_LINK_COLOR','teal'),('CUT_LINK_COLOR','aqua'),('CUT_LINK_COLOR','aquamarine'),('CUT_LINK_COLOR','coral'),('CUT_LINK_COLOR','cornflowerblue'),('CUT_LINK_COLOR','darkgray'),('CUT_LINK_COLOR','darkkhaki'),
-('RELATION_CATEGORY','TR2');
+('RELATION_CATEGORY','TR2'),
+('RELATION_CARDINALITY', '1,1'),('RELATION_CARDINALITY', '1,n'),('RELATION_CARDINALITY', 'n,n');
 
 CREATE TABLE IF NOT EXISTS message_tag(
   idmessage SERIAL PRIMARY KEY,
