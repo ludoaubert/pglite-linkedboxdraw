@@ -794,7 +794,7 @@ window.main = async function main()
 	}
 }
 
-async function expressCutLinks(){
+async function updateCutLinks(){
 
 	await db.exec(`
 
