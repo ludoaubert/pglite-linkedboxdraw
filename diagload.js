@@ -617,19 +617,19 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
      				<table id="box%1$" contenteditable="true" spellcheck="false">
 	  			<thead><tr><th id="b%1$">%6$</th></tr></thead>
        				<tbody>',
-    				r.idbox, //%1
-				r.width, //%2
-    				r.height, //%3
-				t.x, //%4
-    				t.y) //%5
+    				r.idbox, --%1
+				r.width, --%2
+    				r.height, --%3
+				t.x, --%4
+    				t.y) --%5
 	 			b.title) /*%6*/ AS html
      			FROM translation t
 			JOIN rectangle r ON t.idrectangle=r.idrectangle
     			JOIN box b ON r.idbox=b.idbox
       				UNION ALL
      			SELECT t.context, f.idbox, 2 AS position, STRING_AGG(FORMAT('<tr id="b%1$f%2$"><td id="b%1$f%2$">%3$</td></tr>',
-	  			f.idbox, //%1
-     				f.idfield, //%2
+	  			f.idbox, --%1
+     				f.idfield, --%2
 	  			f.name),  /*%3*/
       				'\n' ORDER BY f.name) AS html
 			FROM field f
@@ -638,13 +638,14 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
        			GROUP BY t.context, f.idbox
   				UNION ALL
    			SELECT t.context, r.idbox, 3 AS position, FORMAT('</tbody></table></foreignObject><rect id="sizer_%1$" x="%2$" y="%3$" width="4" height="4" />',
-     				r.idrectangle, //%1
-	  			t.x + r.width - 4, //%2
+     				r.idrectangle, --%1
+	  			t.x + r.width - 4, --%2
        				t.y + r.height - 4) /*%3*/ AS html
      			FROM translation t
 	 		JOIN rectangle r ON t.idrectangle=r.idrectangle
     		)
-      		SELECT STRING_AGG(html, '\n' ORDER BY idbox, position)
+      		SELECT context, html, idbox, position
+		--SELECT STRING_AGG(html, '\n' ORDER BY idbox, position)
 		FROM cte
   		WHERE context=${selectedContextIndex}
    	`	);
