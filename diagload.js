@@ -767,7 +767,7 @@ window.main = async function main()
 	await db.exec(sample_diagdata);
 	await db.exec(sample_contexts);
 	await drawDiag();
-	init();
+	await init();
 	
 //making sure svg viewBox is computed in a unified way
 
