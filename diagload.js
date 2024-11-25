@@ -796,14 +796,15 @@ window.main = async function main()
 async function updateCutLinks(){
 
 	await db.exec(`
-
 		DELETE FROM graph
   		WHERE from_table='tag' AND from_key IN (
   			SELECT idtag
      			FROM tag
 			WHERE type_code='CUT_LINK_COLOR'
    		);
+	`);
 
+	await db.exec(`
  		WITH cte_cut_link AS (
  			SELECT l.*, DENSE_RANK() OVER (ORDER BY idbox_to, idfield_to) - 1 rk
    			FROM link l
