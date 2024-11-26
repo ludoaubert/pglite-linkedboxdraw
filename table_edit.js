@@ -510,6 +510,7 @@ async function produce_options()
    			LEFT JOIN field field_to ON field_to.idfield = l.idfield_to
       		)
 		SELECT json_agg(json_build_object('option', option, 'idlink', idlink) ORDER BY option)
+  		FROM cte
   	`);
 
 	return ret.rows[0].json_agg;
