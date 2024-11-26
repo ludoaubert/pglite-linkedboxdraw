@@ -498,7 +498,7 @@ async function selectLink()
 
 }
 
-async function produce_options(links)
+async function produce_options()
 {
 	const ret = await db.query(`
  		WITH cte AS (
@@ -517,7 +517,7 @@ async function produce_options(links)
 
 async function linkComboOnClick()
 {
-	const options = produce_options(mydata.links)
+	const options = produce_options()
 	
 	const innerHTML = options.map(({option, idlink}) => `<option>${option}</option>`)
 				.join('');
@@ -573,7 +573,7 @@ async function addNewLink()
 
 async function dropLink()
 {
-	const {option, idlink} = produce_options(mydata.links)[linkCombo.selectedIndex];
+	const {option, idlink} = produce_options()[linkCombo.selectedIndex];
 	await db.exec(`DELETE FROM link WHERE idlink=${idlink}`);
 	linkComboOnClick();
 
