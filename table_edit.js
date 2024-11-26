@@ -154,7 +154,7 @@ async function init() {
 	editTitle.addEventListener("change", async () => {await updateTitle()});
 	newDiagramButton.addEventListener("click", async () => {await newDiagram(); await displayCurrent(); await drawDiag();});
 	boxCombo.addEventListener("change", async () => {currentBoxIndex = -1; await displayCurrent();});
-	addBoxButton.addEventListener("click", async () => {await addNewBox()});
+	addBoxButton.addEventListener("click", async () => addNewBox());
 	dropBoxButton.addEventListener("click", async () => {await dropBox()});
 	updateBoxButton.addEventListener("click", async () => {await updateBox()});
 	updateBoxCommentButton.addEventListener("click", async () => {await updateBoxComment()}) ;
