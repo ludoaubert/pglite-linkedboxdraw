@@ -776,7 +776,7 @@ window.main = async function main()
 	
 	for (const {context:selectedContextIndex} of contexts)
 	{		
-		const rectangles = compute_rectangles(selectedContextIndex);
+		const rectangles = await compute_rectangles(selectedContextIndex);
 		const frame = compute_frame(rectangles);
 
 		await db.exec(`UPDATE frame SET width=${width(frame)}, height=${height(frame)}`);
