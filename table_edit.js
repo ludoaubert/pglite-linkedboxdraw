@@ -574,7 +574,7 @@ async function addNewLink()
 
 async function dropLink()
 {
-	const {option, idlink} = produce_options()[linkCombo.selectedIndex];
+	const {option, idlink} = await produce_options()[linkCombo.selectedIndex];
 	await db.exec(`DELETE FROM link WHERE idlink=${idlink}`);
 	linkComboOnClick();
 
