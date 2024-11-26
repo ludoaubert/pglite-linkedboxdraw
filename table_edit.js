@@ -336,7 +336,7 @@ async function updateTitle()
 async function addNewBox()
 {
 	await db.exec(`
- 		SELECT setval(pg_get_serial_sequence('box', 'idbox'), coalesce(max(id)+1, 1), false) FROM box;
+ 		SELECT setval(pg_get_serial_sequence('box', 'idbox'), coalesce(max(idbox)+1, 1), false) FROM box;
  		INSERT INTO box(title, iddiagram) VALUES('${newBoxEditField.value}', 1);
    	`);
 	const ret1 = await db.query(`SELECT idbox FROM box WHERE title='${newBoxEditField.value}' AND iddiagram=1`);
