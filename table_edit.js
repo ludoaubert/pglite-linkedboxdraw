@@ -342,7 +342,7 @@ async function addNewBox()
 
 	newBoxEditField.value = "";
 
-	displayCurrent();
+	await displayCurrent();
 
 	await db.exec(`
  		INSERT INTO rectangle(width, height, idbox) 
@@ -355,7 +355,7 @@ async function addNewBox()
        		WHERE r.idbox=${currentBoxIndex};
    	`);
 
-	drawDiag();
+	await drawDiag();
 }
 
 
@@ -366,8 +366,8 @@ async function dropBox()
 
 	currentBoxIndex = -1;
 
-	displayCurrent();
-	drawDiag();
+	await displayCurrent();
+	await drawDiag();
 }
 
 
@@ -375,12 +375,12 @@ async function updateBox()
 {
 	await db.exec(`UPDATE box SET title='${newBoxEditField.value} WHERE title='${boxCombo.value}'`);
 	
-	displayCurrent();
+	await displayCurrent();
 
     	//const rec = compute_box_rectangle(mydata.boxes[currentBoxIndex]);
     	//mycontexts.rectangles[currentBoxIndex] = rec;
 
-	drawDiag();
+	await drawDiag();
 }
 
 
@@ -414,8 +414,8 @@ async function addNewFieldToBox()
 
 	newFieldEditField.value = "";
 
-	displayCurrent();
-	drawDiag();
+	await displayCurrent();
+	await drawDiag();
 }
 
 async function updateField()
@@ -428,8 +428,8 @@ async function updateField()
 	 	WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
  	`);
 	
-	displayCurrent();
-	drawDiag();
+	await displayCurrent();
+	await drawDiag();
 }
 
 
@@ -444,8 +444,8 @@ async function dropFieldFromBox()
 
 	currentFieldIndex = -1;
 
-	displayCurrent();
-	drawDiag();
+	await displayCurrent();
+	await drawDiag();
 }
 
 async function editValueFromField()
@@ -465,7 +465,7 @@ async function addNewValueToField()
 
 	newValueEditField.value = "";
 
-	displayCurrent();
+	await displayCurrent();
 }
 
 async function updateValue()
@@ -479,7 +479,7 @@ async function updateValue()
    		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}' AND v.data='${valueCombo.value}'
  	`);
 
-	displayCurrent();
+	await displayCurrent();
 }
 
 async function dropValueFromField()
@@ -492,7 +492,7 @@ async function dropValueFromField()
 	 	WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}' AND v.data='${valueCombo.value}'
  	`);
 
-	displayCurrent();
+	await displayCurrent();
 }
 
 async function selectLink()
@@ -570,7 +570,7 @@ async function addNewLink()
 		}
 	}
 
-	drawDiag();
+	await drawDiag();
 }
 
 async function dropLink()
@@ -590,7 +590,7 @@ async function dropLink()
 		}
 	}
 
-	drawDiag();
+	await drawDiag();
 }
 
 
@@ -604,8 +604,8 @@ async function dropBoxComment()
        		JOIN box b ON b.idbox=g.to_key
 	 	WHERE b.title = '${boxCombo.value}'
  	`);
-	displayCurrent();
-	drawDiag();
+	await displayCurrent();
+	await drawDiag();
 }
 
 async function updateBoxComment()
@@ -625,8 +625,8 @@ async function updateBoxComment()
 	else
 		mydata.boxComments.push(boxComment);
 */
-	displayCurrent();
-	drawDiag();
+	await displayCurrent();
+	await drawDiag();
 }
 
 async function dropFieldComment()
@@ -638,8 +638,8 @@ async function dropFieldComment()
        		JOIN box b ON b.idbox=g.to_key
 	 	WHERE b.title = '${boxCombo.value}'
  	`);
-	displayCurrent();
-	drawDiag();
+	await displayCurrent();
+	await drawDiag();
 }
 
 function jsonSafe(text)
@@ -684,8 +684,8 @@ async function updateFieldComment()
 	else
 		mydata.fieldComments.push(fieldComment);
 */
-	displayCurrent();
-	drawDiag();
+	await displayCurrent();
+	await drawDiag();
 }
 
 async function colorsComboOnClick()
@@ -712,8 +712,8 @@ async function addNewColor()
 	 	WHERE b.title='${colorBoxCombo.value}' AND f.name='${colorFieldCombo.value}'
  	`);
 
-	colorsComboOnClick();
-	drawDiag();
+	await colorsComboOnClick();
+	await drawDiag();
 }
 
 async function updateColor()
@@ -728,8 +728,8 @@ async function updateColor()
 	 	JOIN tag new_tag ON new_tag.type_code='COLOR' AND new_tag.code='${colorCombo.value}'
 	 	WHERE b.title='${colorBoxCombo.value}' AND f.name='${colorFieldCombo.value}' 
  	`);
-	colorsComboOnClick();
-	drawDiag();
+	await colorsComboOnClick();
+	await drawDiag();
 }
 
 async function dropColor()
