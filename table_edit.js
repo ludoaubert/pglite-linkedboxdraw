@@ -239,13 +239,13 @@ async function displayCurrent()
 			boxCombo_.innerHTML = boxComboInnerHTML;
 			if (currentBoxIndex_ == -1)
 			{
-				const ret = await db.query(`SELECT idbox FROM box ORDER BY title LIMIT 1`);
-				currentBoxIndex_ = ret.rows.length > 0 ? ret.rows[0].idbox : -1;
+				const ret = await db.query(`SELECT COALESCE(idbox, -1) FROM box ORDER BY title LIMIT 1`);
+				currentBoxIndex_ = ret.rows[0].coalesce;
 			}
 		}
 
-		const ret2 = await db.query(`SELECT title FROM box WHERE idbox=${currentBoxIndex_}`);
-		boxCombo_.value = ret2.rows[0].title;
+		const ret2 = await db.query(`SELECT COALESCE(title, '') FROM box WHERE idbox=${currentBoxIndex_}`);
+		boxCombo_.value = ret2.rows[0].coalesce;
 
 		const ret3 = await db.query(`SELECT STRING_AGG('<option>' || name || '</option>', '' ORDER BY name) FROM field WHERE idbox = ${currentBoxIndex_}`);
 		const fieldComboInnerHTML = ret3.rows[0].string_agg;
@@ -255,8 +255,8 @@ async function displayCurrent()
 			fieldCombo_.innerHTML = fieldComboInnerHTML;
 			if (currentFieldIndex_ == -1)
 			{
-				const ret = await db.query(`SELECT idfield FROM field WHERE idbox=${currentBoxIndex_} ORDER BY name LIMIT 1`);
-				currentFieldIndex_ = ret.rows.length > 0 ? ret.rows[0].idfield : -1;
+				const ret = await db.query(`SELECT COALESCE(idfield, -1) FROM field WHERE idbox=${currentBoxIndex_} ORDER BY name LIMIT 1`);
+				currentFieldIndex_ = ret.rows[0].coalesce;
 			}
 		}
 
