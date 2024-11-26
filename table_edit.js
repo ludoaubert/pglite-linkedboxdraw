@@ -413,7 +413,7 @@ async function addNewFieldToBox()
  	`);
 	const ret1 = await db.query(`SELECT idbox FROM box WHERE title='${boxCombo.value}'`);
 	currentBoxIndex = ret1.rows[0].idbox;
-	const ret2 = await db.query(`SELECT idfield FROM field WHERE idbox=${currentBoxIndex} AND name=${newFieldEditField.value}`)
+	const ret2 = await db.query(`SELECT idfield FROM field WHERE idbox=${currentBoxIndex} AND name='${newFieldEditField.value}'`)
 	currentFieldIndex = ret2.rows[0].idfield;
 
 	newFieldEditField.value = "";
