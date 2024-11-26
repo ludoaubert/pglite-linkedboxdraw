@@ -418,6 +418,22 @@ async function addNewFieldToBox()
 
 	newFieldEditField.value = "";
 
+	await db.exec(` 
+ 		WITH cte(idbox, width, height) AS (
+   			SELECT idbox, 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT} FROM box
+    			UNION ALL
+       			SELECT idbox, LENGTH(name) * ${MONOSPACE_FONT_PIXEL_WIDTH}, ${CHAR_RECT_HEIGHT}  FROM field
+		), cte2 AS (
+  			SELECT idbox, MAX(width) AS width, LEAST(SUM(height), ${RECTANGLE_BOTTOM_CAP}) AS height
+    			FROM cte
+      			WHERE idbox = ${currentBoxIndex}
+	 	)
+   		UPDATE rectangle r
+     		SET r.width = cte2.width, r.height = cte2.height
+		FROM cte2
+  		WHERE r.idbox = cte2.idbox
+ 	`);
+
 	await displayCurrent();
 	await drawDiag();
 }
