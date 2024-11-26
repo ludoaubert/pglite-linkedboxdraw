@@ -266,8 +266,8 @@ async function displayCurrent()
 		contexts[index] = {boxCombo_, fieldCombo_, currentBoxIndex_, currentFieldIndex_};
 	}
 
-	currentBoxIndex = contexts.rows[0].currentBoxIndex_;
-	currentFieldIndex = contexts.rows[0].currentFieldIndex_;
+	currentBoxIndex = contexts[0].currentBoxIndex_;
+	currentFieldIndex = contexts[0].currentFieldIndex_;
 	currentFromBoxIndex = contexts[1].currentBoxIndex_;
 	currentFromFieldIndex = contexts[1].currentFieldIndex_;
 	currentToBoxIndex = contexts[2].currentBoxIndex_;
