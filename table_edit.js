@@ -349,7 +349,7 @@ async function addNewBox()
     
  		INSERT INTO rectangle(width, height, idbox) 
    		SELECT 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT}, idbox 
-     		FROM box FROM idbox=${currentBoxIndex};
+     		FROM box WHERE idbox=${currentBoxIndex};
 
  		SELECT setval(pg_get_serial_sequence('translation', 'idtranslation'), coalesce(max(idtranslation)+1, 1), false) FROM translation;
    
