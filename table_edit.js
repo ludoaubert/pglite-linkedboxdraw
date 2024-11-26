@@ -335,8 +335,8 @@ async function updateTitle()
 
 async function addNewBox()
 {
-	await db.exec(`INSERT INTO box(title) VALUES('${newBoxEditField.value}')`);
-	const ret1 = await db.query(`SELECT idbox FROM box WHERE title='${newBoxEditField.value}'`);
+	await db.exec(`INSERT INTO box(title, iddiagram) VALUES('${newBoxEditField.value}', 1)`);
+	const ret1 = await db.query(`SELECT idbox FROM box WHERE title='${newBoxEditField.value}' AND iddiagram=1`);
 	currentBoxIndex = ret1.rows[0].idbox;
 	currentFieldIndex = -1;
 
