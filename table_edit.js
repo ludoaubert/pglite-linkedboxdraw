@@ -348,10 +348,14 @@ async function addNewBox()
 	await displayCurrent();
 
 	await db.exec(`
+  		SELECT setval(pg_get_serial_sequence('rectangle', 'idrectangle'), coalesce(max(idrectangle)+1, 1), false) FROM rectangle;
+    
  		INSERT INTO rectangle(width, height, idbox) 
    		SELECT 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT}, idbox 
      		FROM box FROM idbox=${currentBoxIndex};
 
+ 		SELECT setval(pg_get_serial_sequence('translation', 'idtranslation'), coalesce(max(idtranslation)+1, 1), false) FROM translation;
+   
  		INSERT INTO translation(context, idrectangle, x, y)
    		SELECT 1 AS context, r.idrectangle, 0 AS x, 0 AS y
      		FROM rectangle r
