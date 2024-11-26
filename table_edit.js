@@ -428,10 +428,10 @@ async function addNewFieldToBox()
     			FROM cte
       			GROUP BY idbox
 	 	)
-   		UPDATE rectangle r
-     		SET r.width = cte2.width, r.height = cte2.height
+   		UPDATE rectangle
+     		SET width = cte2.width, height = cte2.height
 		FROM cte2
-  		WHERE r.idbox = cte2.idbox
+  		WHERE rectangle.idbox = cte2.idbox
  	`);
 
 	await displayCurrent();
