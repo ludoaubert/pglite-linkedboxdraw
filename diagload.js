@@ -610,9 +610,10 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 
 		const ret = await db.query(`
   		WITH cte AS (
-  			SELECT t.context, b.idbox, 1 AS position, FORMAT('<g id="g_%1$s" transform="translate(%4$s,%5$s)">
+  			SELECT t.context, b.idbox, 1 AS position, FORMAT('
+     				<g id="g_%1$s" transform="translate(%4$s,%5$s)">
 				<rect id="rect_%1$s" x="%4$s" y="%5$s" width="%2$s" height="%3$s" />
-				<foreignObject id="box%1$s" x="%4$s" y="%5$s" width="%2$s" height="%3$s">
+				<foreignObject id="box%1$s" width="%2$s" height="%3$s">
      				<table id="box%1$s">
 	  			<thead><tr><th id="b%1$s">%6$s</th></tr></thead>
        				<tbody>',
@@ -637,7 +638,12 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
     			JOIN translation t ON t.idrectangle=r.idrectangle
        			GROUP BY t.context, f.idbox
   				UNION ALL
-   			SELECT t.context, r.idbox, 3 AS position, FORMAT('</tbody></table></foreignObject><rect id="sizer_%1$s" x="%2$s" y="%3$s" width="4" height="4" />',
+   			SELECT t.context, r.idbox, 3 AS position, FORMAT('
+      				</tbody>
+	  			</table>
+      				</foreignObject>
+	  			<rect id="sizer_%1$s" x="%2$s" y="%3$s" width="4" height="4" />
+      				</g>',
      				r.idrectangle, --%1
 	  			t.x + r.width - 4, --%2
        				t.y + r.height - 4) --%3 
