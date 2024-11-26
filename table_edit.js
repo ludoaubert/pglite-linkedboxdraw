@@ -689,11 +689,15 @@ async function updateFieldComment()
 
 async function colorsComboOnClick()
 {
-	console.log("colorsComboOnClick");
-	const innerHTML = mydata.fieldColors
-				.map(({index, box, field, color}) => `<option>${box}.${field}.${color}</option>`)
-				.join('');
-	console.log(innerHTML);
+	const ret = await db.query(`
+ 		SELECT STRING_AGG(FORMAT('<option>%s.%s.%s</option>', b.title, f.name, t.code), '' ORDER BY b.title, f.name, t.code)
+   		FROM graph g
+     		JOIN tag t ON g.from_table='tag' AND g.from_key=t.idtag
+       		JOIN field f ON g.to_table='field' AND g.to_key=f.idfield
+	 	WHERE t.type_code='COLOR'
+ 	`);
+	
+	const innerHTML = ret.rows[0].string_agg;
 
 	if (colorsCombo.innerHTML != innerHTML)
 		colorsCombo.innerHTML = innerHTML;
