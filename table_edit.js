@@ -224,8 +224,7 @@ async function displayCurrent()
 		{boxCombo_:colorBoxCombo, fieldCombo_:colorFieldCombo, currentBoxIndex_:currentColorBoxIndex, currentFieldIndex_:currentColorFieldIndex},		
 	];
 
-	let index = 0;
-	for (let {boxCombo_, fieldCombo_, currentBoxIndex_, currentFieldIndex_} of contexts)
+	for (let [index, {boxCombo_, fieldCombo_, currentBoxIndex_, currentFieldIndex_}] of contexts.entries())
 	{
 		if (currentBoxIndex_ == -1 && boxCombo_.value != "")
 		{
@@ -265,7 +264,6 @@ async function displayCurrent()
 		currentFieldIndex_ = ret4.rows[0].coalesce; // -1;
 
 		contexts[index] = {boxCombo_, fieldCombo_, currentBoxIndex_, currentFieldIndex_};
-		index++;
 	}
 
 	currentBoxIndex = contexts[0].currentBoxIndex_;
