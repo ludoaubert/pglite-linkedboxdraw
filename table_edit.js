@@ -409,7 +409,7 @@ async function addNewFieldToBox()
    		UPDATE rectangle
      		SET width = cte2.width, height = cte2.height
 		FROM cte2
-  		WHERE rectangle.idbox = cte2.idbox
+  		WHERE rectangle.idbox = cte2.idbox AND rectangle.idbox = ${currentBoxIndex} 
  	`);
 
 	await displayCurrent();
