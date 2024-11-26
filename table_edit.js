@@ -335,7 +335,10 @@ async function updateTitle()
 
 async function addNewBox()
 {
-	await db.exec(`INSERT INTO box(title, iddiagram) VALUES('${newBoxEditField.value}', 1)`);
+	await db.exec(`
+ 		SELECT setval(pg_get_serial_sequence('box', 'idbox'), coalesce(max(id)+1, 1), false) FROM box;
+ 		INSERT INTO box(title, iddiagram) VALUES('${newBoxEditField.value}', 1);
+   	`);
 	const ret1 = await db.query(`SELECT idbox FROM box WHERE title='${newBoxEditField.value}' AND iddiagram=1`);
 	currentBoxIndex = ret1.rows[0].idbox;
 	currentFieldIndex = -1;
