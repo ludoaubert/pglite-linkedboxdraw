@@ -230,7 +230,7 @@ async function displayCurrent()
 		if (currentBoxIndex_ == -1 && boxCombo_.value != "")
 		{
 			const ret = await db.query(`SELECT idbox FROM box WHERE title='${boxCombo_.value}'`);
-			currentBoxIndex_ = ret.rows[0];
+			currentBoxIndex_ = ret.rows[0].idbox;
 		}
 		const ret1 = await db.query(`SELECT STRING_AGG('<option>' || title || '</option>', '' ORDER BY title) FROM box`);
 		const boxComboInnerHTML = ret1.rows[0].string_agg;
