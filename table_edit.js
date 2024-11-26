@@ -141,7 +141,7 @@ async function init() {
 	applyRepartitionButton = document.getElementById("apply repartition");
 
 	const ret1 = await db.query(`SELECT string_agg('<option>' || code || '</option>', '' ORDER BY code) FROM tag WHERE type_code='RELATION_CARDINALITY'`);
-	const innerHTML = ret1.[0].string_agg;
+	const innerHTML = ret1[0].string_agg;
 
 	fromCardinalityCombo.innerHTML = innerHTML;
 	toCardinalityCombo.innerHTML = innerHTML;
@@ -190,22 +190,22 @@ async function init() {
 //avoid duplicate entries
 	newBoxEditField.addEventListener("change", async () => {
 		const ret = await db.query(`SELECT idbox FROM box WHERE title='${newBoxEditField.value}'`);
-		addBoxButton.disabled = (newBoxEditField.value == '' || ret..length>0) ? true : false;
+		addBoxButton.disabled = (newBoxEditField.value == '' || ret.length>0) ? true : false;
 	});
 	newFieldEditField.addEventListener("change", async () => {
 		const ret = await db.query(`SELECT COALESCE(idbox, -1) FROM box WHERE title='${boxCombo.value}'`);
-		currentBoxIndex = ret.[0].coalesce;
+		currentBoxIndex = ret[0].coalesce;
 		if (currentBoxIndex == -1)
 			addFieldButton.disabled = true;
 		else
 		{
 			const ret = await db.query(`SELECT idfield FROM field  WHERE name=${newFieldEditField.value} AND idbox=${currentBoxIndex}`);
-			addFieldButton.disabled = (newFieldEditField.value == '' || ret..length==1) ? true : false;
+			addFieldButton.disabled = (newFieldEditField.value == '' || ret.length==1) ? true : false;
 		}
 	});
 
 	const ret = await db.query(`SELECT STRING_AGG('<option>' || code || '</option>','' order by code) FROM tag WHERE type_code='COLOR'`);
-	colorCombo.innerHTML = ret.[0].string_agg;
+	colorCombo.innerHTML = ret[0].string_agg;
 
 	await displayCurrent();
 }
@@ -213,7 +213,7 @@ async function init() {
 async function displayCurrent()
 {
 	const ret = await db.query(`SELECT title FROM diagram WHERE iddiagram=1`);
-	const documentTitle = ret.[0].title ;
+	const documentTitle = ret[0].title ;
 	if (editTitle.value != documentTitle)
 		editTitle.value = documentTitle;
 
@@ -229,10 +229,10 @@ async function displayCurrent()
 		if (currentBoxIndex_ == -1 && boxCombo_.value != "")
 		{
 			const ret = await db.query(`SELECT idbox FROM box WHERE title='${boxCombo_.value}'`);
-			currentBoxIndex_ = ret.[0].idbox;
+			currentBoxIndex_ = ret[0].idbox;
 		}
 		const ret1 = await db.query(`SELECT STRING_AGG('<option>' || title || '</option>', '' ORDER BY title) FROM box`);
-		const boxComboInnerHTML = ret1.[0].string_agg;
+		const boxComboInnerHTML = ret1[0].string_agg;
 
 		if (boxCombo_.innerHTML != boxComboInnerHTML)
 		{
@@ -240,15 +240,15 @@ async function displayCurrent()
 			if (currentBoxIndex_ == -1)
 			{
 				const ret = await db.query(`SELECT idbox FROM box ORDER BY title LIMIT 1`);
-				currentBoxIndex_ = ret.[0].idbox;
+				currentBoxIndex_ = ret[0].idbox;
 			}
 		}
 
 		const ret2 = await db.query(`SELECT COALESCE(MAX(title), '') FROM box WHERE idbox=${currentBoxIndex_}`);
-		boxCombo_.value = ret2.[0].coalesce;
+		boxCombo_.value = ret2[0].coalesce;
 
 		const ret3 = await db.query(`SELECT STRING_AGG('<option>' || name || '</option>', '' ORDER BY name) FROM field WHERE idbox = ${currentBoxIndex_}`);
-		const fieldComboInnerHTML = ret3.[0].string_agg;
+		const fieldComboInnerHTML = ret3[0].string_agg;
 
 		if (fieldCombo_.innerHTML != fieldComboInnerHTML)
 		{
@@ -256,12 +256,12 @@ async function displayCurrent()
 			if (currentFieldIndex_ == -1)
 			{
 				const ret = await db.query(`SELECT idfield FROM field WHERE idbox=${currentBoxIndex_} ORDER BY name LIMIT 1`);
-				currentFieldIndex_ = ret..length > 0 ? ret.[0].idfeld : -1;
+				currentFieldIndex_ = ret.length > 0 ? ret[0].idfeld : -1;
 			}
 		}
 
 		const ret4 = await db.query(`SELECT COALESCE(MAX(idfield), -1) FROM field WHERE idbox=${currentBoxIndex_} AND name='${fieldCombo_.value}'`);
-		currentFieldIndex_ = ret4.[0].coalesce; // -1;
+		currentFieldIndex_ = ret4[0].coalesce; // -1;
 
 		contexts[index] = {boxCombo_, fieldCombo_, currentBoxIndex_, currentFieldIndex_};
 	}
@@ -282,7 +282,7 @@ async function displayCurrent()
        		JOIN box b ON b.idbox=f.idbox
 	 	WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
    	`);
-	const valueComboInnerHTML = ret3.[0].string_agg;
+	const valueComboInnerHTML = ret3[0].string_agg;
 
 	if (valueCombo.innerHTML != valueComboInnerHTML)
 		valueCombo.innerHTML = valueComboInnerHTML;
@@ -294,10 +294,10 @@ async function displayCurrent()
        		JOIN message_tag mt ON g.from_key=mt.idmessage
      		WHERE b.title='${boxCombo.value}'
   	`);
-	const currentBoxCommentIndex = ret4.[0].coalesce;
+	const currentBoxCommentIndex = ret4[0].coalesce;
 
 	const ret5 = await db.query(`SELECT COALESCE(MAX(message), '') FROM message_tag WHERE idmessage=${currentBoxCommentIndex}`);
-	const boxComment = ret5.[0].coalesce;
+	const boxComment = ret5[0].coalesce;
 	const reversedBoxComment = reverseJsonSafe(boxComment);
 	if (reversedBoxComment != boxCommentTextArea.value)
 	{
@@ -312,10 +312,10 @@ async function displayCurrent()
        		JOIN message_tag mt ON g.from_key=mt.idmessage
      		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
  	`)
-	const currentFieldCommentIndex = ret6.[0].coalesce;
+	const currentFieldCommentIndex = ret6[0].coalesce;
 
 	const ret7 = await db.query(`SELECT COALESCE(MAX(message),'') FROM message_tag WHERE idmessage=${currentFieldCommentIndex}`);
-	const fieldComment = ret7.[0].coalesce;
+	const fieldComment = ret7[0].coalesce;
 	const reversedFieldComment = reverseJsonSafe(fieldComment);
 
 	if (reversedFieldComment != fieldCommentTextArea.value)
