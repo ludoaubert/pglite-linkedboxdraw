@@ -42,8 +42,6 @@ var dropBoxCommentButton ;
 var fieldCommentTextArea ;
 var updateFieldCommentButton;
 var dropFieldCommentButton;
-var isPrimaryKeyCheckBox ;
-var isForeignKeyCheckBox ;
 var linkCombo ;
 var dropLinkButton ;
 var addLinkButton ;
@@ -114,8 +112,6 @@ async function init() {
 	fieldCommentTextArea = document.getElementById("field comment");
 	updateFieldCommentButton = document.getElementById("update field comment");
 	dropFieldCommentButton = document.getElementById("drop field comment");
-	isPrimaryKeyCheckBox = document.getElementById("PK");
-	isForeignKeyCheckBox = document.getElementById("FK");
 	linkCombo = document.getElementById("links");
 	dropLinkButton = document.getElementById("drop link");
 	addLinkButton = document.getElementById("add link");
@@ -181,8 +177,6 @@ async function init() {
 	addColorButton.addEventListener("click", addNewColor);
 	updateColorButton.addEventListener("click", updateColor);
 	applyRepartitionButton.addEventListener("click", async () => {await ApplyRepartition(); await drawDiag();});
-	newFieldEditField.addEventListener("keypress", onNewFieldUpdate);
-	newFieldEditField.addEventListener("paste", onNewFieldUpdate);
 
 //avoid duplicate entries
 	newBoxEditField.addEventListener("change", async () => {
@@ -385,22 +379,6 @@ async function updateBox()
     	//mycontexts.rectangles[currentBoxIndex] = rec;
 
 	await drawDiag();
-}
-
-
-async function updateFieldAttributes()
-{
-
-}
-
-
-async function onNewFieldUpdate()
-{
-	if (newFieldEditField.value.length == 0)
-	{
-		isPrimaryKeyCheckBox.checked = false;
-		isForeignKeyCheckBox.checked = false;
-	}
 }
 
 
