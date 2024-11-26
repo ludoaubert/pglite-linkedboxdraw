@@ -612,7 +612,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
   		WITH cte AS (
   			SELECT t.context, b.idbox, 1 AS position, FORMAT('<g id="g_%1$s" transform="translate(%4$s,%5$s)">
 				<rect id="rect_%1$s" x="%4$s" y="%5$s" width="%2$s" height="%3$s" />
-				<foreignObject id="box%1$s" width="%2$s" height="%3$s">
+				<foreignObject id="box%1$s" x="%4$s" y="%5$s" width="%2$s" height="%3$s">
      				<table id="box%1$s">
 	  			<thead><tr><th id="b%1$s">%6$s</th></tr></thead>
        				<tbody>',
