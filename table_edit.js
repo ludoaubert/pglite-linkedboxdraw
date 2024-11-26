@@ -163,7 +163,6 @@ async function init() {
 	updateFieldButton.addEventListener("click", updateField) ;
 	updateFieldCommentButton.addEventListener("click", updateFieldComment);
 	dropFieldCommentButton.addEventListener("click", dropFieldComment);
-	valueCombo.addEventListener("change", updateValueAttributes);
 	editValueButton.addEventListener("click", editValueFromField);
 	addValueButton.addEventListener("click", addNewValueToField);
 	dropValueButton.addEventListener("click", dropValueFromField);
