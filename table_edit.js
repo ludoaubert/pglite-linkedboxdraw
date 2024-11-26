@@ -239,12 +239,12 @@ async function displayCurrent()
 			boxCombo_.innerHTML = boxComboInnerHTML;
 			if (currentBoxIndex_ == -1)
 			{
-				const ret = await db.query(`SELECT COALESCE(idbox, -1) FROM box ORDER BY title LIMIT 1`);
-				currentBoxIndex_ = ret.rows[0].coalesce;
+				const ret = await db.query(`SELECT idbox FROM box ORDER BY title LIMIT 1`);
+				currentBoxIndex_ = ret.rows[0].idbox;
 			}
 		}
 
-		const ret2 = await db.query(`SELECT COALESCE(title, '') FROM box WHERE idbox=${currentBoxIndex_}`);
+		const ret2 = await db.query(`SELECT COALESCE(MAX(title), '') FROM box WHERE idbox=${currentBoxIndex_}`);
 		boxCombo_.value = ret2.rows[0].coalesce;
 
 		const ret3 = await db.query(`SELECT STRING_AGG('<option>' || name || '</option>', '' ORDER BY name) FROM field WHERE idbox = ${currentBoxIndex_}`);
@@ -255,12 +255,12 @@ async function displayCurrent()
 			fieldCombo_.innerHTML = fieldComboInnerHTML;
 			if (currentFieldIndex_ == -1)
 			{
-				const ret = await db.query(`SELECT COALESCE(idfield, -1) FROM field WHERE idbox=${currentBoxIndex_} ORDER BY name LIMIT 1`);
-				currentFieldIndex_ = ret.rows[0].coalesce;
+				const ret = await db.query(`SELECT idfield FROM field WHERE idbox=${currentBoxIndex_} ORDER BY name LIMIT 1`);
+				currentFieldIndex_ = ret.rows.length > 0 ? ret.rows[0].idfeld : -1;
 			}
 		}
 
-		const ret4 = await db.query(`SELECT COALESCE(idfield, -1) FROM field WHERE idbox=${currentBoxIndex_} AND name='${fieldCombo_.value}'`);
+		const ret4 = await db.query(`SELECT COALESCE(MAX(idfield), -1) FROM field WHERE idbox=${currentBoxIndex_} AND name='${fieldCombo_.value}'`);
 		currentFieldIndex_ = ret4.rows[0].coalesce; // -1;
 
 		contexts[index] = {boxCombo_, fieldCombo_, currentBoxIndex_, currentFieldIndex_};
@@ -288,7 +288,7 @@ async function displayCurrent()
 		valueCombo.innerHTML = valueComboInnerHTML;
 
 	const ret4 = await db.query(`
- 		SELECT COALESCE(mt.idmessage, -1)
+ 		SELECT COALESCE(MAX(mt.idmessage), -1)
    		FROM box b
      		JOIN graph g ON g.to_table='box' AND b.idbox=g.to_key AND g.from_table='message_tag'
        		JOIN message_tag mt ON g.from_key=mt.idmessage
@@ -296,7 +296,7 @@ async function displayCurrent()
   	`);
 	const currentBoxCommentIndex = ret4.rows[0].coalesce;
 
-	const ret5 = await db.query(`SELECT COALESCE(message, '') FROM message_tag WHERE idmessage=${currentBoxCommentIndex}`);
+	const ret5 = await db.query(`SELECT COALESCE(MAX(message), '') FROM message_tag WHERE idmessage=${currentBoxCommentIndex}`);
 	const boxComment = ret5.rows[0].coalesce;
 	const reversedBoxComment = reverseJsonSafe(boxComment);
 	if (reversedBoxComment != boxCommentTextArea.value)
@@ -305,7 +305,7 @@ async function displayCurrent()
 	}
 
 	const ret6 = await db.query(`
- 		SELECT COALESCE(mt.idmessage, -1)
+ 		SELECT COALESCE(MAX(mt.idmessage), -1)
    		FROM box b
      		JOIN field f ON f.idbox=b.idbox
      		JOIN graph g ON g.to_table='field' AND f.idfield=g.to_key AND g.from_table='message_tag'
@@ -314,7 +314,7 @@ async function displayCurrent()
  	`)
 	const currentFieldCommentIndex = ret6.rows[0].coalesce;
 
-	const ret7 = await db.query(`SELECT COALESCE(message,'') FROM message_tag WHERE idmessage=${currentFieldCommentIndex}`);
+	const ret7 = await db.query(`SELECT COALESCE(MAX(message),'') FROM message_tag WHERE idmessage=${currentFieldCommentIndex}`);
 	const fieldComment = ret7.rows[0].coalesce;
 	const reversedFieldComment = reverseJsonSafe(fieldComment);
 
