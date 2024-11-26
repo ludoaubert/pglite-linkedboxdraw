@@ -245,7 +245,7 @@ async function displayCurrent()
 		}
 
 		const ret2 = await db.query(`SELECT title FROM box WHERE idbox=${currentBoxIndex_}`);
-		boxCombo_.value = ret2.rows[0];
+		boxCombo_.value = ret2.rows[0].title;
 
 		const ret3 = await db.query(`SELECT STRING_AGG('<option>' || name || '</option>', '' ORDER BY name) FROM field WHERE idbox = ${currentBoxIndex_}`);
 		const fieldComboInnerHTML = ret3.rows[0].string_agg;
