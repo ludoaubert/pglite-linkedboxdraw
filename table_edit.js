@@ -426,7 +426,7 @@ async function addNewFieldToBox()
 		), cte2 AS (
   			SELECT idbox, MAX(width) AS width, LEAST(SUM(height), ${RECTANGLE_BOTTOM_CAP}) AS height
     			FROM cte
-      			WHERE idbox = ${currentBoxIndex}
+      			GROUP BY idbox
 	 	)
    		UPDATE rectangle r
      		SET r.width = cte2.width, r.height = cte2.height
