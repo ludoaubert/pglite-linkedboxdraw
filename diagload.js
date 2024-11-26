@@ -612,7 +612,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
   		WITH cte AS (
   			SELECT t.context, b.idbox, 1 AS position, FORMAT('
      				<g id="g_%1$s" transform="translate(%4$s,%5$s)">
-				<rect id="rect_%1$s" x="%4$s" y="%5$s" width="%2$s" height="%3$s" />
+				<rect id="rect_%1$s" width="%2$s" height="%3$s" />
 				<foreignObject id="box%1$s" width="%2$s" height="%3$s">
      				<table id="box%1$s">
 	  			<thead><tr><th id="b%1$s">%6$s</th></tr></thead>
@@ -645,8 +645,8 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 	  			<rect id="sizer_%1$s" x="%2$s" y="%3$s" width="4" height="4" />
       				</g>',
      				r.idrectangle, --%1
-	  			t.x + r.width - 4, --%2
-       				t.y + r.height - 4) --%3 
+	  			r.width - 4, --%2
+       				r.height - 4) --%3 
 					AS html
      			FROM translation t
 	 		JOIN rectangle r ON t.idrectangle=r.idrectangle
