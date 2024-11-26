@@ -151,41 +151,41 @@ async function init() {
 				button.addEventListener("click", (event) => switchCollapsible(button));
 			});
 
-	editTitle.addEventListener("change", () => updateTitle());
-	newDiagramButton.addEventListener("click", () => {newDiagram(); displayCurrent(); drawDiag();});
-	boxCombo.addEventListener("change", () => {currentBoxIndex = -1; displayCurrent();});
-	addBoxButton.addEventListener("click", () => addNewBox());
-	dropBoxButton.addEventListener("click", () => dropBox());
-	updateBoxButton.addEventListener("click", () => updateBox());
-	updateBoxCommentButton.addEventListener("click", () => updateBoxComment()) ;
-	dropBoxCommentButton.addEventListener("click", () => dropBoxComment()) ;
-	fieldCombo.addEventListener("change", () => {currentFieldIndex = -1; displayCurrent();});
-	addFieldButton.addEventListener("click", () => addNewFieldToBox()) ;
-	dropFieldButton.addEventListener("click", () => dropFieldFromBox()) ;
-	updateFieldButton.addEventListener("click", () => updateField()) ;
-	updateFieldCommentButton.addEventListener("click", () => updateFieldComment());
-	dropFieldCommentButton.addEventListener("click", () => dropFieldComment());
-	valueCombo.addEventListener("change", () => updateValueAttributes());
-	editValueButton.addEventListener("click", () => editValueFromField());
-	addValueButton.addEventListener("click", () => addNewValueToField());
-	dropValueButton.addEventListener("click", () => dropValueFromField());
-	updateValueButton.addEventListener("click", () => updateValue());
-	linkCombo.addEventListener("click", () => linkComboOnClick());
-	dropLinkButton.addEventListener("click", () => {linkComboOnClick(); dropLink();});
-	fromBoxCombo.addEventListener("change", () => {currentFromBoxIndex = -1; displayCurrent();});
-	fromFieldCombo.addEventListener("change", () => {currentFromFieldIndex = -1; displayCurrent();});
-	toBoxCombo.addEventListener("change", () => {currentToBoxIndex = -1; displayCurrent();});
-	toFieldCombo.addEventListener("change", () => {currentToFieldIndex = -1; displayCurrent();});
-	addLinkButton.addEventListener("click", () => addNewLink()) ;
-	colorsCombo.addEventListener("click", () => colorsComboOnClick());
-	dropColorButton.addEventListener("click", () => dropColor());
-	colorBoxCombo.addEventListener("change", () => {currentColorBoxIndex = -1; displayCurrent();});
-	colorFieldCombo.addEventListener("change", () => {currentColorFieldIndex = -1; displayCurrent();});
-	addColorButton.addEventListener("click", () => addNewColor());
-	updateColorButton.addEventListener("click", () => updateColor());
-	applyRepartitionButton.addEventListener("click", async () => {await ApplyRepartition(); drawDiag();});
-	newFieldEditField.addEventListener("keypress", () => {onNewFieldUpdate();});
-	newFieldEditField.addEventListener("paste", () => {onNewFieldUpdate();});
+	editTitle.addEventListener("change", async () => {await updateTitle()});
+	newDiagramButton.addEventListener("click", async () => {await newDiagram(); await displayCurrent(); await drawDiag();});
+	boxCombo.addEventListener("change", async () => {currentBoxIndex = -1; await displayCurrent();});
+	addBoxButton.addEventListener("click", async () => {await addNewBox()});
+	dropBoxButton.addEventListener("click", async () => {await dropBox()});
+	updateBoxButton.addEventListener("click", async () => {await updateBox()});
+	updateBoxCommentButton.addEventListener("click", async () => {await updateBoxComment()}) ;
+	dropBoxCommentButton.addEventListener("click", async () => {await dropBoxComment()}) ;
+	fieldCombo.addEventListener("change", async () => {currentFieldIndex = -1; await displayCurrent();});
+	addFieldButton.addEventListener("click", async () => {await addNewFieldToBox()}) ;
+	dropFieldButton.addEventListener("click", async () => {await dropFieldFromBox()}) ;
+	updateFieldButton.addEventListener("click", async () => {await updateField()}) ;
+	updateFieldCommentButton.addEventListener("click", async () => {await updateFieldComment()});
+	dropFieldCommentButton.addEventListener("click", async () => {await dropFieldComment()});
+	valueCombo.addEventListener("change", async () => {await updateValueAttributes()});
+	editValueButton.addEventListener("click", async () => {await editValueFromField()});
+	addValueButton.addEventListener("click", async () => {await addNewValueToField()});
+	dropValueButton.addEventListener("click", async () => {await dropValueFromField()});
+	updateValueButton.addEventListener("click", async () => {await updateValue()});
+	linkCombo.addEventListener("click", async () => {await linkComboOnClick()});
+	dropLinkButton.addEventListener("click", async () => {await linkComboOnClick(); await dropLink();});
+	fromBoxCombo.addEventListener("change", async () => {currentFromBoxIndex = -1; await displayCurrent();});
+	fromFieldCombo.addEventListener("change", async () => {currentFromFieldIndex = -1; await displayCurrent();});
+	toBoxCombo.addEventListener("change", async () => {currentToBoxIndex = -1; await displayCurrent();});
+	toFieldCombo.addEventListener("change", async () => {currentToFieldIndex = -1; await displayCurrent();});
+	addLinkButton.addEventListener("click", async () => {await addNewLink()}) ;
+	colorsCombo.addEventListener("click", async () => {await colorsComboOnClick()});
+	dropColorButton.addEventListener("click", async () => {await dropColor()});
+	colorBoxCombo.addEventListener("change", async () => {currentColorBoxIndex = -1; await displayCurrent();});
+	colorFieldCombo.addEventListener("change", async () => {currentColorFieldIndex = -1; await displayCurrent();});
+	addColorButton.addEventListener("click", async () => {await addNewColor()});
+	updateColorButton.addEventListener("click", async () => {await updateColor()});
+	applyRepartitionButton.addEventListener("click", async () => {await ApplyRepartition(); await drawDiag();});
+	newFieldEditField.addEventListener("keypress", async () => {await onNewFieldUpdate();});
+	newFieldEditField.addEventListener("paste", async () => {await onNewFieldUpdate();});
 
 //avoid duplicate entries
 	newBoxEditField.addEventListener("change", async () => {
@@ -193,8 +193,8 @@ async function init() {
 		addBoxButton.disabled = (newBoxEditField.value == '' || ret.rows.length>0) ? true : false;
 	});
 	newFieldEditField.addEventListener("change", async () => {
-		const ret = await db.query(`SELECT idbox FROM box WHERE title='${boxCombo.value}'`);
-		currentBoxIndex = ret.rows[0];
+		const ret = await db.query(`SELECT COALESCE(idbox, -1) FROM box WHERE title='${boxCombo.value}'`);
+		currentBoxIndex = ret.rows[0].coalesce;
 		if (currentBoxIndex == -1)
 			addFieldButton.disabled = true;
 		else
@@ -240,8 +240,8 @@ async function displayCurrent()
 			boxCombo_.innerHTML = boxComboInnerHTML;
 			if (currentBoxIndex_ == -1)
 			{
-				const ret = await db.query(`SELECT * FROM box`);
-				currentBoxIndex_ = ret.rows.length > 0 ? 0 : -1;
+				const ret = await db.query(`SELECT idbox FROM box ORDER BY title LIMIT 1`);
+				currentBoxIndex_ = ret.rows.length > 0 ? ret.rows[0].idbox : -1;
 			}
 		}
 
@@ -249,20 +249,20 @@ async function displayCurrent()
 		boxCombo_.value = ret2.rows[0];
 
 		const ret3 = await db.query(`SELECT STRING_AGG('<option>' || name || '</option>', '' ORDER BY name) FROM field WHERE idbox = ${currentBoxIndex_}`);
-		const fieldComboInnerHTML = ret3.rows[0];
+		const fieldComboInnerHTML = ret3.rows[0].string_agg;
 
 		if (fieldCombo_.innerHTML != fieldComboInnerHTML)
 		{
 			fieldCombo_.innerHTML = fieldComboInnerHTML;
 			if (currentFieldIndex_ == -1)
 			{
-				const ret = await db.query(`SELECT COUNT(*) FROM fields WHERE idbox=${currentBoxIndex_}`);
-				currentFieldIndex_ = ret.rows.length > 0 ? 0 : -1;
+				const ret = await db.query(`SELECT idfield FROM field WHERE idbox=${currentBoxIndex_} ORDER BY name LIMIT 1`);
+				currentFieldIndex_ = ret.rows.length > 0 ? ret.rows[0].idfield : -1;
 			}
 		}
 
-		const ret4 = await db.query(`SELECT idfield FROM field WHERE idbox=${currentBoxIndex_} AND name='${fieldCombo_.value}'`);
-		currentFieldIndex_ = ret4.rows[0]; // -1;
+		const ret4 = await db.query(`SELECT COALESCE(idfield, -1) FROM field WHERE idbox=${currentBoxIndex_} AND name='${fieldCombo_.value}'`);
+		currentFieldIndex_ = ret4.rows[0].coalesce; // -1;
 
 		contexts[index] = {boxCombo_, fieldCombo_, currentBoxIndex_, currentFieldIndex_};
 		index++;
@@ -284,22 +284,22 @@ async function displayCurrent()
        		JOIN box b ON b.idbox=f.idbox
 	 	WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
    	`);
-	const valueComboInnerHTML = ret3.rows[0];
+	const valueComboInnerHTML = ret3.rows[0].string_agg;
 
 	if (valueCombo.innerHTML != valueComboInnerHTML)
 		valueCombo.innerHTML = valueComboInnerHTML;
 
 	const ret4 = await db.query(`
- 		SELECT mt.idmessage
+ 		SELECT COALESCE(mt.idmessage, -1)
    		FROM box b
      		JOIN graph g ON g.to_table='box' AND b.idbox=g.to_key AND g.from_table='message_tag'
        		JOIN message_tag mt ON g.from_key=mt.idmessage
      		WHERE b.title='${boxCombo.value}'
   	`);
-	const currentBoxCommentIndex = ret4.rows[0];
+	const currentBoxCommentIndex = ret4.rows[0].coalesce;
 
-	const ret5 = await db.query(`SELECT message FROM message_tag WHERE idmessage=${currentBoxCommentIndex}`);
-	const boxComment = ret5.rows[0];
+	const ret5 = await db.query(`SELECT COALESCE(message, '') FROM message_tag WHERE idmessage=${currentBoxCommentIndex}`);
+	const boxComment = ret5.rows[0].coalesce;
 	const reversedBoxComment = reverseJsonSafe(boxComment);
 	if (reversedBoxComment != boxCommentTextArea.value)
 	{
@@ -307,17 +307,17 @@ async function displayCurrent()
 	}
 
 	const ret6 = await db.query(`
- 		SELECT mt.idmessage
+ 		SELECT COALESCE(mt.idmessage, -1)
    		FROM box b
      		JOIN field f ON f.idbox=b.idbox
      		JOIN graph g ON g.to_table='field' AND f.idfield=g.to_key AND g.from_table='message_tag'
        		JOIN message_tag mt ON g.from_key=mt.idmessage
      		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
  	`)
-	const currentFieldCommentIndex = ret6.rows[0];
+	const currentFieldCommentIndex = ret6.rows[0].coalesce;
 
-	const ret7 = await db.query(`SELECT message FROM message_tag WHERE idmessage=${currentFieldCommentIndex}`);
-	const fieldComment = ret7.rows[0];
+	const ret7 = await db.query(`SELECT COALESCE(message,'') FROM message_tag WHERE idmessage=${currentFieldCommentIndex}`);
+	const fieldComment = ret7.rows[0].coalesce;
 	const reversedFieldComment = reverseJsonSafe(fieldComment);
 
 	if (reversedFieldComment != fieldCommentTextArea.value)
@@ -386,13 +386,13 @@ async function updateBox()
 }
 
 
-function updateFieldAttributes()
+async function updateFieldAttributes()
 {
 
 }
 
 
-function onNewFieldUpdate()
+async function onNewFieldUpdate()
 {
 	if (newFieldEditField.value.length == 0)
 	{
@@ -450,7 +450,7 @@ async function dropFieldFromBox()
 	drawDiag();
 }
 
-function editValueFromField()
+async function editValueFromField()
 {
 
 }
@@ -497,7 +497,7 @@ async function dropValueFromField()
 	displayCurrent();
 }
 
-function selectLink()
+async function selectLink()
 {
 
 }
@@ -513,13 +513,13 @@ async function produce_options(links)
 	 		LEFT JOIN field field_from ON field_from.idfield = l.idfield_from
    			LEFT JOIN field field_to ON field_to.idfield = l.idfield_to
       		)
-		SELECT jsonb_agg(jsonb_build_object('option', option, 'idlink', idlink) ORDER BY option)
+		SELECT json_agg(json_build_object('option', option, 'idlink', idlink) ORDER BY option)
   	`);
 
-	return JSON.parse(ret.rows[0]);
+	return ret.rows[0].json_agg;
 }
 
-function linkComboOnClick()
+async function linkComboOnClick()
 {
 	const options = produce_options(mydata.links)
 	
@@ -553,13 +553,13 @@ async function addNewLink()
 	`);
 
 	const ret1 = await db.query(`SELECT idbox FROM box WHERE title='${fromBoxCombo.value}'`);
-	currentFromBoxIndex = ret1.rows[0];
+	currentFromBoxIndex = ret1.rows[0].idbox;
 	const ret2 = await db.query(`SELECT idfield FROM field WHERE idbox=${currentFromBoxIndex} AND name='${fromFieldCombo.value}'`);
-	currentFromFieldIndex = ret2.rows[0];
+	currentFromFieldIndex = ret2.rows[0].idfield;
 	const ret3 = await db.query(`SELECT idbox FROM box WHERE title='${toBoxCombo.value}'`);
-	currentToBoxIndex = ret3.rows[0];
+	currentToBoxIndex = ret3.rows[0].idbox;
 	const ret4 = await db.query(`SELECT idfield FROM field WHERE idbox=${currentToBoxIndex} AND name='${toFieldCombo.value}'`);
-	currentToFieldIndex = ret4.rows[0];
+	currentToFieldIndex = ret4.rows[0].idfield;
 
 	for (let [selectedContextIndex, context] of mycontexts.contexts.entries())
 	{
@@ -690,7 +690,7 @@ async function updateFieldComment()
 	drawDiag();
 }
 
-function colorsComboOnClick()
+async function colorsComboOnClick()
 {
 	console.log("colorsComboOnClick");
 	const innerHTML = mydata.fieldColors
