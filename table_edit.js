@@ -518,7 +518,7 @@ async function produce_options()
 
 async function linkComboOnClick()
 {
-	const options = produce_options()
+	const options = await produce_options()
 	
 	const innerHTML = options.map(({option, idlink}) => `<option>${option}</option>`)
 				.join('');
