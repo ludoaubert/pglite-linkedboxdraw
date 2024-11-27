@@ -692,7 +692,7 @@ async function produce_color_options()
 {
 	const ret = await db.query(`
  		WITH cte AS (
- 			SELECT FORMAT('<option>%s.%s.%s</option>', b.title, f.name, t.code) AS option, g.idgraph
+ 			SELECT FORMAT('%s.%s.%s', b.title, f.name, t.code) AS option, g.idgraph
    			FROM graph g
      			JOIN tag t ON g.from_table='tag' AND g.from_key=t.idtag
        			JOIN field f ON g.to_table='field' AND g.to_key=f.idfield
