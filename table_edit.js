@@ -498,7 +498,7 @@ async function selectLink()
 
 }
 
-async function produce_options()
+async function produce_link_options()
 {
 	const ret = await db.query(`
  		WITH cte AS (
@@ -518,7 +518,7 @@ async function produce_options()
 
 async function linkComboOnClick()
 {
-	const options = await produce_options()
+	const options = await produce_link_options()
 	
 	const innerHTML = options.map(({option, idlink}) => `<option>${option}</option>`)
 				.join('');
@@ -574,7 +574,8 @@ async function addNewLink()
 
 async function dropLink()
 {
-	const {option, idlink} = await produce_options()[linkCombo.selectedIndex];
+	const options = await produce_link_options();
+	const {option, idlink} = options[linkCombo.selectedIndex];
 	await db.exec(`DELETE FROM link WHERE idlink=${idlink}`);
 	linkComboOnClick();
 
@@ -687,18 +688,30 @@ async function updateFieldComment()
 	await drawDiag();
 }
 
-async function colorsComboOnClick()
+async function produce_color_options()
 {
 	const ret = await db.query(`
- 		SELECT STRING_AGG(FORMAT('<option>%s.%s.%s</option>', b.title, f.name, t.code), '' ORDER BY b.title, f.name, t.code)
-   		FROM graph g
-     		JOIN tag t ON g.from_table='tag' AND g.from_key=t.idtag
-       		JOIN field f ON g.to_table='field' AND g.to_key=f.idfield
-		JOIN box b ON b.idbox=f.idbox
-	 	WHERE t.type_code='COLOR'
+ 		WITH cte AS (
+ 			SELECT FORMAT('<option>%s.%s.%s</option>', b.title, f.name, t.code) AS option, g.idgraph
+   			FROM graph g
+     			JOIN tag t ON g.from_table='tag' AND g.from_key=t.idtag
+       			JOIN field f ON g.to_table='field' AND g.to_key=f.idfield
+			JOIN box b ON b.idbox=f.idbox
+	 		WHERE t.type_code='COLOR'
+    		)
+		SELECT json_agg(json_build_object('option', option, 'idgraph', idgraph) ORDER BY option)
+  		FROM cte      
  	`);
-	
-	const innerHTML = ret.rows[0].string_agg;
+
+	return ret.rows[0].json_agg;
+}
+
+async function colorsComboOnClick()
+{
+	const options = await produce_color_options();
+
+	const innerHTML = options.map(({option, idgraph}) => `<option>${option}</option>`)
+				.join('');
 
 	if (colorsCombo.innerHTML != innerHTML)
 		colorsCombo.innerHTML = innerHTML;
@@ -738,12 +751,8 @@ async function updateColor()
 
 async function dropColor()
 {
-/*
-TODO
-	console.log(mydata.fieldColors);
-	mydata.fieldColors = mydata.fieldColors.filter((_, index) => index != colorsCombo.selectedIndex );
-	console.log(mydata.fieldColors);
+	const options = await produce_color_options();
+	const {option, idgraph} = options[colorsCombo.selectedIndex];
+	await db.exec(`DELETE FROM graph WHERE idgraph=${idgraph}`);
 	colorsComboOnClick();
-	drawDiag();
- */
 }
