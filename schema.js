@@ -65,6 +65,7 @@ CREATE TABLE IF NOT EXISTS message_tag(
   message TEXT
 );
 
+/*
 CREATE FUNCTION is_table_primary_key(_table_name TEXT, _id INTEGER) RETURNS BOOLEAN AS
 BEGIN
   RETURN
@@ -75,6 +76,7 @@ BEGIN
     EXISTS(SELECT * FROM value WHERE _table_name='value' AND _id=idvalue) OR
     EXISTS(SELECT * FROM link WHERE _table_name='link' AND _id=idlink);
 END
+*/
 
 CREATE TYPE source_table AS ENUM ('tag', 'message_tag');
 CREATE TYPE target_table AS ENUM ('box', 'field', 'value', 'link');
@@ -85,9 +87,9 @@ CREATE TABLE IF NOT EXISTS graph(
   from_key INTEGER,
   to_table target_table,
   to_key INTEGER,
-  UNIQUE(from_table, from_key, to_table, to_key),
+  UNIQUE(from_table, from_key, to_table, to_key)/*,
   CHECK(is_table_primary_key(from_table::text, from_key)),
-  CHECK(is_table_primary_key(to_table::text, to_key))
+  CHECK(is_table_primary_key(to_table::text, to_key))*/
 );
 
 -- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('message_tag',1,'box',1);
