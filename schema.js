@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS frame(
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) 
 );
 
-CREATE TABLE rectangle(
+CREATE TABLE IF NOT EXISTS rectangle(
   idrectangle SERIAL PRIMARY KEY,
   width INTEGER,
   height INTEGER,
@@ -113,7 +113,7 @@ CREATE TABLE rectangle(
   FOREIGN KEY (idbox) REFERENCES box(idbox)
 );
 
-CREATE TABLE translation(
+CREATE TABLE IF NOT EXISTS translation(
   idtranslation SERIAL PRIMARY KEY,
   context INTEGER DEFAULT 1,
   idrectangle INTEGER,
@@ -124,7 +124,7 @@ CREATE TABLE translation(
   FOREIGN KEY (idrectangle) REFERENCES rectangle(idrectangle)
 );
 
-CREATE TABLE polyline(
+CREATE TABLE IF NOT EXISTS polyline(
   idpolyline SERIAL PRIMARY KEY,
   context INTEGER DEFAULT 1,
   idlink INTEGER,
