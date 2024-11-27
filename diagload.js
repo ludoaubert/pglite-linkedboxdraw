@@ -573,6 +573,22 @@ function drawLinks(links)
 	return innerHTML;
 }
 
+async function drawDiagramStyle() {
+	const ret = await db.query(`
+ 		WITH cte AS (
+			SELECT FORMAT('#b%sf%s {backgroundColor:%s}', f.idbox, f.idfield, t.code) AS css
+  			FROM graph g
+    			JOIN tag t ON g.from_table='tag' AND g.from_key=t.idtag
+      			JOIN field f ON g.to_table='field' AND g.to_key=f.idfield
+      			WHERE t.type_code=('CUT_LINK_COLOR', 'COLOR')
+	 	)
+   		SELECT STRING_AGG(css, '\n')
+     		FROM cte
+	`);
+
+ 	const css = ret.rows[0].string_agg;
+	return css;
+}
 
 async function drawDiagram() {
 
@@ -669,6 +685,10 @@ async function drawDiag()
 	document.getElementById("diagram").innerHTML = await drawDiagram();
 	addEventListeners();
 	await updateCutLinks();
+	const css = await drawDiagramStyle();
+	var sheet = document.createElement('style');
+	sheet.innerHTML = css;
+	document.body.appendChild(sheet);
 }
 
 
