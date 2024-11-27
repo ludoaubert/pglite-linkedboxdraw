@@ -867,7 +867,7 @@ async function updateCutLinks(){
   		INSERT INTO graph(from_table, from_key, to_table, to_key)
     		SELECT from_table, from_key, to_table, to_key
       		FROM cte2
-		WHERE NOT EXIST (
+		WHERE NOT EXISTS (
      			SELECT *
        			FROM graph g
 	   		WHERE g.from_table=cte2.from_table AND g.from_key=cte2.from_key AND g.to_table=cte2.to_table AND g.to_key=cte2.to_key
