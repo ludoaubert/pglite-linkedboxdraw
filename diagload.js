@@ -866,7 +866,7 @@ async function updateCutLinks(){
 			) AND EXISTS (
    				SELECT *
        				FROM tag t
-	   			WHERE t.type_code='CUT_LINK_COLOR' t.idtag=g.from_key  
+	   			WHERE t.type_code='CUT_LINK_COLOR' AND t.idtag=g.from_key  
 			)
 		)
   		INSERT INTO graph(from_table, from_key, to_table, to_key)
