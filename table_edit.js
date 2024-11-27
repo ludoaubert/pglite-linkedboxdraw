@@ -754,5 +754,6 @@ async function dropColor()
 	const options = await produce_color_options();
 	const {option, idgraph} = options[colorsCombo.selectedIndex];
 	await db.exec(`DELETE FROM graph WHERE idgraph=${idgraph}`);
-	colorsComboOnClick();
+	await colorsComboOnClick();
+	await drawDiag();
 }
