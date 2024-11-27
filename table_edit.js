@@ -694,6 +694,7 @@ async function colorsComboOnClick()
    		FROM graph g
      		JOIN tag t ON g.from_table='tag' AND g.from_key=t.idtag
        		JOIN field f ON g.to_table='field' AND g.to_key=f.idfield
+		JOIN box b ON b.idbox=f.idbox
 	 	WHERE t.type_code='COLOR'
  	`);
 	
