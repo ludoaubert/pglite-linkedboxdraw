@@ -190,7 +190,7 @@ async function init() {
 			addFieldButton.disabled = true;
 		else
 		{
-			const ret = await db.query(`SELECT idfield FROM field  WHERE name=${newFieldEditField.value} AND idbox=${currentBoxIndex}`);
+			const ret = await db.query(`SELECT idfield FROM field  WHERE name='${newFieldEditField.value}' AND idbox=${currentBoxIndex}`);
 			addFieldButton.disabled = (newFieldEditField.value == '' || ret.length==1) ? true : false;
 		}
 	});
