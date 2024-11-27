@@ -853,16 +853,13 @@ async function updateCutLinks(){
 		), cte2 AS (
         		SELECT DISTINCT from_table, from_key, to_table, to_key
       			FROM cte
-        	), cte_delete AS (
-  			DELETE FROM graph
-          		USING graph g
-          		LEFT JOIN cte2 ON g.from_table=cte2.from_table AND g.from_key=cte2.from_key AND g.to_table=cte2.to_table AND g.to_key=cte2.to_key
-          		WHERE cte2.from_table IS NULL
-    		)
-        	INSERT INTO graph(from_table, from_key, to_table, to_key)
-		SELECT cte2.from_table, cte2.from_key, cte2.to_table, cte2.to_key
-        	FROM cte2
-        	LEFT JOIN graph g ON g.from_table=cte2.from_table AND g.from_key=cte2.from_key AND g.to_table=cte2.to_table AND g.to_key=cte2.to_key
-        	WHERE g.from_table IS NULL
+        	)
+		MERGE INTO graph g
+		USING cte2
+		ON g.from_table=cte2.from_table AND g.from_key=cte2.from_key AND g.to_table=cte2.to_table AND g.to_key=cte2.to_key
+		WHEN NOT MATCHED BY TARGET THEN
+  			INSERT(from_table, from_key, to_table, to_key) VALUES(cte2.from_table, cte2.from_key, cte2.to_table, cte2.to_key)
+		WHEN NOT MATCHED BY SOURCE THEN
+  			DELETE;
  	`);
 }
