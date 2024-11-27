@@ -859,7 +859,7 @@ async function updateCutLinks(){
           		LEFT JOIN cte2 ON g.from_table=cte2.from_table AND g.from_key=cte2.from_key AND g.to_table=cte2.to_table AND g.to_key=cte2.to_key
           		WHERE cte2.from_table IS NULL
     		)
-        	INSERT INTO graph
+        	INSERT INTO graph(from_table, from_key, to_table, to_key)
 		SELECT cte2.from_table, cte2.from_key, cte2.to_table, cte2.to_key
         	FROM cte2
         	LEFT JOIN graph g ON g.from_table=cte2.from_table AND g.from_key=cte2.from_key AND g.to_table=cte2.to_table AND g.to_key=cte2.to_key
