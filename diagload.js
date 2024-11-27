@@ -844,20 +844,4 @@ async function updateCutLinks(){
     		SELECT DISTINCT from_table, from_key, to_table, to_key
       		FROM cte;
  	`);
-
-	const ret = await db.query(`
-		SELECT coalesce(
-  			json_agg(json_build_object('id', LEFT(g.to_table::text, 1) || g.to_key, 'color', t.code) ORDER BY g.idgraph),
-     			'[]'::json)
-  		FROM graph g
-    		JOIN tag t ON g.from_table='tag' AND g.from_key=t.idtag
-      		WHERE t.type_code='CUT_LINK_COLOR';
-	`);
-
- 	const styleMap = ret.rows[0].coalesce;
-  
-	for (const {id, color} of styleMap)
-	{
-		document.getElementById(id).style.backgroundColor = color;
-	}
 }
