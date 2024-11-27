@@ -576,7 +576,7 @@ function drawLinks(links)
 async function drawDiagramStyle() {
 	const ret = await db.query(`
  		WITH cte AS (
-			SELECT FORMAT('#b%sf%s {backgroundColor:%s}', f.idbox, f.idfield, t.code) AS css
+			SELECT FORMAT('#b%sf%s {background-color: %s;}', f.idbox, f.idfield, t.code) AS css
   			FROM graph g
     			JOIN tag t ON g.from_table='tag' AND g.from_key=t.idtag
       			JOIN field f ON g.to_table='field' AND g.to_key=f.idfield
