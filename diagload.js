@@ -858,10 +858,15 @@ async function updateCutLinks(){
       			FROM cte
         	), cte_delete AS (
 			DELETE FROM graph g
-			WHERE NOT EXISTS (
+			WHERE g.from_table='tag' AND g.to_table='field' 
+   			  AND NOT EXISTS (
    				SELECT *
        				FROM cte2
 	   			WHERE g.from_table=cte2.from_table AND g.from_key=cte2.from_key AND g.to_table=cte2.to_table AND g.to_key=cte2.to_key
+			) AND EXISTS (
+   				SELECT *
+       				FROM tag t
+	   			WHERE t.type_code='CUT_LINK_COLOR' t.idtag=g.from_key  
 			)
 		)
   		INSERT INTO graph(from_table, from_key, to_table, to_key)
