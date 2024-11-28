@@ -306,19 +306,15 @@ async function enforce_bounding_rectangle(selectedContextIndex)
 	
 	const frame = compute_frame(rectangles);
 	
-	let svgElement = document.querySelector(`svg[id="${selectedContextIndex}"]`);
-
-	const [x, y, w, h] = svgElement.getAttribute("viewBox")
-					.split(' ')
-					.map(num => parseInt(num));
-	
 	const width_ = width(frame);
 	const height_ = height(frame);
 	const x = frame.left;
 	const y = frame.top;
 
 	console.log(`updating viewBox to ${x} ${y} ${width_} ${height_}`);
-		
+
+	let svgElement = document.querySelector(`svg[id="${selectedContextIndex}"]`);
+
 	svgElement.setAttribute("width", `${width_}`);
 	svgElement.setAttribute("height", `${height_}`);
 	svgElement.setAttribute("viewBox",`${x} ${y} ${width_} ${height_}`);
