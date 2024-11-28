@@ -304,18 +304,24 @@ function compute_frame(rects)
 	return expand_by(frame, RECT_BORDER + FRAME_MARGIN/2);
 }
 
-function enforce_bounding_rectangle(selectedContextIndex, r=null)
+async function enforce_bounding_rectangle(selectedContextIndex, r=null)
 {
-	let context = mycontexts.contexts[selectedContextIndex];
+	const ret = await db.query(`
+ 		SELECT json_agg(r.idbox ORDER BY r.idbox)
+		FROM rectangle r
+  		JOIN translation t ON t.idrectangle = r.idrectangle
+    		WHERE t.context = ${selectedContextIndex}
+  	`);
 
-	const rectangles = context.translatedBoxes
-				.map(tB => {
-					const rect = document.querySelector(`rect[id=rect_${tB.id}]`);
+	const ids = ret.rows[0].json_agg;
+
+	const rectangles = ids.map(idbox => {
+					const rect = document.querySelector(`rect[id=rect_${idbox}]`);
 
 					const width = parseInt(rect.getAttribute("width"));
 					const height = parseInt(rect.getAttribute("height"));
 					
-					const g = document.querySelector(`g[id=g_${tB.id}]`);
+					const g = document.querySelector(`g[id=g_${idbox}]`);
 					
 					const xForms = g.transform.baseVal;// an SVGTransformList
 					const firstXForm = xForms.getItem(0); //an SVGTransform
@@ -371,8 +377,9 @@ function enforce_bounding_rectangle(selectedContextIndex, r=null)
 		
 		svgElement.setAttribute("width", `${width_}`);
 		svgElement.setAttribute("height", `${height_}`);
-		svgElement.setAttribute("viewBox",`${x} ${y} ${width_} ${height_}`);		
-		context.frame = frame;
+		svgElement.setAttribute("viewBox",`${x} ${y} ${width_} ${height_}`);
+
+		await db.exec(`UPDATE frame SET width=${width(frame)}, height=${height(frame)}`);
 	}
 }
 
@@ -463,45 +470,53 @@ async function compute_links(selectedContextIndex)
 
 async function handleDeselectSizer()
 {
-	const i = parseInt(sizer.id.substring('sizer_'.length));
+	const idbox = parseInt(sizer.id.substring('sizer_'.length));
 	const g = sizer.parentElement;
 	const svg = g.parentElement;
 	const selectedContextIndex = parseInt(svg.id);
 
-	const fO = document.querySelector(`foreignObject[id=box${i}]`);
+	const fO = document.querySelector(`foreignObject[id=box${idbox}]`);
 
 	const width_ = parseInt(fO.getAttribute("width"));
 	const height_ = parseInt(fO.getAttribute("height"));
 
-	const r = mycontexts.rectangles[i];
+	const ret = await db.query(`SELECT * FROM rectangle WHERE idbox=${idbox}`);
+	const r = ret.rows[0];
 
-	if (width(r) == width_ && height(r) == height_)
+	if (r.width == width_ && r.height == height_)
 		return;
 
-	const dx = width_ - width(r);
-	const dy = height_ - height(r);
+	const dx = width_ - r.width;
+	const dy = height_ - r.height;
 
 	await db.exec(`
  		UPDATE rectangle
-   		SET width=width + ${dx}, height=height+${dy}
-     		WHERE idbox=${i}
+   		SET width = width + ${dx}, height = height + ${dy}
+     		WHERE idbox=${idbox}
  	`);
 
 	enforce_bounding_rectangle(selectedContextIndex);
-
+/*
 	const links = await compute_links(selectedContextIndex);
 	mycontexts.contexts[selectedContextIndex].links = await links;
 	document.getElementById(`links_${selectedContextIndex}`).innerHTML = await drawLinks(links);
+*/
 }
 
 
 async function handleDeselectElement()
 {
 	console.assert(g.parentNode.tagName=='svg');
-	const id = parseInt(g.id.substring('g_'.length));
+	const idbox = parseInt(g.id.substring('g_'.length));
 	const selectedContextIndex = parseInt(g.parentElement.id);
 
-	let tB = mycontexts.contexts[selectedContextIndex].translatedBoxes.find(tB => tB.id == id);
+	const ret = await db.query(`
+ 		SELECT t.*
+   		FROM translation t
+     		JOIN rectangle r ON t.idrectangle=r.idrectangle
+       		WHERE r.idbox=${idbox}
+       `);
+	const translation = ret.rows[0];
 
 	const xForms = g.transform.baseVal;// an SVGTransformList
 	const firstXForm = xForms.getItem(0); //an SVGTransform
@@ -509,16 +524,23 @@ async function handleDeselectElement()
 	const translateX = firstXForm.matrix.e;
 	const translateY = firstXForm.matrix.f;
 
-	if (tB.translation.x == translateX && tB.translation.y == translateY)
+	if (translation.x == translateX && translation.y == translateY)
 		return;
 
-	tB.translation = {"x": translateX, "y": translateY};
+	await db.exec(`
+ 		UPDATE translation t
+   		SET x=${translateX}, y=${translateY}
+     		FROM rectangle r
+	 	WHERE t.idrectangle=r.idrectangle
+   			AND r.idbox=${idbox}
+ 	`);
 
 	enforce_bounding_rectangle(selectedContextIndex);
-
+/*
 	const links = await compute_links(selectedContextIndex);
 	mycontexts.contexts[selectedContextIndex].links = await links;
 	document.getElementById(`links_${selectedContextIndex}`).innerHTML = await drawLinks(links);
+*/
 }
 
 
@@ -660,7 +682,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
       				</foreignObject>
 	  			<rect id="sizer_%1$s" x="%2$s" y="%3$s" width="4" height="4" />
       				</g>',
-     				r.idrectangle, --%1
+     				r.idbox, --%1
 	  			r.width - 4, --%2
        				r.height - 4) --%3 
 					AS html
@@ -702,12 +724,12 @@ async function ApplyRepartition()
 	})));
 
 	await db.exec(`
- 		UPDATE t
+ 		UPDATE translation t
    		SET t.context = repartition.context, t.x=FRAME_MARGIN*1.5, t.y=FRAME_MARGIN*1.5
-		FROM translation t
-  		JOIN rectangle r ON r.idrectangle=t.idrectangle
+		FROM rectangle r
   		JOIN json_to_recordset('${repartition}') AS repartition("idbox" int, "context" int) ON repartition.idbox=r.idbox
     		WHERE t.context != repartition.context
+      			AND r.idrectangle=t.idrectangle
 		)
  	`);
 
