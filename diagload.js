@@ -447,22 +447,11 @@ async function handleDeselectElement()
 	const idbox = parseInt(g.id.substring('g_'.length));
 	const selectedContextIndex = parseInt(g.parentElement.id);
 
-	const ret = await db.query(`
- 		SELECT t.*
-   		FROM translation t
-     		JOIN rectangle r ON t.idrectangle=r.idrectangle
-       		WHERE r.idbox=${idbox}
-       `);
-	const translation = ret.rows[0];
-
 	const xForms = g.transform.baseVal;// an SVGTransformList
 	const firstXForm = xForms.getItem(0); //an SVGTransform
 	console.assert (firstXForm.type == SVGTransform.SVG_TRANSFORM_TRANSLATE);
 	const translateX = firstXForm.matrix.e;
 	const translateY = firstXForm.matrix.f;
-
-	if (translation.x == translateX && translation.y == translateY)
-		return;
 
 	await db.exec(`
  		UPDATE translation t
