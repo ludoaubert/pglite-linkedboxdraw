@@ -236,30 +236,6 @@ function moveElement(evt) {
 
 	translate_draggable(g, dx, dy);
 
-	const selectedContextIndex = parseInt(g.parentElement.id);
-
-	const i = g.id.substring("g_".length);
-
-	let fO = document.querySelector(`foreignObject[id=box${i}]`);
-
-	const width = parseInt(fO.getAttribute("width"));
-	const height = parseInt(fO.getAttribute("height"));
-
-	const xForms = g.transform.baseVal;// an SVGTransformList
-	const firstXForm = xForms.getItem(0); //an SVGTransform
-	console.assert (firstXForm.type == SVGTransform.SVG_TRANSFORM_TRANSLATE);
-	const translateX = firstXForm.matrix.e;
-	const translateY = firstXForm.matrix.f;
-	
-	const r = {
-		left: translateX - MOVE_RANGE,
-		right: translateX + width + MOVE_RANGE,
-		top: translateY - MOVE_RANGE,
-		bottom: translateY + height + MOVE_RANGE
-	};
-
-	enforce_bounding_rectangle(selectedContextIndex, r);
-
 	currentX = evt.clientX;
 	currentY = evt.clientY;
 }
