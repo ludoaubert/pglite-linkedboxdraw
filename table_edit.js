@@ -509,11 +509,14 @@ async function produce_link_options()
 	 		LEFT JOIN field field_from ON field_from.idfield = l.idfield_from
    			LEFT JOIN field field_to ON field_to.idfield = l.idfield_to
       		)
-		SELECT json_agg(json_build_object('option', option, 'idlink', idlink) ORDER BY option)
+		SELECT coalesce(
+  			json_agg(json_build_object('option', option, 'idlink', idlink) ORDER BY option),
+     			'[]'::json
+		);
   		FROM cte
   	`);
 
-	return ret.rows[0].json_agg;
+	return ret.rows[0].coalesce;
 }
 
 async function linkComboOnClick()
@@ -699,11 +702,14 @@ async function produce_color_options()
 			JOIN box b ON b.idbox=f.idbox
 	 		WHERE t.type_code='COLOR'
     		)
-		SELECT json_agg(json_build_object('option', option, 'idgraph', idgraph) ORDER BY option)
+		SELECT coalesce(
+  			json_agg(json_build_object('option', option, 'idgraph', idgraph) ORDER BY option),
+     			'[]'::json
+		)
   		FROM cte      
  	`);
 
-	return ret.rows[0].json_agg;
+	return ret.rows[0].coalesce;
 }
 
 async function colorsComboOnClick()
