@@ -191,16 +191,7 @@ function moveSizer(evt)
 	console.assert (firstXForm.type == SVGTransform.SVG_TRANSFORM_TRANSLATE);
 	const translateX = firstXForm.matrix.e;
 	const translateY = firstXForm.matrix.f;
-/*	
-	const r = {
-		left: translateX - MOVE_RANGE,
-		right: translateX + width + dx + MOVE_RANGE,
-		top: translateY - MOVE_RANGE,
-		bottom: translateY + height + dy + MOVE_RANGE
-	};
-	
-	enforce_bounding_rectangle(selectedContextIndex, r);
-*/
+
 	currentX = evt.clientX;
 	currentY = evt.clientY;
 }
