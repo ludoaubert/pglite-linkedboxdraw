@@ -485,8 +485,6 @@ async function handleDeselectSizer()
    		SET width = width + ${dx}, height = height + ${dy}
      		WHERE idbox=${idbox}
  	`);
-
-	enforce_bounding_rectangle(selectedContextIndex);
 /*
 	const links = await compute_links(selectedContextIndex);
 	mycontexts.contexts[selectedContextIndex].links = await links;
