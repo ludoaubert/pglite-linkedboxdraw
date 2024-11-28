@@ -271,7 +271,7 @@ function compute_frame(rects)
 	return expand_by(frame, RECT_BORDER + FRAME_MARGIN/2);
 }
 
-async function enforce_bounding_rectangle(selectedContextIndex, r=null)
+async function enforce_bounding_rectangle(selectedContextIndex)
 {
 	const ret = await db.query(`
  		SELECT json_agg(r.idbox ORDER BY r.idbox)
@@ -283,71 +283,47 @@ async function enforce_bounding_rectangle(selectedContextIndex, r=null)
 	const ids = ret.rows[0].json_agg;
 
 	const rectangles = ids.map(idbox => {
-					const rect = document.querySelector(`rect[id=rect_${idbox}]`);
+		const rect = document.querySelector(`rect[id=rect_${idbox}]`);
 
-					const width = parseInt(rect.getAttribute("width"));
-					const height = parseInt(rect.getAttribute("height"));
+		const width = parseInt(rect.getAttribute("width"));
+		const height = parseInt(rect.getAttribute("height"));
 					
-					const g = document.querySelector(`g[id=g_${idbox}]`);
+		const g = document.querySelector(`g[id=g_${idbox}]`);
 					
-					const xForms = g.transform.baseVal;// an SVGTransformList
-					const firstXForm = xForms.getItem(0); //an SVGTransform
-					console.assert (firstXForm.type == SVGTransform.SVG_TRANSFORM_TRANSLATE);
-					const translateX = firstXForm.matrix.e;
-					const translateY = firstXForm.matrix.f;
+		const xForms = g.transform.baseVal;// an SVGTransformList
+		const firstXForm = xForms.getItem(0); //an SVGTransform
+		console.assert (firstXForm.type == SVGTransform.SVG_TRANSFORM_TRANSLATE);
+		const translateX = firstXForm.matrix.e;
+		const translateY = firstXForm.matrix.f;
 					
-					return {
-						left: translateX,
-						right: translateX + width,
-						top: translateY,
-						bottom: translateY + height
-					};
-				});
+		return {
+			left: translateX,
+			right: translateX + width,
+			top: translateY,
+			bottom: translateY + height
+		};
+	});
 	
 	const frame = compute_frame(rectangles);
 	
 	let svgElement = document.querySelector(`svg[id="${selectedContextIndex}"]`);
 
 	const [x, y, w, h] = svgElement.getAttribute("viewBox")
-								.split(' ')
-								.map(num => parseInt(num));
-								
-	const viewBox = {left:x, right:x+w, top:y, bottom:y+h};
+					.split(' ')
+					.map(num => parseInt(num));
 	
-//test if frame is contained inside viewBox.
+	const width_ = width(frame);
+	const height_ = height(frame);
+	const x = frame.left;
+	const y = frame.top;
 
-	if (!(viewBox.left <= frame.left && frame.right <= viewBox.right && viewBox.top <= frame.top && frame.bottom <= viewBox.bottom))
-	{
-//if it is not contained, use the envelop of frame and r if r is not null.
-		const _frame = compute_frame(r == null ? rectangles : [...rectangles, r]);
-
-		const width_ = width(_frame);
-		const height_ = height(_frame);
-		const x = _frame.left;
-		const y = _frame.top;
+	console.log(`updating viewBox to ${x} ${y} ${width_} ${height_}`);
 		
-		console.log(`updating viewBox to ${x} ${y} ${width_} ${height_}`);
+	svgElement.setAttribute("width", `${width_}`);
+	svgElement.setAttribute("height", `${height_}`);
+	svgElement.setAttribute("viewBox",`${x} ${y} ${width_} ${height_}`);
 
-		svgElement.setAttribute("width", `${width_}`);
-		svgElement.setAttribute("height", `${height_}`);
-		svgElement.setAttribute("viewBox",`${x} ${y} ${width_} ${height_}`);
-	}
-	
-	if (r == null)
-	{
-		const width_ = width(frame);
-		const height_ = height(frame);
-		const x = frame.left;
-		const y = frame.top;
-
-		console.log(`updating viewBox to ${x} ${y} ${width_} ${height_}`);
-		
-		svgElement.setAttribute("width", `${width_}`);
-		svgElement.setAttribute("height", `${height_}`);
-		svgElement.setAttribute("viewBox",`${x} ${y} ${width_} ${height_}`);
-
-		await db.exec(`UPDATE frame SET width=${width(frame)}, height=${height(frame)}`);
-	}
+	await db.exec(`UPDATE frame SET width=${width(frame)}, height=${height(frame)}`);
 }
 
 
