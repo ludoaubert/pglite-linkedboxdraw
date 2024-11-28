@@ -161,9 +161,9 @@ function moveSizer(evt)
 	
 	console.log(`moveSizer() dx=${dx} dy=${dy}`);
 
-	const i = sizer.id.substring("sizer_".length);
+	const idbox = sizer.id.substring("sizer_".length);
 
-	let fO = document.querySelector(`foreignObject[id=box${i}]`);
+	let fO = document.querySelector(`foreignObject[id=box${idbox}]`);
 
 	const width = parseInt(fO.getAttribute("width"));
 	const height = parseInt(fO.getAttribute("height"));
@@ -171,7 +171,7 @@ function moveSizer(evt)
 	fO.setAttribute("width", `${width+dx}`);
 	fO.setAttribute("height", `${height+dy}`);
 
-	let rect = document.querySelector(`rect[id=rect_${i}]`);
+	let rect = document.querySelector(`rect[id=rect_${idbox}]`);
 
 	rect.setAttribute("width", `${width+dx}`);
 	rect.setAttribute("height", `${height+dy}`);
@@ -191,7 +191,7 @@ function moveSizer(evt)
 	console.assert (firstXForm.type == SVGTransform.SVG_TRANSFORM_TRANSLATE);
 	const translateX = firstXForm.matrix.e;
 	const translateY = firstXForm.matrix.f;
-	
+/*	
 	const r = {
 		left: translateX - MOVE_RANGE,
 		right: translateX + width + dx + MOVE_RANGE,
@@ -200,7 +200,7 @@ function moveSizer(evt)
 	};
 	
 	enforce_bounding_rectangle(selectedContextIndex, r);
-
+*/
 	currentX = evt.clientX;
 	currentY = evt.clientY;
 }
