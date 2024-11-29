@@ -615,11 +615,12 @@ async function dropBoxComment()
 
 async function updateBoxComment()
 {
+	const boxComment = boxCommentTextArea.value ;
 	await dropBoxComment();
 	
 	await db.exec(`
  		WITH cte AS (
- 			INSERT INTO message_tag(message) VALUES ('${boxCommentTextArea.value}')
+ 			INSERT INTO message_tag(message) VALUES ('${boxComment}')
     			RETURNING idmessage
     		)
      		INSERT INTO graph(from_table, from_key, to_table, to_key)
@@ -660,11 +661,12 @@ async function dropFieldComment()
 
 async function updateFieldComment()
 {
+	const fieldComment = fieldCommentTextArea.value;
 	await dropFieldComment();
 	
 	await db.exec(`
  		WITH cte AS (
- 			INSERT INTO message_tag(message) VALUES ('${fieldCommentTextArea.value}')
+ 			INSERT INTO message_tag(message) VALUES ('${fieldComment}')
     			RETURNING idmessage
     		)
      		INSERT INTO graph(from_table, from_key, to_table, to_key)
