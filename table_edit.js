@@ -381,11 +381,13 @@ async function addNewFieldToBox()
  			INSERT INTO field(idbox, name)
    			SELECT idbox, '${newFieldEditField.value}'
      			FROM box WHERE title='${boxCombo.value}'
-			RETURNING idfield, idbox
+			RETURNING idfield, idbox, name
    		), cte2(idbox, width, height) AS (
    			SELECT idbox, 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT} FROM box
     			UNION ALL
        			SELECT idbox, LENGTH(name) * ${MONOSPACE_FONT_PIXEL_WIDTH}, ${CHAR_RECT_HEIGHT}  FROM field
+	  		UNION ALL
+     			SELECT idbox, LENGTH(name) * ${MONOSPACE_FONT_PIXEL_WIDTH}, ${CHAR_RECT_HEIGHT}  FROM cte
 		), cte3 AS (
   			SELECT idbox, MAX(width) AS width, LEAST(SUM(height), ${RECTANGLE_BOTTOM_CAP}) AS height
     			FROM cte2
