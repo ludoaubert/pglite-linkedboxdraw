@@ -392,7 +392,7 @@ async function addNewFieldToBox()
       			GROUP BY idbox
 	 	), cte4 AS (
    			UPDATE rectangle r
-     			SET r.width = cte3.width, r.height = cte3.height
+     			SET width = cte3.width, height = cte3.height
 			FROM cte3 JOIN cte ON cte3.idbox = cte.idbox
    			WHERE r.idbox=cte.idbox
   		)
