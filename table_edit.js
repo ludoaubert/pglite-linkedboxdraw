@@ -279,23 +279,23 @@ async function displayCurrent()
 		valueCombo.innerHTML = valueComboInnerHTML;
 
 	const ret4 = await db.query(`
- 		SELECT COALESCE(MAX(m.idmessage), -1) AS idmessage, COALESCE(MAX(m.message), '') AS message
+ 		SELECT COALESCE(MAX(m.message), '') AS message
    		FROM box b
      		JOIN graph g ON g.to_table='box' AND b.idbox=g.to_key AND g.from_table='message_tag'
        		JOIN message_tag m ON g.from_key=m.idmessage
      		WHERE b.title='${boxCombo.value}'
   	`);
-	({idmessage:currentBoxCommentIndex, message:boxCommentTextArea.value} = ret4.rows[0]);
+	({message:boxCommentTextArea.value} = ret4.rows[0]);
 
 	const ret6 = await db.query(`
- 		SELECT COALESCE(MAX(m.idmessage), -1) AS idmessage, COALESCE(MAX(message),'') AS message
+ 		SELECT COALESCE(MAX(message),'') AS message
    		FROM box b
      		JOIN field f ON f.idbox=b.idbox
      		JOIN graph g ON g.to_table='field' AND f.idfield=g.to_key AND g.from_table='message_tag'
        		JOIN message_tag m ON g.from_key=m.idmessage
      		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
  	`)
-	({idmessage:currentFieldCommentIndex, message:fieldCommentTextArea.value} = ret6.rows[0]);
+	({message:fieldCommentTextArea.value} = ret6.rows[0]);
 }
 
 
