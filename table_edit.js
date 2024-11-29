@@ -381,30 +381,27 @@ async function addNewFieldToBox()
  			INSERT INTO field(idbox, name)
    			SELECT idbox, '${newFieldEditField.value}'
      			FROM box WHERE title='${boxCombo.value}'
-			RETURNING idfield
-   		)
+			RETURNING idfield, idbox
+   		), cte2(idbox, width, height) AS (
+   			SELECT idbox, 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT} FROM box
+    			UNION ALL
+       			SELECT idbox, LENGTH(name) * ${MONOSPACE_FONT_PIXEL_WIDTH}, ${CHAR_RECT_HEIGHT}  FROM field
+		), cte3 AS (
+  			SELECT idbox, MAX(width) AS width, LEAST(SUM(height), ${RECTANGLE_BOTTOM_CAP}) AS height
+    			FROM cte2
+      			GROUP BY idbox
+	 	), cte4 AS (
+   			UPDATE rectangle r
+     			SET r.width = cte3.width, r.height = cte3.height
+			FROM cte3 JOIN cte ON cte3.idbox = cte.idbox
+   			WHERE r.idbox=cte.idbox
+  		)
      		SELECT * FROM cte
  	`);
 
 	currentFieldIndex = ret.rows[0].idfield;
 
 	newFieldEditField.value = "";
-
-	await db.exec(` 
- 		WITH cte(idbox, width, height) AS (
-   			SELECT idbox, 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT} FROM box
-    			UNION ALL
-       			SELECT idbox, LENGTH(name) * ${MONOSPACE_FONT_PIXEL_WIDTH}, ${CHAR_RECT_HEIGHT}  FROM field
-		), cte2 AS (
-  			SELECT idbox, MAX(width) AS width, LEAST(SUM(height), ${RECTANGLE_BOTTOM_CAP}) AS height
-    			FROM cte
-      			GROUP BY idbox
-	 	)
-   		UPDATE rectangle r
-     		SET r.width = cte2.width, r.height = cte2.height
-		FROM cte2
-  		WHERE r.idbox = cte2.idbox AND r.idbox = ${currentBoxIndex} 
- 	`);
 
 	await displayCurrent();
 	await drawDiag();
