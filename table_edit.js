@@ -354,6 +354,9 @@ async function dropBox()
 		), cte3 AS (
   			DELETE FROM translation
      			WHERE idrectangle IN (SELECT idrectangle FROM cte2)
+		), cte4 AS (
+  			DELETE FROM graph
+     			WHERE to_table='box' AND to_key IN (SELECT idbox FROM cte)
 		)
   		DELETE FROM link
     		WHERE idbox_from IN (SELECT idbox FROM cte) OR idbox_to IN (SELECT idbox FROM cte)
@@ -427,10 +430,16 @@ async function updateField()
 async function dropFieldFromBox()
 {
 	await db.exec(`
- 		DELETE f
-   		FROM field f
-   		JOIN box b ON f.idbox=b.idbox
-		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}';
+ 		WITH cte AS (
+ 			DELETE FROM field f
+   			USING box b 
+     			WHERE f.idbox=b.idbox
+				AND b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
+   			RETURNING f.idfield
+      		)
+		DELETE FROM graph g
+  		USING cte
+    		WHERE to_table='field' AND to_key IN (SELECT idfield FROM cte)
  	`);
 
 	currentFieldIndex = -1;
