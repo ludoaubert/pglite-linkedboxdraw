@@ -461,7 +461,7 @@ async function updateValue()
 {
 	await db.exec(`
  		UPDATE value v
-   		SET v.data='${newValueEditField.value}'
+   		SET data='${newValueEditField.value}'
      		FROM field f
 	 	JOIN box b ON f.idbox=b.idbox
    		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}' AND v.data='${valueCombo.value}'
