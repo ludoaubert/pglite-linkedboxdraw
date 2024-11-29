@@ -406,10 +406,10 @@ async function addNewFieldToBox()
     			FROM cte
       			GROUP BY idbox
 	 	)
-   		UPDATE rectangle
-     		SET width = cte2.width, height = cte2.height
+   		UPDATE rectangle r
+     		SET r.width = cte2.width, r.height = cte2.height
 		FROM cte2
-  		WHERE rectangle.idbox = cte2.idbox AND rectangle.idbox = ${currentBoxIndex} 
+  		WHERE r.idbox = cte2.idbox AND r.idbox = ${currentBoxIndex} 
  	`);
 
 	await displayCurrent();
@@ -419,11 +419,11 @@ async function addNewFieldToBox()
 async function updateField()
 {
 	await db.exec(`
- 		UPDATE field
-   		SET name = '${newFieldEditField.value}'
-     		FROM field f
-       		JOIN box b ON f.idbox=b.idbox
+ 		UPDATE field f
+   		SET f.name = '${newFieldEditField.value}'
+       		FROM box b
 	 	WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
+   			AND f.idbox=b.idbox
  	`);
 	
 	await displayCurrent();
@@ -469,12 +469,12 @@ async function addNewValueToField()
 async function updateValue()
 {
 	await db.exec(`
- 		UPDATE v
+ 		UPDATE value v
    		SET v.data='${newValueEditField.value}'
-     		FROM value v
-       		JOIN field f ON v.idfield=f.idfield
+     		FROM field f
 	 	JOIN box b ON f.idbox=b.idbox
    		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}' AND v.data='${valueCombo.value}'
+     			AND v.idfield=f.idfield
  	`);
 
 	await displayCurrent();
@@ -615,12 +615,11 @@ async function updateBoxComment()
 {
 //TODO: should be an UPDATE or INSERT
 	await db.exec(`
- 		UPDATE m
+ 		UPDATE message_tag m
    		SET m.message='${jsonSafe(boxCommentTextArea.value)}'
-     		FROM message_tag m
-     		JOIN graph g ON g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='box'
+     		FROM graph g
        		JOIN box b ON b.idbox=g.to_key
-	 	WHERE b.title = '${boxCombo.value}'
+	 	WHERE b.title = '${boxCombo.value}' AND g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='box'
  	`);
 /*
 	if (currentBoxCommentIndex != -1)
@@ -673,13 +672,13 @@ async function updateFieldComment()
 {
 //TODO: should be an UPDATE or INSERT
 	await db.exec(`
- 		UPDATE m
+ 		UPDATE message_tag m
    		SET m.message='${jsonSafe(fieldCommentTextArea.value)}'
-     		FROM message_tag m
-     		JOIN graph g ON g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='field'
+     		FROM graph g
        		JOIN field f ON f.idfield=g.to_key
        		JOIN box b ON b.idbox=f.idbox
 	 	WHERE b.title = '${boxCombo.value}' AND f.name='${fieldCombo.value}'
+   			AND g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='field'
  	`);
 /*
 	if (currentFieldCommentIndex != -1)
