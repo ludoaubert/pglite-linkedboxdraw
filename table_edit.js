@@ -722,7 +722,7 @@ async function updateColor()
 {
 	await db.exec(`
   		UPDATE graph g
-    		SET g.from_key=new_tag.idtag
+    		SET from_key=new_tag.idtag
     		FROM field f
        		JOIN box b ON f.idbox=b.idbox
        		JOIN tag old_tag ON old_tag.idtag = g.from_key AND old_tag.type_code='COLOR'
