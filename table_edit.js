@@ -289,10 +289,9 @@ async function displayCurrent()
 
 	const ret5 = await db.query(`SELECT COALESCE(MAX(message), '') FROM message_tag WHERE idmessage=${currentBoxCommentIndex}`);
 	const boxComment = ret5.rows[0].coalesce;
-	const reversedBoxComment = reverseJsonSafe(boxComment);
-	if (reversedBoxComment != boxCommentTextArea.value)
+	if (boxComment != boxCommentTextArea.value)
 	{
-		boxCommentTextArea.value = reversedBoxComment ;
+		boxCommentTextArea.value = boxComment ;
 	}
 
 	const ret6 = await db.query(`
@@ -307,11 +306,10 @@ async function displayCurrent()
 
 	const ret7 = await db.query(`SELECT COALESCE(MAX(message),'') FROM message_tag WHERE idmessage=${currentFieldCommentIndex}`);
 	const fieldComment = ret7.rows[0].coalesce;
-	const reversedFieldComment = reverseJsonSafe(fieldComment);
 
-	if (reversedFieldComment != fieldCommentTextArea.value)
+	if (fieldComment != fieldCommentTextArea.value)
 	{
-		fieldCommentTextArea.value = reversedFieldComment ;
+		fieldCommentTextArea.value = fieldComment ;
 	}
 }
 
@@ -610,11 +608,10 @@ async function dropBoxComment()
     			WHERE g.idgraph	IN (
 	   			SELECT idgraph FROM cte
 			)
-    		), cte3 AS (
-      			DELETE FROM message_tag m
-	 		WHERE idmessage IN (
-    				SELECT idmessage FROM cte
-			)
+    		)
+      		DELETE FROM message_tag
+	 	WHERE idmessage IN (
+    			SELECT idmessage FROM cte
 		)
  	`);
 	await displayCurrent();
@@ -627,15 +624,14 @@ async function updateBoxComment()
 	
 	await db.exec(`
  		WITH cte AS (
- 			INSERT INTO message_tag(message) VALUES ('${jsonSafe(boxCommentTextArea.value)}')
+ 			INSERT INTO message_tag(message) VALUES ('${boxCommentTextArea.value}')
     			RETURNING idmessage
-    		), cte2 AS (
-     			INSERT INTO graph(from_table, from_key, to_table, to_key)
-       			SELECT 'message_tag', idmessage, 'box', b.idbox
-	  		FROM cte
-	  		JOIN box b
-	 		WHERE b.title = '${boxCombo.value}'
     		)
+     		INSERT INTO graph(from_table, from_key, to_table, to_key)
+       		SELECT 'message_tag', idmessage, 'box', b.idbox
+	  	FROM cte
+	  	JOIN box b
+	 	WHERE b.title = '${boxCombo.value}'
  	`);
 
 	await displayCurrent();
@@ -657,40 +653,16 @@ async function dropFieldComment()
     			WHERE g.idgraph	IN (
 	   			SELECT idgraph FROM cte
 			)
-    		), cte3 AS (
-      			DELETE FROM message_tag m
-	 		WHERE idmessage IN (
-    				SELECT idmessage FROM cte
-			)
+    		)
+      		DELETE FROM message_tag
+	 	WHERE idmessage IN (
+    			SELECT idmessage FROM cte
 		)
  	`);
 	await displayCurrent();
 	await drawDiag();
 }
 
-function jsonSafe(text)
-{
-	return text.replace(/\\n/g, "\\n")
-			  .replace(/\\'/g, "\\'")
-			  .replace(/\\"/g, '\\"')
-			  .replace(/\\&/g, "\\&")
-			  .replace(/\\r/g, "\\r")
-			  .replace(/\\t/g, "\\t")
-			  .replace(/\\b/g, "\\b")
-			  .replace(/\\f/g, "\\f");
-}
-
-function reverseJsonSafe(text)
-{
-	return text.replaceAll('\\n', '\n')
-				.replaceAll("\\'", "'")
-				.replaceAll('\\"', '"')
-				.replaceAll("\\&", '\&')
-				.replaceAll("\\r", '\r')
-				.replaceAll("\\t", '\t')
-				.replaceAll("\\b", '\b')
-				.replaceAll("\\f", '\f');
-}
 
 async function updateFieldComment()
 {
@@ -698,16 +670,15 @@ async function updateFieldComment()
 	
 	await db.exec(`
  		WITH cte AS (
- 			INSERT INTO message_tag(message) VALUES ('${jsonSafe(fieldCommentTextArea.value)}')
+ 			INSERT INTO message_tag(message) VALUES ('${fieldCommentTextArea.value}')
     			RETURNING idmessage
-    		), cte2 AS (
-     			INSERT INTO graph(from_table, from_key, to_table, to_key)
-       			SELECT 'message_tag', idmessage, 'field', f.idfield
-	  		FROM cte
-	  		JOIN box b
-     			JOIN field f ON f.idbox=b.idbox
-	 		WHERE b.title = '${boxCombo.value}' AND f.name='${fieldCombo.value}'
     		)
+     		INSERT INTO graph(from_table, from_key, to_table, to_key)
+       		SELECT 'message_tag', idmessage, 'field', f.idfield
+	  	FROM cte
+	  	JOIN box b
+     		JOIN field f ON f.idbox=b.idbox
+	 	WHERE b.title = '${boxCombo.value}' AND f.name='${fieldCombo.value}'
  	`);
 
 	await displayCurrent();
