@@ -376,7 +376,7 @@ async function updateBox()
 
 async function addNewFieldToBox()
 {
-	await ret = db.query(`
+	const ret = await db.query(`
  		WITH cte AS (
  			INSERT INTO field(idbox, name)
    			SELECT idbox, '${newFieldEditField.value}'
