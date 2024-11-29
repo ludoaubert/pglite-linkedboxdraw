@@ -294,7 +294,7 @@ async function displayCurrent()
      		JOIN graph g ON g.to_table='field' AND f.idfield=g.to_key AND g.from_table='message_tag'
        		JOIN message_tag m ON g.from_key=m.idmessage
      		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
- 	`)
+ 	`);
 	({message:fieldCommentTextArea.value} = ret6.rows[0]);
 }
 
