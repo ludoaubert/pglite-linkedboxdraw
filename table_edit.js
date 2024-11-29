@@ -742,14 +742,14 @@ async function addNewColor()
 async function updateColor()
 {
 	await db.exec(`
-  		UPDATE g
+  		UPDATE graph g
     		SET g.from_key=new_tag.idtag
-    		FROM graph g
-     		JOIN field f ON f.idfield = g.to_key AND g.from_table='tag' AND g.to_table='field'
+    		FROM field f
        		JOIN box b ON f.idbox=b.idbox
        		JOIN tag old_tag ON old_tag.idtag = g.from_key AND old_tag.type_code='COLOR'
 	 	JOIN tag new_tag ON new_tag.type_code='COLOR' AND new_tag.code='${colorCombo.value}'
-	 	WHERE b.title='${colorBoxCombo.value}' AND f.name='${colorFieldCombo.value}' 
+	 	WHERE b.title='${colorBoxCombo.value}' AND f.name='${colorFieldCombo.value}'
+   			AND f.idfield = g.to_key AND g.from_table='tag' AND g.to_table='field'
  	`);
 	await colorsComboOnClick();
 	await drawDiag();
