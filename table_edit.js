@@ -411,7 +411,7 @@ async function updateField()
 {
 	await db.exec(`
  		UPDATE field f
-   		SET f.name = '${newFieldEditField.value}'
+   		SET name = '${newFieldEditField.value}'
        		FROM box b
 	 	WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
    			AND f.idbox=b.idbox
