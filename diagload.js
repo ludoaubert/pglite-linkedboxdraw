@@ -634,9 +634,8 @@ async function drawDiag()
 	addEventListeners();
 	await updateCutLinks();
 	const css = await drawDiagramStyle();
-	var sheet = document.createElement('style');
+	var sheet = document.getElementById("dynamic-sheet");
 	sheet.innerHTML = css;
-	document.body.appendChild(sheet);
 }
 
 
@@ -740,6 +739,9 @@ window.main = async function main()
 	await db.exec(schema);
 	await db.exec(sample_diagdata);
 	await db.exec(sample_contexts);
+	var sheet = document.createElement('style');
+	sheet.id="dynamic-sheet";
+	document.body.appendChild(sheet);
 	await drawDiag();
 	await init();
 	
