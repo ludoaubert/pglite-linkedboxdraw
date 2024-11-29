@@ -279,33 +279,28 @@ async function displayCurrent()
 		valueCombo.innerHTML = valueComboInnerHTML;
 
 	const ret4 = await db.query(`
- 		SELECT COALESCE(MAX(mt.idmessage), -1)
+ 		SELECT COALESCE(MAX(m.idmessage), -1) AS idmessage, COALESCE(MAX(m.message), '') AS message
    		FROM box b
      		JOIN graph g ON g.to_table='box' AND b.idbox=g.to_key AND g.from_table='message_tag'
-       		JOIN message_tag mt ON g.from_key=mt.idmessage
+       		JOIN message_tag m ON g.from_key=m.idmessage
      		WHERE b.title='${boxCombo.value}'
   	`);
-	const currentBoxCommentIndex = ret4.rows[0].coalesce;
+	const {idmessage:currentBoxCommentIndex, message:boxComment} = ret4.rows[0];
 
-	const ret5 = await db.query(`SELECT COALESCE(MAX(message), '') FROM message_tag WHERE idmessage=${currentBoxCommentIndex}`);
-	const boxComment = ret5.rows[0].coalesce;
 	if (boxComment != boxCommentTextArea.value)
 	{
 		boxCommentTextArea.value = boxComment ;
 	}
 
 	const ret6 = await db.query(`
- 		SELECT COALESCE(MAX(mt.idmessage), -1)
+ 		SELECT COALESCE(MAX(m.idmessage), -1) AS idmessage, COALESCE(MAX(message),'') AS message
    		FROM box b
      		JOIN field f ON f.idbox=b.idbox
      		JOIN graph g ON g.to_table='field' AND f.idfield=g.to_key AND g.from_table='message_tag'
-       		JOIN message_tag mt ON g.from_key=mt.idmessage
+       		JOIN message_tag m ON g.from_key=m.idmessage
      		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
  	`)
-	const currentFieldCommentIndex = ret6.rows[0].coalesce;
-
-	const ret7 = await db.query(`SELECT COALESCE(MAX(message),'') FROM message_tag WHERE idmessage=${currentFieldCommentIndex}`);
-	const fieldComment = ret7.rows[0].coalesce;
+	const {idmessage:currentFieldCommentIndex, message:fieldComment} = ret6.rows[0];
 
 	if (fieldComment != fieldCommentTextArea.value)
 	{
