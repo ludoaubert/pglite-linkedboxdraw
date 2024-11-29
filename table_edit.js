@@ -285,7 +285,7 @@ async function displayCurrent()
        		JOIN message_tag m ON g.from_key=m.idmessage
      		WHERE b.title='${boxCombo.value}'
   	`);
-	let {idmessage:currentBoxCommentIndex, message:boxCommentTextArea.value} = ret4.rows[0];
+	const {idmessage:currentBoxCommentIndex, message:boxCommentTextArea.value} = ret4.rows[0];
 
 	const ret6 = await db.query(`
  		SELECT COALESCE(MAX(m.idmessage), -1) AS idmessage, COALESCE(MAX(message),'') AS message
@@ -295,7 +295,7 @@ async function displayCurrent()
        		JOIN message_tag m ON g.from_key=m.idmessage
      		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
  	`)
-	let {idmessage:currentFieldCommentIndex, message:fieldCommentTextArea.value} = ret6.rows[0];
+	const {idmessage:currentFieldCommentIndex, message:fieldCommentTextArea.value} = ret6.rows[0];
 }
 
 
