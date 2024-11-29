@@ -309,7 +309,7 @@ async function updateTitle()
 
 async function addNewBox()
 {
-	await db.exec(`
+	const ret = await db.exec(`
   		SELECT setval(pg_get_serial_sequence('box', 'idbox'), coalesce(max(idbox)+1, 1), false) FROM box;
   		SELECT setval(pg_get_serial_sequence('rectangle', 'idrectangle'), coalesce(max(idrectangle)+1, 1), false) FROM rectangle;
  	 	SELECT setval(pg_get_serial_sequence('translation', 'idtranslation'), coalesce(max(idtranslation)+1, 1), false) FROM translation;
@@ -322,20 +322,20 @@ async function addNewBox()
    			SELECT 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT}, idbox 
      			FROM cte
 			RETURNING idrectangle
+		), cte3 AS (
+   			INSERT INTO translation(context, idrectangle, x, y)
+   			SELECT 1 AS context, idrectangle, 0 AS x, 0 AS y
+     			FROM cte2
 		)
-   		INSERT INTO translation(context, idrectangle, x, y)
-   		SELECT 1 AS context, idrectangle, 0 AS x, 0 AS y
-     		FROM cte2
+  		SELECT idbox FROM cte
    	`);
 
-	const ret1 = await db.query(`SELECT idbox FROM box WHERE title='${newBoxEditField.value}' AND iddiagram=1`);
-	currentBoxIndex = ret1.rows[0].idbox;
+	currentBoxIndex = ret.rows[0].idbox;
 	currentFieldIndex = -1;
 
 	newBoxEditField.value = "";
 
 	await displayCurrent();
-
 	await drawDiag();
 }
 
