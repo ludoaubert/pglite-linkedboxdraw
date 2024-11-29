@@ -630,8 +630,7 @@ async function updateBoxComment()
      		INSERT INTO graph(from_table, from_key, to_table, to_key)
        		SELECT 'message_tag', idmessage, 'box', b.idbox
 	  	FROM cte
-	  	JOIN box b
-	 	WHERE b.title = '${boxCombo.value}'
+	  	JOIN box b ON b.title = '${boxCombo.value}'
  	`);
 
 	await displayCurrent();
@@ -676,9 +675,9 @@ async function updateFieldComment()
      		INSERT INTO graph(from_table, from_key, to_table, to_key)
        		SELECT 'message_tag', idmessage, 'field', f.idfield
 	  	FROM cte
-	  	JOIN box b
+	  	JOIN box b ON b.title = '${boxCombo.value}' 
      		JOIN field f ON f.idbox=b.idbox
-	 	WHERE b.title = '${boxCombo.value}' AND f.name='${fieldCombo.value}'
+	 	WHERE f.name='${fieldCombo.value}'
  	`);
 
 	await displayCurrent();
