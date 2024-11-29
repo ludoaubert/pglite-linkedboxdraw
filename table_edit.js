@@ -546,15 +546,6 @@ async function addNewLink()
 		WHERE cte_from.side='from' AND cte_to.side='to'
 	`);
 
-	const ret1 = await db.query(`SELECT idbox FROM box WHERE title='${fromBoxCombo.value}'`);
-	currentFromBoxIndex = ret1.rows[0].idbox;
-	const ret2 = await db.query(`SELECT idfield FROM field WHERE idbox=${currentFromBoxIndex} AND name='${fromFieldCombo.value}'`);
-	currentFromFieldIndex = ret2.rows[0].idfield;
-	const ret3 = await db.query(`SELECT idbox FROM box WHERE title='${toBoxCombo.value}'`);
-	currentToBoxIndex = ret3.rows[0].idbox;
-	const ret4 = await db.query(`SELECT idfield FROM field WHERE idbox=${currentToBoxIndex} AND name='${toFieldCombo.value}'`);
-	currentToFieldIndex = ret4.rows[0].idfield;
-
 	for (let [selectedContextIndex, context] of mycontexts.contexts.entries())
 	{
 		let {translatedBoxes, links} = context ;
