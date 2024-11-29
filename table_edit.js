@@ -310,9 +310,24 @@ async function updateTitle()
 async function addNewBox()
 {
 	await db.exec(`
- 		SELECT setval(pg_get_serial_sequence('box', 'idbox'), coalesce(max(idbox)+1, 1), false) FROM box;
- 		INSERT INTO box(title, iddiagram) VALUES('${newBoxEditField.value}', 1);
+  		SELECT setval(pg_get_serial_sequence('box', 'idbox'), coalesce(max(idbox)+1, 1), false) FROM box;
+  		SELECT setval(pg_get_serial_sequence('rectangle', 'idrectangle'), coalesce(max(idrectangle)+1, 1), false) FROM rectangle;
+ 	 	SELECT setval(pg_get_serial_sequence('translation', 'idtranslation'), coalesce(max(idtranslation)+1, 1), false) FROM translation;
+
+   		WITH cte AS (
+ 			INSERT INTO box(title, iddiagram) VALUES('${newBoxEditField.value}', 1)
+    			RETURNING idbox, title
+       		), cte2 AS (
+ 			INSERT INTO rectangle(width, height, idbox) 
+   			SELECT 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT}, idbox 
+     			FROM cte
+			RETURNING idrectangle
+		)
+   		INSERT INTO translation(context, idrectangle, x, y)
+   		SELECT 1 AS context, idrectangle, 0 AS x, 0 AS y
+     		FROM cte2
    	`);
+
 	const ret1 = await db.query(`SELECT idbox FROM box WHERE title='${newBoxEditField.value}' AND iddiagram=1`);
 	currentBoxIndex = ret1.rows[0].idbox;
 	currentFieldIndex = -1;
@@ -321,21 +336,6 @@ async function addNewBox()
 
 	await displayCurrent();
 
-	await db.exec(`
-  		SELECT setval(pg_get_serial_sequence('rectangle', 'idrectangle'), coalesce(max(idrectangle)+1, 1), false) FROM rectangle;
-    
- 		INSERT INTO rectangle(width, height, idbox) 
-   		SELECT 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT}, idbox 
-     		FROM box WHERE idbox=${currentBoxIndex};
-
- 		SELECT setval(pg_get_serial_sequence('translation', 'idtranslation'), coalesce(max(idtranslation)+1, 1), false) FROM translation;
-   
- 		INSERT INTO translation(context, idrectangle, x, y)
-   		SELECT 1 AS context, r.idrectangle, 0 AS x, 0 AS y
-     		FROM rectangle r
-       		WHERE r.idbox=${currentBoxIndex};
-   	`);
-
 	await drawDiag();
 }
 
@@ -343,7 +343,21 @@ async function addNewBox()
 async function dropBox()
 {
 	console.log('dropBox');
-	await db.exec(`DELETE FROM box WHERE title='${boxCombo.value}'`);
+	await db.exec(`
+ 		WITH cte AS (
+ 			DELETE FROM box WHERE title='${boxCombo.value}'
+    			RETURNING idbox
+       		), cte2 AS (
+	 		DELETE FROM rectangle
+    			WHERE idbox IN (SELECT idbox FROM cte)
+       			RETURNING idrectangle
+		), cte3 AS (
+  			DELETE FROM translation
+     			WHERE idrectangle IN (SELECT idrectangle FROM cte2)
+		)
+  		DELETE FROM link
+    		WHERE idbox_from IN (SELECT idbox FROM cte) OR idbox_to IN (SELECT idbox FROM cte)
+   	`);
 
 	currentBoxIndex = -1;
 
@@ -355,27 +369,24 @@ async function dropBox()
 async function updateBox()
 {
 	await db.exec(`UPDATE box SET title='${newBoxEditField.value}' WHERE title='${boxCombo.value}'`);
-	
 	await displayCurrent();
-
-    	//const rec = compute_box_rectangle(mydata.boxes[currentBoxIndex]);
-    	//mycontexts.rectangles[currentBoxIndex] = rec;
-
 	await drawDiag();
 }
 
 
 async function addNewFieldToBox()
 {
-	await db.exec(`
- 		INSERT INTO field(idbox, name)
-   		SELECT idbox, '${newFieldEditField.value}'
-     		FROM box WHERE title='${boxCombo.value}'
+	await ret = db.query(`
+ 		WITH cte AS (
+ 			INSERT INTO field(idbox, name)
+   			SELECT idbox, '${newFieldEditField.value}'
+     			FROM box WHERE title='${boxCombo.value}'
+			RETURNING idfield
+   		)
+     		SELECT * FROM cte
  	`);
-	const ret1 = await db.query(`SELECT idbox FROM box WHERE title='${boxCombo.value}'`);
-	currentBoxIndex = ret1.rows[0].idbox;
-	const ret2 = await db.query(`SELECT idfield FROM field WHERE idbox=${currentBoxIndex} AND name='${newFieldEditField.value}'`)
-	currentFieldIndex = ret2.rows[0].idfield;
+
+	currentFieldIndex = ret.rows[0].idfield;
 
 	newFieldEditField.value = "";
 
