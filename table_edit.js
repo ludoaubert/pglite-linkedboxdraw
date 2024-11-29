@@ -371,7 +371,7 @@ async function dropBox()
 
 async function updateBox()
 {
-	await db.exec(`UPDATE box SET title='${newBoxEditField.value} WHERE title='${boxCombo.value}'`);
+	await db.exec(`UPDATE box SET title='${newBoxEditField.value}' WHERE title='${boxCombo.value}'`);
 	
 	await displayCurrent();
 
@@ -596,16 +596,26 @@ async function dropLink()
 	await drawDiag();
 }
 
-
-
 async function dropBoxComment()
 {
 	await db.exec(`
- 		DELETE m
-   		FROM message_tag m
-     		JOIN graph g ON g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='box'
-       		JOIN box b ON b.idbox=g.to_key
-	 	WHERE b.title = '${boxCombo.value}'
+ 		WITH cte() AS (
+			SELECT m.idmessage, g.idgraph
+   			FROM message_tag m
+			JOIN graph g ON g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='box'
+			JOIN box b ON b.idbox=g.to_key
+			WHERE b.title = '${boxCombo.value}'   
+		), cte2 AS (
+ 			DELETE FROM graph g
+    			WHERE g.idgraph	IN (
+	   			SELECT idgraph FROM cte
+			)
+    		), cte3 AS (
+      			DELETE FROM message_tag m
+	 		WHERE idmessage IN (
+    				SELECT idmessage FROM cte
+			)
+		)
  	`);
 	await displayCurrent();
 	await drawDiag();
@@ -613,20 +623,21 @@ async function dropBoxComment()
 
 async function updateBoxComment()
 {
-//TODO: should be an UPDATE or INSERT
+	await dropBoxComment();
+	
 	await db.exec(`
- 		UPDATE message_tag m
-   		SET m.message='${jsonSafe(boxCommentTextArea.value)}'
-     		FROM graph g
-       		JOIN box b ON b.idbox=g.to_key
-	 	WHERE b.title = '${boxCombo.value}' AND g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='box'
+ 		WITH cte AS (
+ 			INSERT INTO message_tag(message) VALUES ('${jsonSafe(boxCommentTextArea.value)}')
+    			RETURNING idmessage
+    		), cte2 AS (
+     			INSERT INTO graph(from_table, from_key, to_table, to_key)
+       			SELECT 'message_tag', idmessage, 'box', b.idbox
+	  		FROM cte
+	  		JOIN box b
+	 		WHERE b.title = '${boxCombo.value}'
+    		)
  	`);
-/*
-	if (currentBoxCommentIndex != -1)
-		mydata.boxComments[ currentBoxCommentIndex ] = boxComment;
-	else
-		mydata.boxComments.push(boxComment);
-*/
+
 	await displayCurrent();
 	await drawDiag();
 }
@@ -634,11 +645,24 @@ async function updateBoxComment()
 async function dropFieldComment()
 {
 	await db.exec(`
- 		DELETE m
-     		FROM message_tag m
-     		JOIN graph g ON g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='box'
-       		JOIN box b ON b.idbox=g.to_key
-	 	WHERE b.title = '${boxCombo.value}'
+ 		WITH cte() AS (
+			SELECT m.idmessage, g.idgraph
+   			FROM message_tag m
+			JOIN graph g ON g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='field'
+			JOIN box b ON b.idbox=g.to_key
+   			JOIN field f ON f.idbox=b.idbox
+			WHERE b.title = '${boxCombo.value}' AND f.name='${fieldCombo.value}'  
+		), cte2 AS (
+ 			DELETE FROM graph g
+    			WHERE g.idgraph	IN (
+	   			SELECT idgraph FROM cte
+			)
+    		), cte3 AS (
+      			DELETE FROM message_tag m
+	 		WHERE idmessage IN (
+    				SELECT idmessage FROM cte
+			)
+		)
  	`);
 	await displayCurrent();
 	await drawDiag();
@@ -670,22 +694,22 @@ function reverseJsonSafe(text)
 
 async function updateFieldComment()
 {
-//TODO: should be an UPDATE or INSERT
+	await dropFieldComment();
+	
 	await db.exec(`
- 		UPDATE message_tag m
-   		SET m.message='${jsonSafe(fieldCommentTextArea.value)}'
-     		FROM graph g
-       		JOIN field f ON f.idfield=g.to_key
-       		JOIN box b ON b.idbox=f.idbox
-	 	WHERE b.title = '${boxCombo.value}' AND f.name='${fieldCombo.value}'
-   			AND g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='field'
+ 		WITH cte AS (
+ 			INSERT INTO message_tag(message) VALUES ('${jsonSafe(fieldCommentTextArea.value)}')
+    			RETURNING idmessage
+    		), cte2 AS (
+     			INSERT INTO graph(from_table, from_key, to_table, to_key)
+       			SELECT 'message_tag', idmessage, 'field', f.idfield
+	  		FROM cte
+	  		JOIN box b
+     			JOIN field f ON f.idbox=b.idbox
+	 		WHERE b.title = '${boxCombo.value}' AND f.name='${fieldCombo.value}'
+    		)
  	`);
-/*
-	if (currentFieldCommentIndex != -1)
-		mydata.fieldComments[ currentBoxCommentIndex ] = fieldComment;
-	else
-		mydata.fieldComments.push(fieldComment);
-*/
+
 	await displayCurrent();
 	await drawDiag();
 }
