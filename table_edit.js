@@ -597,7 +597,7 @@ async function dropLink()
 async function dropBoxComment()
 {
 	await db.exec(`
- 		WITH cte() AS (
+ 		WITH cte AS (
 			SELECT m.idmessage, g.idgraph
    			FROM message_tag m
 			JOIN graph g ON g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='box'
@@ -641,7 +641,7 @@ async function updateBoxComment()
 async function dropFieldComment()
 {
 	await db.exec(`
- 		WITH cte() AS (
+ 		WITH cte AS (
 			SELECT m.idmessage, g.idgraph
    			FROM message_tag m
 			JOIN graph g ON g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='field'
