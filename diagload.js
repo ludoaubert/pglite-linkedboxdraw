@@ -261,20 +261,6 @@ function compute_frame(rects)
 	return expand_by(frame, RECT_BORDER + FRAME_MARGIN/2);
 }
 
-function compute_frame(selectedContextIndex)
-{
-	const ret = await db.query(`
- 		WITH cte AS (
- 			SELECT t.x AS left, r.width + t.x AS right, t.y AS top, r.height + t.y AS bottom
-			FROM rectangle r
-  			JOIN translation t ON t.idrectangle = r.idrectangle
-    			WHERE t.context = ${selectedContextIndex}
-       		), cte2 AS (
-	 		SELECT ${RECT_BORDER} + ${FRAME_MARGIN}/2 AS margin
-		)
-  	`);
-}
-
 async function enforce_bounding_rectangle(selectedContextIndex)
 {
 	const ret = await db.query(`
@@ -290,27 +276,20 @@ async function enforce_bounding_rectangle(selectedContextIndex)
      				MIN(top) - margin AS top, MAX(bottom) + margin AS bottom
 	 		FROM cte
     			CROSS JOIN cte2
-		), cte4 AS (
-  			UPDATE frame SET width=, height=
-     			RETURNING *
 		)
-  		SELECT * FROM cte4
+  		SELECT left AS x, right - left AS width, top AS y, bottom - top AS height
+     		FROM cte3
   	`);
 
-	const frame = ret.rows[0];
-	
-	const width_ = width(frame);
-	const height_ = height(frame);
-	const x = frame.left;
-	const y = frame.top;
+	const {x, y, width, height} = ret.rows[0];
 
-	console.log(`updating viewBox to ${x} ${y} ${width_} ${height_}`);
+	console.log(`updating viewBox to ${x} ${y} ${width} ${height}`);
 
 	let svgElement = document.querySelector(`svg[id="${selectedContextIndex}"]`);
 
-	svgElement.setAttribute("width", `${width_}`);
-	svgElement.setAttribute("height", `${height_}`);
-	svgElement.setAttribute("viewBox",`${x} ${y} ${width_} ${height_}`);
+	svgElement.setAttribute("width", `${width}`);
+	svgElement.setAttribute("height", `${height}`);
+	svgElement.setAttribute("viewBox",`${x} ${y} ${width} ${height}`);
 }
 
 
