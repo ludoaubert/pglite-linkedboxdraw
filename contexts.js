@@ -2,8 +2,6 @@ export {sample_contexts}
 
 const sample_contexts = `
 
-INSERT INTO frame(width, height, iddiagram) VALUES (701, 704, 1);
-
 INSERT INTO rectangle(width, height, idbox) VALUES
 (127, 40, 1),
 (176, 56, 2),
