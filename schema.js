@@ -95,15 +95,6 @@ CREATE TABLE IF NOT EXISTS graph(
 -- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('message_tag',1,'box',1);
 -- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('tag',1,'field',1);
 
-CREATE TABLE IF NOT EXISTS frame(
-  idframe SERIAL PRIMARY KEY,
-  width INTEGER,
-  height INTEGER,
-  iddiagram INTEGER,
-  UNIQUE(iddiagram),
-  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) 
-);
-
 CREATE TABLE IF NOT EXISTS rectangle(
   idrectangle SERIAL PRIMARY KEY,
   width INTEGER,
