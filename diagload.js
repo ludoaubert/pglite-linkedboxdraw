@@ -261,40 +261,43 @@ function compute_frame(rects)
 	return expand_by(frame, RECT_BORDER + FRAME_MARGIN/2);
 }
 
+function compute_frame(selectedContextIndex)
+{
+	const ret = await db.query(`
+ 		WITH cte AS (
+ 			SELECT t.x AS left, r.width + t.x AS right, t.y AS top, r.height + t.y AS bottom
+			FROM rectangle r
+  			JOIN translation t ON t.idrectangle = r.idrectangle
+    			WHERE t.context = ${selectedContextIndex}
+       		), cte2 AS (
+	 		SELECT ${RECT_BORDER} + ${FRAME_MARGIN}/2 AS margin
+		)
+  	`);
+}
+
 async function enforce_bounding_rectangle(selectedContextIndex)
 {
 	const ret = await db.query(`
- 		SELECT json_agg(r.idbox ORDER BY r.idbox)
-		FROM rectangle r
-  		JOIN translation t ON t.idrectangle = r.idrectangle
-    		WHERE t.context = ${selectedContextIndex}
+ 		WITH cte AS (
+ 			SELECT t.x AS left, r.width + t.x AS right, t.y AS top, r.height + t.y AS bottom
+			FROM rectangle r
+  			JOIN translation t ON t.idrectangle = r.idrectangle
+    			WHERE t.context = ${selectedContextIndex}
+       		), cte2 AS (
+	 		SELECT ${RECT_BORDER} + ${FRAME_MARGIN}/2 AS margin
+		), cte3 AS (
+  			SELECT MIN(left) - margin AS left, MAX(right) + margin AS right,
+     				MIN(top) - margin AS top, MAX(bottom) + margin AS bottom
+	 		FROM cte
+    			CROSS JOIN cte2
+		), cte4 AS (
+  			UPDATE frame SET width=, height=
+     			RETURNING *
+		)
+  		SELECT * FROM cte4
   	`);
 
-	const ids = ret.rows[0].json_agg;
-
-	const rectangles = ids.map(idbox => {
-		const rect = document.querySelector(`rect[id=rect_${idbox}]`);
-
-		const width = parseInt(rect.getAttribute("width"));
-		const height = parseInt(rect.getAttribute("height"));
-					
-		const g = document.querySelector(`g[id=g_${idbox}]`);
-					
-		const xForms = g.transform.baseVal;// an SVGTransformList
-		const firstXForm = xForms.getItem(0); //an SVGTransform
-		console.assert (firstXForm.type == SVGTransform.SVG_TRANSFORM_TRANSLATE);
-		const translateX = firstXForm.matrix.e;
-		const translateY = firstXForm.matrix.f;
-					
-		return {
-			left: translateX,
-			right: translateX + width,
-			top: translateY,
-			bottom: translateY + height
-		};
-	});
-	
-	const frame = compute_frame(rectangles);
+	const frame = ret.rows[0];
 	
 	const width_ = width(frame);
 	const height_ = height(frame);
@@ -308,8 +311,6 @@ async function enforce_bounding_rectangle(selectedContextIndex)
 	svgElement.setAttribute("width", `${width_}`);
 	svgElement.setAttribute("height", `${height_}`);
 	svgElement.setAttribute("viewBox",`${x} ${y} ${width_} ${height_}`);
-
-	await db.exec(`UPDATE frame SET width=${width(frame)}, height=${height(frame)}`);
 }
 
 
