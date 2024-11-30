@@ -182,16 +182,6 @@ function moveSizer(evt)
 	sizer.setAttribute("x", `${x+dx}`);
 	sizer.setAttribute("y", `${y+dy}`);
 
-	const g = sizer.parentElement;
-	const svg = g.parentElement;
-	const selectedContextIndex = parseInt(svg.id);	
-	
-	const xForms = g.transform.baseVal;// an SVGTransformList
-	const firstXForm = xForms.getItem(0); //an SVGTransform
-	console.assert (firstXForm.type == SVGTransform.SVG_TRANSFORM_TRANSLATE);
-	const translateX = firstXForm.matrix.e;
-	const translateY = firstXForm.matrix.f;
-
 	currentX = evt.clientX;
 	currentY = evt.clientY;
 }
