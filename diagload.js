@@ -721,21 +721,8 @@ window.main = async function main()
 	const contexts = ret.rows;
 	
 	for (const {context:selectedContextIndex} of contexts)
-	{		
-		const rectangles = await compute_rectangles(selectedContextIndex);
-		const frame = compute_frame(rectangles);
-
-		await db.exec(`UPDATE frame SET width=${width(frame)}, height=${height(frame)}`);
-
-		const width_ = width(frame);
-		const height_ = height(frame);
-		const x = frame.left;
-		const y = frame.top;
-
-		let svgElement = document.querySelector(`svg[id="${selectedContextIndex}"]`);
-		svgElement.setAttribute("width", `${width_}`);
-		svgElement.setAttribute("height", `${height_}`);
-		svgElement.setAttribute("viewBox",`${x} ${y} ${width_} ${height_}`);		
+	{
+		enforce_bounding_rectangle(selectedContextIndex);		
 	}
 }
 
