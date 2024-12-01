@@ -272,8 +272,8 @@ async function enforce_bounding_rectangle(selectedContextIndex)
        		), cte2 AS (
 	 		SELECT ${RECT_BORDER} + ${FRAME_MARGIN}/2 AS margin
 		), cte3 AS (
-  			SELECT MIN(left) - margin AS left, MAX(right) + margin AS right,
-     				MIN(top) - margin AS top, MAX(bottom) + margin AS bottom
+  			SELECT MIN("left" - margin) AS left, MAX("right" + margin) AS right,
+     				MIN("top" - margin) AS top, MAX("bottom" + margin) AS bottom
 	 		FROM cte
     			CROSS JOIN cte2
 		)
