@@ -277,7 +277,7 @@ async function enforce_bounding_rectangle(selectedContextIndex)
 	 		FROM cte
     			CROSS JOIN cte2
 		)
-  		SELECT left AS x, right - left AS width, top AS y, bottom - top AS height
+  		SELECT "left" AS x, "right" - "left" AS width, top AS y, bottom - top AS height
      		FROM cte3
   	`);
 
