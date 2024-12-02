@@ -1,6 +1,6 @@
 import {sample_contexts} from "./contexts.js";
 
-import {createBombixModule} from "./bombix.js";
+import {default as createBombixModule} from "./bombix.js";
 //import {default as createMyModule} from "./latuile-origine.js";
 import {db, init, displayCurrent} from "./table_edit.js";
 import {getFileData, download} from "./iocomponent.js";
