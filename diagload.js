@@ -1,6 +1,7 @@
 import {sample_contexts} from "./contexts.js";
 
-import {default as createMyModule} from "./latuile-origine.js";
+import {default as createBombixModule} from "./bombix.js";
+//import {default as createMyModule} from "./latuile-origine.js";
 import {db, init, displayCurrent} from "./table_edit.js";
 import {getFileData, download} from "./iocomponent.js";
 import {schema} from "./schema.js"
@@ -365,8 +366,8 @@ async function compute_links(selectedContextIndex)
 
 	console.log({rectangles, frame, links});
 
-//	const bombix = Module.cwrap("bombix","string",["string","string","string","string"])
-	const jsonResponse = '[]';//await bombix(rectdim, translations, sframe, slinks);
+	const bombix = Module.cwrap("bombix","string",["string","string","string","string"])
+	const jsonResponse = await bombix(rectdim, translations, sframe, slinks);
 	const links_ = await JSON.parse(jsonResponse)
 				.map(({polyline, from, to}) => ({
 					polyline: polyline.map(({x,y}) => ({x:x-XY_TR, y:y-XY_TR})), 
@@ -403,11 +404,10 @@ async function handleDeselectSizer()
    		SET width = width + ${dx}, height = height + ${dy}
      		WHERE idbox=${idbox}
  	`);
-/*
+
 	const links = await compute_links(selectedContextIndex);
 	mycontexts.contexts[selectedContextIndex].links = await links;
 	document.getElementById(`links_${selectedContextIndex}`).innerHTML = await drawLinks(links);
-*/
 }
 
 
@@ -432,11 +432,10 @@ async function handleDeselectElement()
  	`);
 
 	enforce_bounding_rectangle(selectedContextIndex);
-/*
+
 	const links = await compute_links(selectedContextIndex);
 	mycontexts.contexts[selectedContextIndex].links = await links;
 	document.getElementById(`links_${selectedContextIndex}`).innerHTML = await drawLinks(links);
-*/
 }
 
 
@@ -705,7 +704,7 @@ async function compute_rectangles(selectedContextIndex)
 
 window.main = async function main()
 {
-	Module = await createMyModule();
+	Module = await createBombixModule();
 	await db.exec(schema);
 	await db.exec(sample_diagdata);
 	await db.exec(sample_contexts);
