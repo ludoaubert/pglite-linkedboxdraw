@@ -1,6 +1,6 @@
 import {sample_contexts} from "./contexts.js";
 
-import {default as createBombixModule} from "./bombix.js";
+import {createBombixModule} from "./bombix.js";
 //import {default as createMyModule} from "./latuile-origine.js";
 import {db, init, displayCurrent} from "./table_edit.js";
 import {getFileData, download} from "./iocomponent.js";
@@ -13,7 +13,7 @@ const MONOSPACE_FONT_PIXEL_WIDTH=7;
 const CHAR_RECT_HEIGHT=16;	// in reality 14,8 + 1 + 1 (top and bottom padding) = 16,8
 const RECTANGLE_BOTTOM_CAP=200;
 
-var Module;
+var bombixModule;
 
 var mycontexts = sample_contexts;
 
@@ -87,8 +87,8 @@ async function data2contexts(mydata) {
 	const slinks = ret2.rows[0];
 	console.log(slinks);
 
-	const bombix = Module.cwrap("bombix","string",["string","string","string","string"]);
-	const latuile = Module.cwrap("latuile","string",["string","string"]);
+	const bombix = bombixModule.cwrap("bombix","string",["string","string","string","string"]);
+	const latuile = bombixModule.cwrap("latuile","string",["string","string"]);
 
 	const jsonResponse = latuile(rectdim.join(''), slinks);
 	console.log(jsonResponse);
@@ -366,7 +366,7 @@ async function compute_links(selectedContextIndex)
 
 	console.log({rectangles, frame, links});
 
-	const bombix = Module.cwrap("bombix","string",["string","string","string","string"])
+	const bombix = bombixModule.cwrap("bombix","string",["string","string","string","string"])
 	const jsonResponse = await bombix(rectdim, translations, sframe, slinks);
 	const links_ = JSON.parse(jsonResponse)
 				.map(({polyline, from, to}) => ({
@@ -704,7 +704,7 @@ async function compute_rectangles(selectedContextIndex)
 
 window.main = async function main()
 {
-	Module = await createBombixModule();
+	bombixModule = await createBombixModule();
 	await db.exec(schema);
 	await db.exec(sample_diagdata);
 	await db.exec(sample_contexts);
