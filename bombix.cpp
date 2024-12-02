@@ -18,7 +18,7 @@
 #include <iterator>
 #include <chrono>
 #include <regex>
-#include <omp.h>
+//#include <omp.h>
 using namespace std;
 using namespace std::chrono;
 
@@ -995,7 +995,7 @@ void compute_target_candidates(const unordered_set<uint64_t> &source_nodes,
 		}
 	);
 
-	ranges::sort(target_candidates);
+	std::sort(target_candidates.begin(), target_candidates.end());
 }
 
 vector<Maille> parse_optimal_path(const vector<Edge>& optimal_path)
@@ -2850,7 +2850,7 @@ void compute_polylines(const vector<Rect>& rects,
 
 	for (vector<int>& coords_ : coords)
 	{
-		ranges::sort(coords_);
+		std::sort(coords_.begin(), coords_.end());
 		auto it = unique(begin(coords_), end(coords_));
 		coords_.resize(distance(begin(coords_), it));
 	}
@@ -3204,6 +3204,8 @@ const char* bombix(const char *rectdim,
 }
 }
 /*
+emcc bombix.cpp -s EXPORTED_FUNCTIONS='["_bombix"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s ALLOW_MEMORY_GROWTH=1 -s EXPORT_ES6=1 -s MODULARIZE=1 -s EXPORT_NAME="createBombixModule"
+
 /var/www/projects/ludo$ emcc ~/linkedboxdraw/bombix.cpp -o bombix.html -s EXPORTED_FUNCTIONS='["_bombix"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s ALLOW_MEMORY_GROWTH=1
 puis dans https://dev.diskloud.fr/ludo/bombix.html
 
