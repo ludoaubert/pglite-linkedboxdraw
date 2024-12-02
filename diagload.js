@@ -406,7 +406,7 @@ async function handleDeselectSizer()
  	`);
 
 	const links = await compute_links(selectedContextIndex);
-	mycontexts.contexts[selectedContextIndex].links = await links;
+//	mycontexts.contexts[selectedContextIndex].links = await links;
 	document.getElementById(`links_${selectedContextIndex}`).innerHTML = await drawLinks(links);
 }
 
