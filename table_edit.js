@@ -90,6 +90,22 @@ function getFileData(element)
 	}
 }
 
+function readUploadedFileAsText(inputFile) => {
+  const temporaryFileReader = new FileReader();
+
+  return new Promise((resolve, reject) => {
+    temporaryFileReader.onerror = () => {
+      temporaryFileReader.abort();
+      reject(new DOMException("Problem parsing input file."));
+    };
+
+    temporaryFileReader.onload = () => {
+      resolve(temporaryFileReader.result);
+    };
+    temporaryFileReader.readAsText(inputFile);
+  });
+};
+
 function newDiagram() {
 
 	mydata={documentTitle:"", boxes:[], values:[], boxComments:[], fieldComments:[], links:[], fieldColors:[]};
@@ -170,8 +186,12 @@ async function init() {
 				button.addEventListener("click", (event) => switchCollapsible(button));
 			});
 
-	input.addEventListener("change", async ()=>{
-		const diagData = getFileData(input);
+	input.addEventListener("change", async (event)=>{
+
+		const file = event.target.files[0];
+    		const diagData = await readUploadedFileAsText(file)  
+	  
+		//const diagData = getFileData(input);
 		const ret1 = await db.query('SELECT COUNT(*) FROM box');
 		const nb1 = ret1.rows[0].count;
 		await db.exec(delete_from_tables);
