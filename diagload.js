@@ -3,7 +3,6 @@ import {sample_contexts} from "./contexts.js";
 import {default as createBombixModule} from "./bombix.js";
 import {default as createLatuileModule} from "./latuile.js";
 import {db, init, displayCurrent} from "./table_edit.js";
-import {getFileData, download} from "./iocomponent.js";
 import {schema} from "./schema.js"
 import {sample_diagdata} from "./diagdata.js"
 
