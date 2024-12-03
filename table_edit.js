@@ -3,6 +3,7 @@ import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/i
 import {mycontexts, contexts, resetContexts, setContexts, drawDiag, compute_links, ApplyRepartition, enforce_bounding_rectangle, data2contexts, MONOSPACE_FONT_PIXEL_WIDTH, CHAR_RECT_HEIGHT, RECTANGLE_BOTTOM_CAP} from "./diagload.js";
 
 import {schema} from "./schema.js"
+import {delete_from_tables} from "./delete_from_tables.js"
 	
 export {db, init, displayCurrent};
 
@@ -171,7 +172,7 @@ async function init() {
 
 	input.addEventListener("change", ()=>{
 		const diagData = getFileData(input);
-		db.exec(deleteFromTables);
+		db.exec(delete_from_tables);
 		db.exec(diagData);
 		data2contexts();
 	});
