@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS field(
   name VARCHAR(128),
   idbox INTEGER,
   FOREIGN KEY (idbox) REFERENCES box(idbox),
-  UNIQUE(idbox, name)
+  UNIQUE(idbox, name),
+  UNIQUE(idbox, idfield)
 );
 
 CREATE TABLE IF NOT EXISTS value(
@@ -39,9 +40,9 @@ CREATE TABLE IF NOT EXISTS link(
   idbox_to INTEGER,
   idfield_to INTEGER,
   FOREIGN KEY (idbox_from) REFERENCES box(idbox),
-  FOREIGN KEY (idfield_from) REFERENCES field(idfield),
+  FOREIGN KEY (idbox_from, idfield_from) REFERENCES field(idbox, idfield),
   FOREIGN KEY (idbox_to) REFERENCES box(idbox),
-  FOREIGN KEY (idfield_to) REFERENCES field(idfield),
+  FOREIGN KEY (idbox_to, idfield_to) REFERENCES field(idbox, idfield),
   UNIQUE(idbox_from, idbox_to)
 );
 
@@ -87,9 +88,11 @@ CREATE TABLE IF NOT EXISTS graph(
   from_key INTEGER,
   to_table target_table,
   to_key INTEGER,
-  UNIQUE(from_table, from_key, to_table, to_key)/*,
+  UNIQUE(from_table, from_key, to_table, to_key)--,
+/*
   CHECK(is_table_primary_key(from_table::text, from_key)),
-  CHECK(is_table_primary_key(to_table::text, to_key))*/
+  CHECK(is_table_primary_key(to_table::text, to_key))
+*/
 );
 
 -- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('message_tag',1,'box',1);
