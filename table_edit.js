@@ -77,8 +77,7 @@ function download(filename, jsonData) {
 }
 
 async function readFile (evt) {
-  const [file] = evt.target.files;
-  if (!file) return;
+  const file = evt.target.files[0];
   const data = await file.text();
 //  return processFileContent(data)
 }
@@ -196,8 +195,7 @@ async function init() {
 
 	input.addEventListener("change", async (evt)=>{
 
-		const [file] = evt.target.files;
-  		if (!file) return;
+		const file = evt.target.files[0];
  		const diagData = await file.text();
 		
 //		const file = event.target.files[0];
