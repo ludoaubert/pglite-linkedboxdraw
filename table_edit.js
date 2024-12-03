@@ -2,6 +2,8 @@ import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/i
 
 import {mycontexts, contexts, resetContexts, setContexts, drawDiag, compute_links, ApplyRepartition, enforce_bounding_rectangle, data2contexts, MONOSPACE_FONT_PIXEL_WIDTH, CHAR_RECT_HEIGHT, RECTANGLE_BOTTOM_CAP} from "./diagload.js";
 
+import {schema} from "./schema.js"
+	
 export {db, init, displayCurrent};
 
 const db = new PGlite();
@@ -169,6 +171,9 @@ async function init() {
 
 	input.addEventListener("change", ()=>{
 		const diagData = getFileData(input);
+		db.exec(deleteFromTables);
+		db.exec(diagData);
+		data2contexts();
 	});
 	editTitle.addEventListener("change", updateTitle);
 	newDiagramButton.addEventListener("click", async () => {await newDiagram(); await displayCurrent(); await drawDiag();});
