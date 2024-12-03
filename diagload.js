@@ -1,7 +1,7 @@
 import {sample_contexts} from "./contexts.js";
 
 import {default as createBombixModule} from "./bombix.js";
-//import {default as createMyModule} from "./latuile-origine.js";
+import {default as createLatuileModule} from "./latuile.js";
 import {db, init, displayCurrent} from "./table_edit.js";
 import {getFileData, download} from "./iocomponent.js";
 import {schema} from "./schema.js"
@@ -14,6 +14,7 @@ const CHAR_RECT_HEIGHT=16;	// in reality 14,8 + 1 + 1 (top and bottom padding) =
 const RECTANGLE_BOTTOM_CAP=200;
 
 var bombixModule;
+var latuileModule;
 
 var mycontexts = sample_contexts;
 
@@ -88,7 +89,7 @@ async function data2contexts(mydata) {
 	console.log(slinks);
 
 	const bombix = bombixModule.cwrap("bombix","string",["string","string","string","string"]);
-	const latuile = bombixModule.cwrap("latuile","string",["string","string"]);
+	const latuile = latuileModule.cwrap("latuile","string",["string","string"]);
 
 	const jsonResponse = latuile(rectdim.join(''), slinks);
 	console.log(jsonResponse);
@@ -705,6 +706,7 @@ async function compute_rectangles(selectedContextIndex)
 window.main = async function main()
 {
 	bombixModule = await createBombixModule();
+	latuileModule = await createLatuileModule();
 	await db.exec(schema);
 	await db.exec(sample_diagdata);
 	await db.exec(sample_contexts);
