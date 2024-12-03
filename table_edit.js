@@ -189,7 +189,7 @@ async function init() {
 	input.addEventListener("change", async (event)=>{
 
 		const file = event.target.files[0];
-    		const diagData = await readUploadedFileAsText(file)  
+    		const diagData = await readUploadedFileAsText(file);  
 	  
 		//const diagData = getFileData(input);
 		const ret1 = await db.query('SELECT COUNT(*) FROM box');
