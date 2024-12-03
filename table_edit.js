@@ -172,9 +172,9 @@ async function init() {
 
 	input.addEventListener("change", ()=>{
 		const diagData = getFileData(input);
-		db.exec(delete_from_tables);
-		db.exec(diagData);
-		data2contexts();
+		await db.exec(delete_from_tables);
+		await db.exec(diagData);
+		await data2contexts();
 	});
 	editTitle.addEventListener("change", updateTitle);
 	newDiagramButton.addEventListener("click", async () => {await newDiagram(); await displayCurrent(); await drawDiag();});
