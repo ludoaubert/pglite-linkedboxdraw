@@ -49,6 +49,9 @@ function hex(i,n) {
 
 async function data2contexts() {
 
+	const ret = await db.query('SELECT COUNT(*) FROM box');
+	const nb = ret.rows[0].count;
+
 	const ret1 = await db.query(`
  		WITH cte(idbox, width, height) AS (
    			SELECT idbox, 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT} FROM box
