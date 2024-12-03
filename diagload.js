@@ -47,7 +47,7 @@ function hex(i,n) {
 }
 
 
-async function data2contexts(mydata) {
+async function data2contexts() {
 
 	const ret1 = await db.query(`
  		WITH cte(idbox, width, height) AS (
