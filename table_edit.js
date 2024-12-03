@@ -76,6 +76,13 @@ function download(filename, jsonData) {
   document.body.removeChild(element);
 }
 
+async readFile (evt) {
+  const [file] = evt.target.files
+  if (!file) return
+  const data = await file.text()
+  return processFileContent(data)
+}
+
 function getFileData(element)
 {
 	if (element.files && element.files[0])
@@ -187,10 +194,14 @@ async function init() {
 				button.addEventListener("click", (event) => switchCollapsible(button));
 			});
 
-	input.addEventListener("change", async (event)=>{
+	input.addEventListener("change", async (evt)=>{
 
-		const file = event.target.files[0];
-    		const diagData = await readUploadedFileAsText(file);  
+		const [file] = evt.target.files
+  		if (!file) return
+ 		const diagData = await file.text()
+		
+//		const file = event.target.files[0];
+//    		const diagData = await readUploadedFileAsText(file);  
 	  
 		//const diagData = getFileData(input);
 		const ret1 = await db.query('SELECT COUNT(*) FROM box');
