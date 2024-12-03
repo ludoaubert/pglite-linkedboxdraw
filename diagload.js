@@ -59,7 +59,7 @@ async function data2contexts() {
     			FROM cte
       			GROUP BY idbox
 	 	)
-   		SELECT json_agg(jsonb_build_object('left', 0, 'right', width, 'top', 0, 'bottom', height) ORDER BY idbox) AS rectangle
+   		SELECT json_agg(jsonb_build_object('left', 0, 'right', width, 'top', 0, 'bottom', height) ORDER BY idbox)
       		FROM cte2;
  	`);
 
