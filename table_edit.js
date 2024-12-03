@@ -196,9 +196,9 @@ async function init() {
 
 	input.addEventListener("change", async (evt)=>{
 
-		const [file] = evt.target.files
-  		if (!file) return
- 		const diagData = await file.text()
+		const [file] = evt.target.files;
+  		if (!file) return;
+ 		const diagData = await file.text();
 		
 //		const file = event.target.files[0];
 //    		const diagData = await readUploadedFileAsText(file);  
