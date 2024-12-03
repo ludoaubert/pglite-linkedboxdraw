@@ -170,7 +170,7 @@ async function init() {
 				button.addEventListener("click", (event) => switchCollapsible(button));
 			});
 
-	input.addEventListener("change", ()=>{
+	input.addEventListener("change", async ()=>{
 		const diagData = getFileData(input);
 		await db.exec(delete_from_tables);
 		await db.exec(diagData);
