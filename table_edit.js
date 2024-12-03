@@ -76,43 +76,6 @@ function download(filename, jsonData) {
   document.body.removeChild(element);
 }
 
-async function readFile (evt) {
-  const file = evt.target.files[0];
-  const data = await file.text();
-//  return processFileContent(data)
-}
-
-function getFileData(element)
-{
-	if (element.files && element.files[0])
-	{
-		return new Promise((resolve) => {
-			var reader = new FileReader();
-			reader.addEventListener('load', (e) => {
-				resolve(e.target.result);
-			})
-			reader.readAsBinaryString(element.files[0]);
-		});
-	}
-}
-
-function readUploadedFileAsText(inputFile)
-{
-	const temporaryFileReader = new FileReader();
-
-	return new Promise((resolve, reject) => {
-		temporaryFileReader.onerror = () => {
-			temporaryFileReader.abort();
-			reject(new DOMException("Problem parsing input file."));
-		};
-
-		temporaryFileReader.onload = () => {
-      			resolve(temporaryFileReader.result);
-    		};
-    		temporaryFileReader.readAsText(inputFile);
-  	});
-};
-
 function newDiagram() {
 
 	mydata={documentTitle:"", boxes:[], values:[], boxComments:[], fieldComments:[], links:[], fieldColors:[]};
