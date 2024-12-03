@@ -112,6 +112,7 @@ function newDiagram() {
 
 async function init() {
 
+	input = document.getElementById("fi");
 	editTitle = document.getElementById("title");
 	newDiagramButton = document.getElementById("new diagram");
 	boxCombo = document.getElementById("boxes");
@@ -166,6 +167,9 @@ async function init() {
 				button.addEventListener("click", (event) => switchCollapsible(button));
 			});
 
+	input.addEventListener("change", ()=>{
+		const diagData = getFileData(input);
+	});
 	editTitle.addEventListener("change", updateTitle);
 	newDiagramButton.addEventListener("click", async () => {await newDiagram(); await displayCurrent(); await drawDiag();});
 	boxCombo.addEventListener("change", async () => {currentBoxIndex = -1; await displayCurrent();});
