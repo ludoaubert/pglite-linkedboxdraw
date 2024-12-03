@@ -49,18 +49,18 @@ function hex(i,n) {
 
 async function data2contexts() {
 
-	const ret = await db.query('SELECT COUNT(*) FROM box');
-	const nb = ret.rows[0].count;
-
 	const ret1 = await db.query(`
  		WITH cte(idbox, width, height) AS (
    			SELECT idbox, 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT} FROM box
     			UNION ALL
        			SELECT idbox, LENGTH(name) * ${MONOSPACE_FONT_PIXEL_WIDTH}, ${CHAR_RECT_HEIGHT}  FROM field
 		), cte2 AS (
+  			INSERT INTO rectangle(idbox, width, height)
   			SELECT idbox, MAX(width) AS width, LEAST(SUM(height), ${RECTANGLE_BOTTOM_CAP}) AS height
     			FROM cte
       			GROUP BY idbox
+	 		ORDER BY idbox
+    			RETURNING *
 	 	)
    		SELECT json_agg(jsonb_build_object('left', 0, 'right', width, 'top', 0, 'bottom', height) ORDER BY idbox)
       		FROM cte2;
@@ -71,14 +71,8 @@ async function data2contexts() {
 	console.log(rectdim);
 
 	const ret2 = await db.query(`
- 		WITH cte_dense_idbox AS (
-   			SELECT idbox, DENSE_RANK() OVER(ORDER BY idbox) AS dr
-      			FROM box
-		)
- 		SELECT STRING_AGG(FORMAT('%1$%2$', LPAD(to_hex(d_from.idbox-1),3,'0'), LPAD(to_hex(d_to.idbox-1),3,'0')),'')
+ 		SELECT STRING_AGG(FORMAT('%1$%2$', LPAD(to_hex(l.idbox_from-1),3,'0'), LPAD(to_hex(l.idbox_to-1),3,'0')),'')
    		FROM link l
-     		JOIN cte_dense_idbox d_from ON d_from.idbox = l.idbox_from
-       		JOIN cte_dense_idbox d_to ON d_to.idbox = l.idbox_to
      		WHERE NOT EXISTS (
      			SELECT *
 			FROM graph g 
