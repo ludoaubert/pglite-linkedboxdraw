@@ -1,6 +1,4 @@
-export {schema};
 
-const schema=`
 
 CREATE TABLE IF NOT EXISTS diagram(
   iddiagram SERIAL PRIMARY KEY,
@@ -128,4 +126,3 @@ CREATE TABLE IF NOT EXISTS polyline(
   FOREIGN KEY (idtranslation_to, context) REFERENCES translation(idtranslation, context),
   UNIQUE(idtranslation_from, idtranslation_to)
 );
-`
