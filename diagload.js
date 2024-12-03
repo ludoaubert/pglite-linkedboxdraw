@@ -81,7 +81,7 @@ async function data2contexts() {
      		);
  	`);
 
-	const slinks = ret2.rows[0];
+	const slinks = ret2.rows[0].string_agg;
 	console.log(slinks);
 
 	const bombix = bombixModule.cwrap("bombix","string",["string","string","string","string"]);
