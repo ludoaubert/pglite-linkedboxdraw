@@ -76,11 +76,11 @@ function download(filename, jsonData) {
   document.body.removeChild(element);
 }
 
-async readFile (evt) {
-  const [file] = evt.target.files
-  if (!file) return
-  const data = await file.text()
-  return processFileContent(data)
+async function readFile (evt) {
+  const [file] = evt.target.files;
+  if (!file) return;
+  const data = await file.text();
+//  return processFileContent(data)
 }
 
 function getFileData(element)
