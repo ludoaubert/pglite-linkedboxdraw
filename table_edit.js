@@ -176,10 +176,10 @@ async function init() {
 		const nb1 = ret1.rows[0].count;
 		await db.exec(delete_from_tables);
 		const ret2 = await db.query('SELECT COUNT(*) FROM box');
-		const nb2 = ret1.rows[0].count;
+		const nb2 = ret2.rows[0].count;
 		await db.exec(diagData);
 		const ret3 = await db.query('SELECT COUNT(*) FROM box');
-		const nb3 = ret1.rows[0].count;
+		const nb3 = ret3.rows[0].count;
 		await data2contexts();
 	});
 	editTitle.addEventListener("change", updateTitle);
