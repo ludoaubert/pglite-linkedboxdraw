@@ -62,16 +62,14 @@ async function data2contexts() {
 	 		ORDER BY idbox
     			RETURNING *
 	 	)
-   		SELECT json_agg(jsonb_build_object('left', 0, 'right', width, 'top', 0, 'bottom', height) ORDER BY idbox)
+   		SELECT STRING_AGG(FORMAT('%1$%2$', LPAD(to_hex(width),3,'0'), LPAD(to_hex(height),3,'0')), '' ORDER BY idbox)
       		FROM cte2;
  	`);
 
-	const rectangles = ret1.rows[0].json_agg;
-	const rectdim = rectangles.map(r => hex(r.right-r.left,3)+hex(r.bottom-r.top,3));
-	console.log(rectdim);
+	const rectdim = ret1.rows[0].string_agg;
 
 	const ret2 = await db.query(`
- 		SELECT STRING_AGG(FORMAT('%1$%2$', LPAD(to_hex(l.idbox_from-1),3,'0'), LPAD(to_hex(l.idbox_to-1),3,'0')),'')
+ 		SELECT STRING_AGG(FORMAT('%1$%2$', LPAD(to_hex(l.idbox_from-1),3,'0'), LPAD(to_hex(l.idbox_to-1),3,'0')),'' ORDER BY l.idlink)
    		FROM link l
      		WHERE NOT EXISTS (
      			SELECT *
@@ -91,7 +89,6 @@ async function data2contexts() {
 	console.log(jsonResponse);
 
 	mycontexts = JSON.parse(jsonResponse);
-	mycontexts.rectangles = rectangles;
 	
 	for (const [selectedContextIndex, context] of mycontexts.contexts.entries())
 		context.links = await compute_links(selectedContextIndex);
