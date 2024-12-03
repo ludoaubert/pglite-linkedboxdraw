@@ -63,7 +63,7 @@ INSERT INTO field(name, idbox) VALUES ('al', 19), ('zeto', 19);
 INSERT INTO box(idbox, title, iddiagram) VALUES(20, 'usage', 1);
 INSERT INTO field(name, idbox) VALUES ('[zomblouLeurdits]', 20), ('{youvois}', 20), ('fechnoueuf', 20), ('lancebaVeucheYeuveZarbiZeu', 20), ('Zeyos', 20), ('euf', 20);
 
-INSERT INTO link(idbox_from, idfield_from, idbox_to, idfield_to) VALUES
+INSERT INTO link(idbox_from, idbox_to) VALUES
 (2+1, 14+1),
 (2+1, 5+1),
 (17+1, 7+1),
