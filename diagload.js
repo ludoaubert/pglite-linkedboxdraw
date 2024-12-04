@@ -62,14 +62,14 @@ async function data2contexts() {
 	 		ORDER BY idbox
     			RETURNING *
 	 	)
-   		SELECT STRING_AGG(FORMAT('%1$%2$', LPAD(to_hex(width),3,'0'), LPAD(to_hex(height),3,'0')), '' ORDER BY idbox)
+   		SELECT STRING_AGG(FORMAT('%1$s%2$s', LPAD(to_hex(width),3,'0'), LPAD(to_hex(height),3,'0')), '' ORDER BY idbox)
       		FROM cte2;
  	`);
 
 	const rectdim = ret1.rows[0].string_agg;
 
 	const ret2 = await db.query(`
- 		SELECT STRING_AGG(FORMAT('%1$%2$', LPAD(to_hex(l.idbox_from-1),3,'0'), LPAD(to_hex(l.idbox_to-1),3,'0')),'' ORDER BY l.idlink)
+ 		SELECT STRING_AGG(FORMAT('%1$s%2$s', LPAD(to_hex(l.idbox_from-1),3,'0'), LPAD(to_hex(l.idbox_to-1),3,'0')),'' ORDER BY l.idlink)
    		FROM link l
      		WHERE NOT EXISTS (
      			SELECT *
