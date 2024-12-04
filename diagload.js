@@ -94,8 +94,8 @@ async function data2contexts() {
 					.flat();
 	const ret3 = db.query(`
   		INSERT INTO translation(context, idrectangle, x, y)
-     		SELECT context, id+1 AS idrectangle, x, y
-  		FROM json_to_recordset('${translations}') AS transl("context" int, "id" int, "x" int, "y" int)
+     		SELECT contextIndex+1 AS context, id+1 AS idrectangle, x, y
+  		FROM json_to_recordset('${translations}') AS transl("contextIndex" int, "id" int, "x" int, "y" int)
 	`);
 /*
 	for (const [selectedContextIndex, context] of mycontexts.contexts.entries())
