@@ -90,7 +90,7 @@ async function data2contexts() {
 	const contexts = JSON.parse(jsonResponse);
 
 	const translations = contexts.contexts
-					.map((context, index) => context.translatedBoxes.map({id,translation:{x,y}} => {index, id, x, y}))
+					.map((context, index) => context.translatedBoxes.map(({id,translation:{x,y}}) => ({index, id, x, y})))
 					.flat();
 	const ret3 = db.query(`
   		INSERT INTO translation(context, idrectangle, x, y)
