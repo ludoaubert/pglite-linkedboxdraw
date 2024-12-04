@@ -92,7 +92,7 @@ async function data2contexts() {
 	const translations = contexts.contexts
 					.map((context, index) => context.translatedBoxes.map(({id,translation:{x,y}}) => ({index, id, x, y})))
 					.flat();
-	const ret3 = db.query(`
+	const ret3 = await db.query(`
   		INSERT INTO translation(context, idrectangle, x, y)
      		SELECT index+1 AS context, id+1 AS idrectangle, x, y
   		FROM json_to_recordset('${translations}') AS transl("index" int, "id" int, "x" int, "y" int)
