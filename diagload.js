@@ -92,10 +92,14 @@ async function data2contexts() {
 	const translations = contexts.contexts
 					.map((context, index) => context.translatedBoxes.map(({id,translation:{x,y}}) => ({index, id, x, y})))
 					.flat();
+
+	const jsonTranslations = JSON.stringify(translations);
+	console.log(jsonTranslations);
+	
 	const ret3 = await db.query(`
   		INSERT INTO translation(idrectangle, context, x, y)
      		SELECT id+1 AS idrectangle, index+1 AS context, x, y
-  		FROM json_to_recordset('${translations}') AS transl("index" int, "id" int, "x" int, "y" int)
+  		FROM json_to_recordset('${jsonTranslations}') AS transl("index" int, "id" int, "x" int, "y" int)
 	`);
 
 	await drawDiag();
