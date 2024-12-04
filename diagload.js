@@ -89,13 +89,13 @@ async function data2contexts() {
 
 	const contexts = JSON.parse(jsonResponse);
 
-	const translations = contexts.contexts.entries()
-					.map([contextIndex, context] => context.translatedBoxes.map({id,translation:{x,y}} => {contextIndex, id, x, y}))
+	const translations = contexts.contexts
+					.map((context, index) => context.translatedBoxes.map({id,translation:{x,y}} => {index, id, x, y}))
 					.flat();
 	const ret3 = db.query(`
   		INSERT INTO translation(context, idrectangle, x, y)
-     		SELECT contextIndex+1 AS context, id+1 AS idrectangle, x, y
-  		FROM json_to_recordset('${translations}') AS transl("contextIndex" int, "id" int, "x" int, "y" int)
+     		SELECT index+1 AS context, id+1 AS idrectangle, x, y
+  		FROM json_to_recordset('${translations}') AS transl("index" int, "id" int, "x" int, "y" int)
 	`);
 
 	await drawDiag();
