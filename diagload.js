@@ -97,6 +97,8 @@ async function data2contexts() {
      		SELECT contextIndex+1 AS context, id+1 AS idrectangle, x, y
   		FROM json_to_recordset('${translations}') AS transl("contextIndex" int, "id" int, "x" int, "y" int)
 	`);
+
+	await drawDiag();
 /*
 	for (const [selectedContextIndex, context] of mycontexts.contexts.entries())
 		context.links = await compute_links(selectedContextIndex);
