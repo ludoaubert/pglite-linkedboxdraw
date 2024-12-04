@@ -87,12 +87,24 @@ async function data2contexts() {
 	const jsonResponse = latuile(rectdim, slinks);
 	console.log(jsonResponse);
 
-	mycontexts = JSON.parse(jsonResponse);
-	
+	const contexts = JSON.parse(jsonResponse);
+
+	const translations = contexts.contexts.entries()
+					.map(const [contextIndex, context] => context.translatedBoxes.map({id,translation:{x,y}}} => {contextIndex, id, x, y}))
+					.flat();
+	const ret3 = db.query(`
+		WITH cte AS (
+  			INSERT INTO translation(context, idrectangle, x, y)
+     			SELECT context, id+1 AS idrectangle, x, y
+  			FROM json_to_recordset('${translations}') AS transl("context" int, "id" int, "x" int, "y" int)
+		) 		
+	`);
+/*
 	for (const [selectedContextIndex, context] of mycontexts.contexts.entries())
 		context.links = await compute_links(selectedContextIndex);
 	
 	return mycontexts;
+*/
 }
 
 
