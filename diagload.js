@@ -604,6 +604,16 @@ async function drawDiag()
 	const css = await drawDiagramStyle();
 	var sheet = document.getElementById("dynamic-sheet");
 	sheet.innerHTML = css;
+
+//making sure svg viewBox is computed in a unified way
+
+	const ret = await db.query(`SELECT DISTINCT context FROM translation ORDER BY context`);
+	const contexts = ret.rows;
+	
+	for (const {context:selectedContextIndex} of contexts)
+	{
+		enforce_bounding_rectangle(selectedContextIndex);		
+	}
 }
 
 
@@ -713,16 +723,6 @@ window.main = async function main()
 	document.body.appendChild(sheet);
 	await drawDiag();
 	await init();
-	
-//making sure svg viewBox is computed in a unified way
-
-	const ret = await db.query(`SELECT DISTINCT context FROM translation ORDER BY context`);
-	const contexts = ret.rows;
-	
-	for (const {context:selectedContextIndex} of contexts)
-	{
-		enforce_bounding_rectangle(selectedContextIndex);		
-	}
 }
 
 async function updateCutLinks(){
