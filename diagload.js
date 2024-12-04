@@ -99,12 +99,6 @@ async function data2contexts() {
 	`);
 
 	await drawDiag();
-/*
-	for (const [selectedContextIndex, context] of mycontexts.contexts.entries())
-		context.links = await compute_links(selectedContextIndex);
-	
-	return mycontexts;
-*/
 }
 
 
