@@ -360,10 +360,11 @@ async function compute_links(selectedContextIndex)
  	`);
 
 	const ids = ret4.rows[0].json_agg;
-	
+
 	const slinks = links
-			.map(lk => [ids.indexOf(lk.from), ids.indexOf(lk.to)])
+			.map(lk => [lk.from, lk.to])
 			.flat()
+			.map(i => ids.indexOf(i))
 			.map(i => hex(i,2))
 			.join('');
 
