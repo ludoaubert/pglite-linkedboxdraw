@@ -370,15 +370,20 @@ async function compute_links(selectedContextIndex)
 
 	console.log({rectangles, frame, links});
 
-	const bombix = bombixModule.cwrap("bombix","string",["string","string","string","string"])
-	const jsonResponse = await bombix(rectdim, translations, sframe, slinks);
-	const links_ = JSON.parse(jsonResponse)
+	const bombix = bombixModule.cwrap("bombix","string",["string","string","string","string"]);
+	try{
+		const jsonResponse = await bombix(rectdim, translations, sframe, slinks);
+		const links_ = JSON.parse(jsonResponse)
 				.map(({polyline, from, to}) => ({
 					polyline: polyline.map(({x,y}) => ({x:x-XY_TR, y:y-XY_TR})), 
 					from:ids[from], 
 					to:ids[to]
 					}));
-	return links_;
+		return links_;
+	}
+	catch(e){
+		return [];
+	}
 }
 
 
