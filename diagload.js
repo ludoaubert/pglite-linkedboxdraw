@@ -336,7 +336,10 @@ async function compute_links(selectedContextIndex)
 	 		JOIN rectangle r ON t.idrectangle=r.idrectangle
     			WHERE t.context=${selectedContextIndex}
 		)
- 		SELECT json_agg(json_build_object('from', l.idbox_from, 'to', l.idbox_to) ORDER BY l.idlink)
+ 		SELECT coalesce(
+   			json_agg(json_build_object('from', l.idbox_from, 'to', l.idbox_to) ORDER BY l.idlink),
+      			'[]'::json
+	 	)
    		FROM link l
      		JOIN cte cte_from ON cte_from.idbox = l.idbox_from
        		JOIN cte cte_to ON cte_to.idbox = l.idbox_to
@@ -350,7 +353,7 @@ async function compute_links(selectedContextIndex)
       			)
  	`);
 
-	const links = ret3.rows[0].json_agg;
+	const links = ret3.rows[0].coalesce;
 
 	const ret4 = await db.query(`
     		SELECT json_agg(r.idbox ORDER BY r.idbox)
