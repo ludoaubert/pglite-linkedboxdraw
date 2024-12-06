@@ -3204,10 +3204,9 @@ const char* bombix(const char *rectdim,
 }
 }
 /*
-emcc bombix.cpp -s EXPORTED_FUNCTIONS='["_bombix"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s ALLOW_MEMORY_GROWTH=1 -s EXPORT_ES6=1 -s MODULARIZE=1 -s EXPORT_NAME="createBombixModule"
+git checkout 30b7a332da77d55576d6f15ab65b587192c6aabc
 
-/var/www/projects/ludo$ emcc ~/linkedboxdraw/bombix.cpp -o bombix.html -s EXPORTED_FUNCTIONS='["_bombix"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s ALLOW_MEMORY_GROWTH=1
-puis dans https://dev.diskloud.fr/ludo/bombix.html
+emcc bombix.cpp -o bombix.js -Wno-c++11-narrowing -s EXPORTED_FUNCTIONS='["_bombix"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s ALLOW_MEMORY_GROWTH=1  -s EXPORT_ES6=1 -s MODULARIZE=1 -s EXPORT_NAME="createBombixModule" -s TOTAL_STACK=32MB
 
 bombix=Module.cwrap("bombix","string",["string","string","string","string"])
 exemple: 
