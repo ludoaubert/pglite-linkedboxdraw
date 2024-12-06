@@ -533,7 +533,7 @@ async function produce_link_options()
 		SELECT coalesce(
   			json_agg(json_build_object('option', option, 'idlink', idlink) ORDER BY option),
      			'[]'::json
-		);
+		)
   		FROM cte
   	`);
 
