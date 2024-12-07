@@ -745,7 +745,7 @@ async function updateColorLinks(){
 
 	const ret2 = await db.query(`
 		WITH cte_link AS (
- 			SELECT l.*, DENSE_RANK() OVER (ORDER BY idbox_to, idfield_to) - 1 rk
+ 			SELECT l.*, DENSE_RANK() OVER (ORDER BY idbox_to, idfield_to) rk
    			FROM link l
      			JOIN rectangle r_from ON r_from.idbox=l.idbox_from
        			JOIN rectangle r_to ON r_to.idbox=l.idbox_to
@@ -753,13 +753,13 @@ async function updateColorLinks(){
 	 		JOIN translation t_to ON t_to.idrectangle=r_to.idrectangle
    			WHERE t_from.context != t_to.context AND l.idfield_from IS NOT NULL AND l.idfield_to IS NOT NULL
     		), link_color AS (
-  			SELECT idtag, code AS color, ROW_NUMBER() OVER (ORDER BY idtag) - 1 AS rn, COUNT(*) OVER() AS nb 
+  			SELECT idtag, code AS color, ROW_NUMBER() OVER (ORDER BY idtag) AS rn 
      			FROM tag
 			WHERE type_code='LINK_COLOR'
 		), colored_link AS (
   			SELECT * 
     			FROM cte_link l
-      			JOIN link_color c ON c.rn = l.rk % c.nb
+      			JOIN link_color c ON c.rn = l.rk
 	 	), cte(from_key, to_key) AS (
      			SELECT idtag, idfield_from
       			FROM colored_link
