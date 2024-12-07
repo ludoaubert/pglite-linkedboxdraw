@@ -743,7 +743,7 @@ async function updateColorLinks(){
 	const ret = await db.query('SELECT version();');
 	const pg_version = ret.rows[0].version;
 
-	const ret = await db.query(`
+	const ret2 = await db.query(`
 		WITH cte_link AS (
  			SELECT l.*, DENSE_RANK() OVER (ORDER BY idbox_to, idfield_to) - 1 rk
    			FROM link l
@@ -795,5 +795,5 @@ async function updateColorLinks(){
 */
  	`);
 
-	const a = ret;
+	const a = ret2;
 }
