@@ -781,11 +781,7 @@ async function updateColorLinks(){
   		INSERT INTO graph(from_table, from_key, to_table, to_key)
     		SELECT 'tag', from_key, 'field', to_key
       		FROM cte2
-		WHERE NOT EXISTS (
-     			SELECT *
-       			FROM graph g
-	   		WHERE g.from_table='tag' AND g.from_key=cte2.from_key AND g.to_table='field' AND g.to_key=cte2.to_key
-		)
+		ON CONFLICT (from_table, from_key, to_table, to_key) DO NOTHING;
 /*
 	available in PostgreSQL 17
 
