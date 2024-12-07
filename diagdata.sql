@@ -60,27 +60,38 @@ INSERT INTO field(name, idbox) VALUES ('al', 19), ('zeto', 19);
 INSERT INTO box(idbox, title, iddiagram) VALUES(20, 'usage', 1);
 INSERT INTO field(name, idbox) VALUES ('[zomblouLeurdits]', 20), ('{youvois}', 20), ('fechnoueuf', 20), ('lancebaVeucheYeuveZarbiZeu', 20), ('Zeyos', 20), ('euf', 20);
 
-INSERT INTO link(idbox_from, idfield_from, idbox_to, idfield_to) VALUES
-(2+1, 1+1, 14+1, 1+1),
-(2+1, 3+1, 5+1, 1+1),
-(17+1, 2+1, 7+1, 1+1),
-(6+1, 3+1, 14+1, 1+1),
-(6+1, 6+1, 5+1, 1+1),
-(1+1, 1+1,  14+1,  1+1),
-(3+1, 1+1,  4+1,  0+1),
-(5+1, 2+1,  17+1,  0+1),
-(8+1, 0+1,  9+1,  3+1),
-(14+1, 2+1,  7+1,  1+1),
-(7+1, 1+1,  0+1,  0+1),
-(7+1, 2+1,  16+1,  1+1),
-(12+1, 1+1,  14+1,  1+1),
-(10+1, 0+1,  18+1,  0+1),
-(10+1, 2+1,  16+1,  1+1),
-(10+1, 3+1,  9+1,  3+1),
-(19+1, 0+1,  10+1,  1+1),
-(19+1, 2+1,  7+1,  1+1),
-(19+1, 3+1,  8+1,  2+1),
-(19+1, 1+1,  11+1,  2+1),
-(16+1, 1+1,  3+1,  1+1),
-(11+1, 0+1,  13+1,  0+1),
-(9+1, 0+1,  15+1,  0+1);
+INSERT INTO link(idbox_from, idbox_to) VALUES
+(2+1, 14+1),
+(2+1, 5+1),
+(17+1, 7+1),
+(6+1, 14+1),
+(6+1, 5+1),
+(1+1, 14+1),
+(3+1, 4+1),
+(5+1, 17+1),
+(8+1, 9+1),
+(14+1, 7+1),
+(7+1, 0+1),
+(7+1, 16+1),
+(12+1, 14+1),
+(10+1, 18+1),
+(10+1, 16+1),
+(10+1, 9+1),
+(19+1, 10+1),
+(19+1, 7+1),
+(19+1, 8+1),
+(19+1, 11+1),
+(16+1, 3+1),
+(11+1, 13+1),
+(9+1, 15+1);
+
+WITH cte(box_title, field_name, color) AS (
+	SELECT 'euf','lassedeg','yellow' UNION ALL
+	SELECT 'mefu','zeberyep','hotpink'
+)
+INSERT INTO graph(from_table, from_key, to_table, to_key)
+SELECT 'tag', t.idtag, 'field', f.idfield
+FROM cte
+JOIN tag t ON t.type_code='COLOR' AND t.code=cte.color
+JOIN box b ON b.title = cte.box_title
+JOIN field f ON f.idbox = b.idbox AND f.name = cte.field_name;
