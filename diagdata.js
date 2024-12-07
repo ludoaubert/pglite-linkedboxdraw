@@ -97,6 +97,6 @@ SELECT 'tag', t.idtag, 'field', f.idfield
 FROM cte
 JOIN tag t ON t.type_code='COLOR' AND t.code=cte.color
 JOIN box b ON b.title = cte.box_title
-JOIN field f ON f.idbox = f.idbox AND f.name = cte.field_name;
+JOIN field f ON f.idbox = b.idbox AND f.name = cte.field_name;
 
 `
