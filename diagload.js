@@ -615,6 +615,7 @@ async function drawDiag()
 	addEventListeners();
 	await updateColorLinks();
 	const css = await drawDiagramStyle();
+	console.log(css);
 	var sheet = document.getElementById("dynamic-sheet");
 	sheet.innerHTML = css;
 
