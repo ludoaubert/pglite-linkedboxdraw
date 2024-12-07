@@ -760,14 +760,14 @@ async function updateColorLinks(){
   			SELECT * 
     			FROM cte_link l
       			JOIN link_color c ON c.rn = l.rk % c.nb
-	 	), cte(from_table, from_key, to_table, to_key) AS (
-     			SELECT 'tag', idtag, 'field', idfield_from
+	 	), cte(from_key, to_key) AS (
+     			SELECT idtag, idfield_from
       			FROM colored_link
    				UNION ALL
-       			SELECT 'tag', idtag, 'field', idfield_to
+       			SELECT idtag, idfield_to
       			FROM colored_link
 		), cte2 AS (
-        		SELECT DISTINCT from_table, from_key, to_table, to_key
+        		SELECT DISTINCT from_key, to_key
       			FROM cte
         	), cte_delete AS (
 			DELETE FROM graph g
@@ -775,16 +775,16 @@ async function updateColorLinks(){
    			  AND NOT EXISTS (
    				SELECT *
        				FROM cte2
-	   			WHERE g.from_table=cte2.from_table AND g.from_key=cte2.from_key AND g.to_table=cte2.to_table AND g.to_key=cte2.to_key
+	   			WHERE g.from_key=cte2.from_key AND g.to_key=cte2.to_key
 			) AND g.from_key IN (SELECT idtag FROM link_color)
 		)
   		INSERT INTO graph(from_table, from_key, to_table, to_key)
-    		SELECT from_table, from_key, to_table, to_key
+    		SELECT 'tag', from_key, 'field', to_key
       		FROM cte2
 		WHERE NOT EXISTS (
      			SELECT *
        			FROM graph g
-	   		WHERE g.from_table=cte2.from_table AND g.from_key=cte2.from_key AND g.to_table=cte2.to_table AND g.to_key=cte2.to_key
+	   		WHERE g.from_table='tag' AND g.from_key=cte2.from_key AND g.to_table='field' AND g.to_key=cte2.to_key
 		)
 /*
 	available in PostgreSQL 17
