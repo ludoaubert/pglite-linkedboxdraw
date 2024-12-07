@@ -738,13 +738,13 @@ window.main = async function main()
 	await init();
 }
 
-async function updateCutLinks(){
+async function updateColorLinks(){
 
 	const ret = await db.query('SELECT version();');
 	const pg_version = ret.rows[0].version;
 
 	await db.exec(`
- 		WITH cte_link AS (
+		WITH cte_link AS (
  			SELECT l.*, DENSE_RANK() OVER (ORDER BY idbox_to, idfield_to) - 1 rk
    			FROM link l
      			JOIN rectangle r_from ON r_from.idbox=l.idbox_from
@@ -776,11 +776,7 @@ async function updateCutLinks(){
    				SELECT *
        				FROM cte2
 	   			WHERE g.from_table=cte2.from_table AND g.from_key=cte2.from_key AND g.to_table=cte2.to_table AND g.to_key=cte2.to_key
-			) AND g.from_key IN (
-   				SELECT idtag
-       				FROM tag
-	   			WHERE type_code='CUT_LINK_COLOR'  
-			)
+			) AND g.from_key IN (SELECT idtag FROM link_color)
 		)
   		INSERT INTO graph(from_table, from_key, to_table, to_key)
     		SELECT from_table, from_key, to_table, to_key
