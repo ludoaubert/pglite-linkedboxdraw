@@ -766,19 +766,24 @@ async function updateColorLinks(){
 		), cte2 AS (
         		SELECT DISTINCT from_key, to_key
       			FROM cte
-        	), cte_delete AS (
+        	), cte_graph AS (
+	 		SELECT idgraph, from_key, to_key
+    			FROM graph
+       			WHERE from_table='tag' AND to_table='field'
+	  		AND from_key IN (SELECT idtag FROM link_color)
+		),cte_delete AS (
 			DELETE FROM graph g
-			WHERE g.from_table='tag' AND g.to_table='field' 
+			WHERE idgraph IN (SELECT idgraph FROM cte_graph) 
    			  AND NOT EXISTS (
    				SELECT *
        				FROM cte2
 	   			WHERE g.from_key=cte2.from_key AND g.to_key=cte2.to_key
-			) AND g.from_key IN (SELECT idtag FROM link_color)
+			)
 		)
   		INSERT INTO graph(from_table, from_key, to_table, to_key)
     		SELECT 'tag', from_key, 'field', to_key
       		FROM cte2
-		LEFT JOIN graph g USING (from_table, from_key, to_table, to_key)
+		LEFT JOIN cte_graph g USING (from_key, to_key)
   		WHERE g.idgraph IS NULL;
 /*
 	available in PostgreSQL 17
