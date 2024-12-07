@@ -791,5 +791,5 @@ async function updateColorLinks(){
 */
  	`);
 
-	const a = ret2;
+	console.log(ret2);
 }
