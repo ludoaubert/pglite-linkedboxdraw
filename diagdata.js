@@ -87,4 +87,16 @@ INSERT INTO link(idbox_from, idbox_to) VALUES
 (16+1, 3+1),
 (11+1, 13+1),
 (9+1, 15+1);
+
+WITH cte(box_title, field_name, color) AS (
+	SELECT 'euf','lassedeg','yellow' UNION ALL
+	SELECT 'mefu','zeberyep','hotpink'
+)
+INSERT INTO graph(from_table, from_key, to_table, to_key)
+SELECT 'tag', t.idtag, 'field', f.idfield
+FROM cte
+JOIN tag t ON t.type_code='COLOR' AND t.code=cte.color
+JOIN box b ON b.title = cte.box_title
+JOIN field f ON f.idbox = f.idbox AND f.name = cte.field_name;
+
 `
