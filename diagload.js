@@ -509,7 +509,7 @@ async function drawDiagramStyle() {
   			FROM graph g
     			JOIN tag t ON g.from_table='tag' AND g.from_key=t.idtag
       			JOIN field f ON g.to_table='field' AND g.to_key=f.idfield
-      			WHERE t.type_code IN ('CUT_LINK_COLOR', 'COLOR')
+      			WHERE t.type_code IN ('LINK_COLOR', 'COLOR')
 	 	)
    		SELECT STRING_AGG(css, '\n')
      		FROM cte
