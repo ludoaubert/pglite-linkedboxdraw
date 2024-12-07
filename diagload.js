@@ -767,7 +767,7 @@ async function updateCutLinks(){
     			FROM cte_cut_link l
       			JOIN cut_link_color c ON c.rn = l.rk % c.nb
 	 	), cte(from_table, from_key, to_table, to_key) AS (
-     			SELECT 'tag'::source_table, idtag, 'field'::target_table, idfield_from
+     			SELECT 'tag', idtag, 'field', idfield_from
       			FROM colored_cut_link
    				UNION ALL
        			SELECT 'tag', idtag, 'field', idfield_to
@@ -782,10 +782,10 @@ async function updateCutLinks(){
    				SELECT *
        				FROM cte2
 	   			WHERE g.from_table=cte2.from_table AND g.from_key=cte2.from_key AND g.to_table=cte2.to_table AND g.to_key=cte2.to_key
-			) AND EXISTS (
-   				SELECT *
-       				FROM tag t
-	   			WHERE t.type_code='CUT_LINK_COLOR' AND t.idtag=g.from_key  
+			) AND g.from_key IN (
+   				SELECT idtag
+       				FROM tag
+	   			WHERE type_code='CUT_LINK_COLOR'  
 			)
 		)
   		INSERT INTO graph(from_table, from_key, to_table, to_key)
