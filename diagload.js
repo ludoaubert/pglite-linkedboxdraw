@@ -778,7 +778,8 @@ async function updateColorLinks(){
   		INSERT INTO graph(from_table, from_key, to_table, to_key)
     		SELECT 'tag', from_key, 'field', to_key
       		FROM cte2
-		ON CONFLICT (from_table, from_key, to_table, to_key) DO NOTHING;
+		LEFT JOIN graph g USING (from_table, from_key, to_table, to_key)
+  		WHERE g.idgraph IS NULL;
 /*
 	available in PostgreSQL 17
 
