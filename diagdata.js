@@ -74,7 +74,7 @@ INSERT INTO link(idbox_from, idbox_to) VALUES
 (5+1, 17+1),
 (8+1, 9+1),
 (14+1, 7+1),
-(7+1, 0+1),
+--(7+1, 0+1),
 (7+1, 16+1),
 (12+1, 14+1),
 (10+1, 18+1),
@@ -87,6 +87,28 @@ INSERT INTO link(idbox_from, idbox_to) VALUES
 (16+1, 3+1),
 (11+1, 13+1),
 (9+1, 15+1);
+
+WITH cte(fromBoxTitle, fromFieldName, toBoxTitle, toFieldName) AS (
+ 	SELECT 'fechnoueuf','cesu','ChanmeBlemeproPec','teillebouRap'
+), cte2 AS (
+	SELECT DISTINCT from_box.idbox AS idbox_from, 
+			from_field.idfield AS idfield_from, 
+			to_box.idbox AS idbox_to,
+			to_field.idfield AS idfield_to
+	FROM cte
+	JOIN box from_box ON from_box.title = fromBoxTitle
+	JOIN field from_field ON from_field.idbox = from_box.idbox AND from_field.name=fromFieldName
+	JOIN box to_box ON to_box.title = toBoxTitle
+	JOIN field to_field ON to_field.idbox = to_box.idbox AND to_field.name=toFieldName
+), cte3 AS (
+	SELECT idbox_from, idfield_from, idbox_to, idfield_to,
+		ROW_NUMBER() OVER(PARTITION BY idbox_from+idbox_to, idbox_from*idbox_to ORDER BY idbox_from,idbox_to) AS rn
+	FROM cte2
+)
+INSERT INTO link(idbox_from, idfield_from, idbox_to, idfield_to)
+SELECT idbox_from, idfield_from, idbox_to, idfield_to
+FROM cte3
+WHERE rn=1 AND idbox_from != idbox_to;
 
 WITH cte(box_title, field_name, color) AS (
 	SELECT 'euf','lassedeg','yellow' UNION ALL
