@@ -744,7 +744,7 @@ async function updateCutLinks(){
 	const pg_version = ret.rows[0].version;
 
 	await db.exec(`
- 		WITH cte_cut_link AS (
+ 		WITH cte_link AS (
  			SELECT l.*, DENSE_RANK() OVER (ORDER BY idbox_to, idfield_to) - 1 rk
    			FROM link l
      			JOIN rectangle r_from ON r_from.idbox=l.idbox_from
@@ -752,26 +752,20 @@ async function updateCutLinks(){
 	 		JOIN translation t_from ON t_from.idrectangle=r_from.idrectangle
 	 		JOIN translation t_to ON t_to.idrectangle=r_to.idrectangle
    			WHERE t_from.context != t_to.context AND l.idfield_from IS NOT NULL AND l.idfield_to IS NOT NULL
-     				AND NOT EXISTS(
-	     				SELECT *
-					FROM graph g 
-       					JOIN tag t ON t.idtag = g.from_key AND t.type_code='RELATION_CATEGORY' AND t.code='TR2' 
-	  				WHERE g.from_table='tag' AND g.to_table='link' AND g.to_key=l.idlink
-				)
-    		), cut_link_color AS (
+    		), link_color AS (
   			SELECT idtag, code AS color, ROW_NUMBER() OVER (ORDER BY idtag) - 1 AS rn, COUNT(*) OVER() AS nb 
      			FROM tag
-			WHERE type_code='CUT_LINK_COLOR'
-		), colored_cut_link AS (
+			WHERE type_code='LINK_COLOR'
+		), colored_link AS (
   			SELECT * 
-    			FROM cte_cut_link l
-      			JOIN cut_link_color c ON c.rn = l.rk % c.nb
+    			FROM cte_link l
+      			JOIN link_color c ON c.rn = l.rk % c.nb
 	 	), cte(from_table, from_key, to_table, to_key) AS (
      			SELECT 'tag', idtag, 'field', idfield_from
-      			FROM colored_cut_link
+      			FROM colored_link
    				UNION ALL
        			SELECT 'tag', idtag, 'field', idfield_to
-      			FROM colored_cut_link
+      			FROM colored_link
 		), cte2 AS (
         		SELECT DISTINCT from_table, from_key, to_table, to_key
       			FROM cte
