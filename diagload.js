@@ -613,7 +613,7 @@ async function drawDiag()
 	document.getElementById("repartition").innerHTML = await drawRepartition();
 	document.getElementById("diagram").innerHTML = await drawDiagram();
 	addEventListeners();
-	await updateCutLinks();
+	await updateColorLinks();
 	const css = await drawDiagramStyle();
 	var sheet = document.getElementById("dynamic-sheet");
 	sheet.innerHTML = css;
