@@ -761,11 +761,11 @@ async function updateColorLinks(){
  			SELECT *, DENSE_RANK() OVER (ORDER BY idbox_to, idfield_to) rk
    			FROM link
    			WHERE idfield_from IS NOT NULL AND idfield_to IS NOT NULL
-    		)SELECT * FROM cte_link/*, link_color AS (
+    		), link_color AS (
   			SELECT idtag, code AS color, ROW_NUMBER() OVER (ORDER BY idtag) AS rn 
      			FROM tag
 			WHERE type_code='LINK_COLOR'
-		), colored_link AS (
+		)SELECT * FROM link_color/*, colored_link AS (
   			SELECT * 
     			FROM cte_link l
       			JOIN link_color c ON c.rn = l.rk
