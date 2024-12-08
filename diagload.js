@@ -761,7 +761,7 @@ async function updateColorLinks(){
  			SELECT *, DENSE_RANK() OVER (ORDER BY idbox_to, idfield_to) rk
    			FROM link
    			WHERE idfield_from IS NOT NULL AND idfield_to IS NOT NULL
-    		), link_color AS (
+    		)SELECT * FROM cte_link/*, link_color AS (
   			SELECT idtag, code AS color, ROW_NUMBER() OVER (ORDER BY idtag) AS rn 
      			FROM tag
 			WHERE type_code='LINK_COLOR'
@@ -779,6 +779,7 @@ async function updateColorLinks(){
   		INSERT INTO graph(from_table, from_key, to_table, to_key)
     		SELECT DISTINCT 'tag', from_key, 'field', to_key
       		FROM cte
+*/
 /*
 	available in PostgreSQL 17
 
