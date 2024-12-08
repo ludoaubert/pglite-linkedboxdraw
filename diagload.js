@@ -9,7 +9,7 @@ import {sample_diagdata} from "./diagdata.js"
 export {mycontexts, contexts, resetContexts, setContexts, drawDiag, compute_links, ApplyRepartition, enforce_bounding_rectangle, data2contexts, MONOSPACE_FONT_PIXEL_WIDTH, CHAR_RECT_HEIGHT, RECTANGLE_BOTTOM_CAP};
 
 const MONOSPACE_FONT_PIXEL_WIDTH=7;
-const CHAR_RECT_HEIGHT=16.8;	// 14,8 + 1 + 1 (top and bottom padding) = 16,8
+const CHAR_RECT_HEIGHT=17.5;	// in reality 14,8 + 1 + 1 (top and bottom padding) = 16,8
 const RECTANGLE_BOTTOM_CAP=200;
 
 var bombixModule;
