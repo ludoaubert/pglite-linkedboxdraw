@@ -765,7 +765,7 @@ async function updateColorLinks(){
   			SELECT idtag, code AS color, ROW_NUMBER() OVER (ORDER BY idtag) AS rn 
      			FROM tag
 			WHERE type_code='LINK_COLOR'
-		)SELECT * FROM link_color/*, colored_link AS (
+		), colored_link AS (
   			SELECT * 
     			FROM cte_link l
       			JOIN link_color c ON c.rn = l.rk
@@ -779,7 +779,6 @@ async function updateColorLinks(){
   		INSERT INTO graph(from_table, from_key, to_table, to_key)
     		SELECT DISTINCT 'tag', from_key, 'field', to_key
       		FROM cte
-*/
 /*
 	available in PostgreSQL 17
 
