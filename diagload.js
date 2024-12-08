@@ -610,12 +610,12 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 
 async function drawDiag()
 {
-	document.getElementById("repartition").innerHTML = await drawRepartition();
-	document.getElementById("diagram").innerHTML = await drawDiagram();
-	addEventListeners();
 	await updateColorLinks();
 	const css = await drawDiagramStyle();
 	console.log(css);
+	document.getElementById("repartition").innerHTML = await drawRepartition();
+	document.getElementById("diagram").innerHTML = await drawDiagram();
+	addEventListeners();
 	var sheet = document.getElementById("dynamic-sheet");
 	sheet.innerHTML = css;
 
