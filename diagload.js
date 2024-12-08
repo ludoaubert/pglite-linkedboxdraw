@@ -752,7 +752,11 @@ async function updateColorLinks(){
        			FROM tag
 	   		WHERE type_code='LINK_COLOR'
 		);
- 
+  	`);
+
+   	console.log(ret2);
+
+    	const ret3 = await db.query(`
 		WITH cte_link AS (
  			SELECT *, DENSE_RANK() OVER (ORDER BY idbox_to, idfield_to) rk
    			FROM link
@@ -798,5 +802,5 @@ async function updateColorLinks(){
 */
  	`);
 
-	console.log(ret2);
+	console.log(ret3);
 }
