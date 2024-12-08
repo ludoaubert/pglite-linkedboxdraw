@@ -691,78 +691,125 @@ INSERT INTO field(name, idbox) VALUES
 	('typetva', 31),
 	('valide', 31);
 
-"links":[
-{"from":1,"fromField":1,"to":2,"toField":0,"category":""},
-{"from":0,"fromField":1,"to":2,"toField":0,"category":""},
-{"from":2,"fromField":1,"to":3,"toField":0,"category":""},
-{"from":1,"fromField":2,"to":3,"toField":0,"category":"TR2"},
-{"from":0,"fromField":2,"to":3,"toField":0,"category":"TR2"},
-{"from":6,"fromField":4,"to":4,"toField":0,"category":""},
-{"from":12,"fromField":2,"to":4,"toField":0,"category":""},
-{"from":20,"fromField":2,"to":4,"toField":0,"category":""},
-{"from":8,"fromField":2,"to":11,"toField":0,"category":""},
-{"from":9,"fromField":2,"to":11,"toField":0,"category":""},
-{"from":5,"fromField":3,"to":11,"toField":0,"category":""},
-{"from":5,"fromField":3,"to":11,"toField":0,"category":""},
-{"from":6,"fromField":3,"to":11,"toField":0,"category":""},
-{"from":7,"fromField":3,"to":11,"toField":0,"category":""},
-{"from":10,"fromField":4,"to":11,"toField":0,"category":""},
-{"from":21,"fromField":2,"to":14,"toField":0,"category":""},
-{"from":12,"fromField":1,"to":14,"toField":0,"category":""},
-{"from":2,"fromField":2,"to":15,"toField":0,"category":""},
-{"from":13,"fromField":1,"to":15,"toField":0,"category":""},
-{"from":5,"fromField":2,"to":15,"toField":0,"category":"TR2"},
-{"from":5,"fromField":2,"to":15,"toField":0,"category":"TR2"},
-{"from":6,"fromField":2,"to":15,"toField":0,"category":"TR2"},
-{"from":26,"fromField":1,"to":15,"toField":0,"category":""},
-{"from":4,"fromField":1,"to":15,"toField":0,"category":""},
-{"from":14,"fromField":1,"to":15,"toField":0,"category":""},
-{"from":16,"fromField":1,"to":15,"toField":0,"category":""},
-{"from":23,"fromField":2,"to":15,"toField":0,"category":""},
-{"from":19,"fromField":1,"to":15,"toField":0,"category":""},
-{"from":11,"fromField":9,"to":15,"toField":1,"category":"TR2"},
-{"from":11,"fromField":8,"to":15,"toField":1,"category":"TR2"},
-{"from":11,"fromField":11,"to":15,"toField":1,"category":"TR2"},
-{"from":11,"fromField":10,"to":15,"toField":1,"category":"TR2"},
-{"from":11,"fromField":13,"to":15,"toField":1,"category":"TR2"},
-{"from":11,"fromField":12,"to":15,"toField":1,"category":"TR2"},
-{"from":5,"fromField":4,"to":15,"toField":1,"category":"TR2"},
-{"from":5,"fromField":4,"to":15,"toField":1,"category":"TR2"},
-{"from":6,"fromField":5,"to":15,"toField":1,"category":"TR2"},
-{"from":7,"fromField":4,"to":15,"toField":1,"category":"TR2"},
-{"from":10,"fromField":1,"to":15,"toField":1,"category":"TR2"},
-{"from":18,"fromField":8,"to":15,"toField":1,"category":""},
-{"from":11,"fromField":5,"to":18,"toField":1,"category":""},
-{"from":17,"fromField":1,"to":18,"toField":1,"category":""},
-{"from":5,"fromField":1,"to":18,"toField":1,"category":"TR2"},
-{"from":6,"fromField":1,"to":18,"toField":1,"category":"TR2"},
-{"from":7,"fromField":1,"to":18,"toField":1,"category":"TR2"},
-{"from":10,"fromField":2,"to":18,"toField":1,"category":"TR2"},
-{"from":21,"fromField":1,"to":19,"toField":0,"category":""},
-{"from":8,"fromField":1,"to":19,"toField":0,"category":"TR2"},
-{"from":11,"fromField":7,"to":19,"toField":0,"category":""},
-{"from":11,"fromField":6,"to":19,"toField":0,"category":""},
-{"from":20,"fromField":1,"to":19,"toField":0,"category":""},
-{"from":17,"fromField":2,"to":22,"toField":1,"category":""},
-{"from":7,"fromField":2,"to":23,"toField":0,"category":""},
-{"from":10,"fromField":3,"to":23,"toField":0,"category":""},
-{"from":9,"fromField":1,"to":27,"toField":0,"category":""},
-{"from":11,"fromField":1,"to":28,"toField":0,"category":"TR2"},
-{"from":11,"fromField":4,"to":28,"toField":0,"category":"TR2"},
-{"from":11,"fromField":3,"to":28,"toField":0,"category":"TR2"},
-{"from":11,"fromField":2,"to":28,"toField":0,"category":"TR2"},
-{"from":16,"fromField":2,"to":28,"toField":0,"category":""},
-{"from":23,"fromField":3,"to":28,"toField":0,"category":""},
-{"from":23,"fromField":1,"to":28,"toField":0,"category":""},
-{"from":24,"fromField":2,"to":28,"toField":0,"category":""},
-{"from":24,"fromField":1,"to":28,"toField":0,"category":""},
-{"from":25,"fromField":1,"to":28,"toField":0,"category":""},
-{"from":18,"fromField":3,"to":28,"toField":0,"category":""},
-{"from":18,"fromField":6,"to":28,"toField":0,"category":""},
-{"from":18,"fromField":5,"to":28,"toField":0,"category":""},
-{"from":18,"fromField":4,"to":28,"toField":0,"category":""},
-{"from":18,"fromField":2,"to":28,"toField":0,"category":""},
-{"from":18,"fromField":9,"to":28,"toField":0,"category":""},
-{"from":18,"fromField":7,"to":28,"toField":0,"category":""},
-{"from":28,"fromField":1,"to":29,"toField":0,"category":""},
-{"from":15,"fromField":2,"to":30,"toField":0,"category":""}],
+/*
+{'from':1,'fromField':2,'to':3,'toField':0,'category':'TR2'},
+{'from':0,'fromField':2,'to':3,'toField':0,'category':'TR2'},
+{'from':5,'fromField':2,'to':15,'toField':0,'category':'TR2'},
+{'from':5,'fromField':2,'to':15,'toField':0,'category':'TR2'},
+{'from':6,'fromField':2,'to':15,'toField':0,'category':'TR2'},
+{'from':11,'fromField':9,'to':15,'toField':1,'category':'TR2'},
+{'from':11,'fromField':8,'to':15,'toField':1,'category':'TR2'},
+{'from':11,'fromField':11,'to':15,'toField':1,'category':'TR2'},
+{'from':11,'fromField':10,'to':15,'toField':1,'category':'TR2'},
+{'from':11,'fromField':13,'to':15,'toField':1,'category':'TR2'},
+{'from':11,'fromField':12,'to':15,'toField':1,'category':'TR2'},
+{'from':5,'fromField':4,'to':15,'toField':1,'category':'TR2'},
+{'from':5,'fromField':4,'to':15,'toField':1,'category':'TR2'},
+{'from':6,'fromField':5,'to':15,'toField':1,'category':'TR2'},
+{'from':7,'fromField':4,'to':15,'toField':1,'category':'TR2'},
+{'from':10,'fromField':1,'to':15,'toField':1,'category':'TR2'},
+{'from':5,'fromField':1,'to':18,'toField':1,'category':'TR2'},
+{'from':6,'fromField':1,'to':18,'toField':1,'category':'TR2'},
+{'from':7,'fromField':1,'to':18,'toField':1,'category':'TR2'},
+{'from':10,'fromField':2,'to':18,'toField':1,'category':'TR2'},
+{'from':8,'fromField':1,'to':19,'toField':0,'category':'TR2'},
+{'from':11,'fromField':1,'to':28,'toField':0,'category':'TR2'},
+{'from':11,'fromField':4,'to':28,'toField':0,'category':'TR2'},
+{'from':11,'fromField':3,'to':28,'toField':0,'category':'TR2'},
+{'from':11,'fromField':2,'to':28,'toField':0,'category':'TR2'},
+*/
+	
+WITH cte(fromBoxTitle, fromFieldName, toBoxTitle, toFieldName) AS
+(
+ 	SELECT 'generalite','idlibelleCombo','libellecombo','idlibellecombo' UNION ALL
+	SELECT 'gen_date','idlibelleCombo','libellecombo','idlibellecombo' UNION ALL
+	SELECT 'libellecombo','idlibelle','libelleE','id' UNION ALL
+	SELECT 'generalite','idlibelle','libelleE','id' UNION ALL
+	SELECT 'gen_date','idlibelle','libelleE','id' UNION ALL
+	SELECT 't_bre_cliAN','idadresse','t_adresse','idadresse' UNION ALL
+	SELECT 't_communication','idadresse','t_adresse','idadresse' UNION ALL
+	SELECT 't_equipeadresse','idadresse','t_adresse','idadresse' UNION ALL
+	SELECT 't_bre_eq','idbrevet','t_brevets','idbrevet' UNION ALL
+	SELECT 't_bre_pays','idbrevet','t_brevets','idbrevet' UNION ALL
+	SELECT 't_bre_cli','idclient','t_brevets','idbrevet' UNION ALL
+	SELECT 't_bre_cli','idclient','t_brevets','idbrevet' UNION ALL
+	SELECT 't_bre_cliAN','idbrevet','t_brevets','idbrevet' UNION ALL
+	SELECT 't_bre_dep','idbrevet','t_brevets','idbrevet' UNION ALL
+	SELECT 't_bre_tit','idbrevet','t_brevets','idbrevet' UNION ALL
+	SELECT 't_equipecontact','idcontact','t_contact','idcontact' UNION ALL
+	SELECT 't_communication','idcontact','t_contact','idcontact' UNION ALL
+	SELECT 'libellecombo','idclient','t_corrcli','idclient' UNION ALL
+	SELECT 't_comptabilite','idclient','t_corrcli','idclient' UNION ALL
+	SELECT 't_bre_cli','idclient','t_corrcli','idclient' UNION ALL
+	SELECT 't_bre_cli','idclient','t_corrcli','idclient' UNION ALL
+	SELECT 't_bre_cliAN','idclient','t_corrcli','idclient' UNION ALL
+	SELECT 'thistorique','idclient','t_corrcli','idclient' UNION ALL
+	SELECT 't_adresse','idclient','t_corrcli','idclient' UNION ALL
+	SELECT 't_contact','idclient','t_corrcli','idclient' UNION ALL
+	SELECT 't_corrcli_responsable','idclient','t_corrcli','idclient' UNION ALL
+	SELECT 't_raison_sociale','idclient','t_corrcli','idclient' UNION ALL
+	SELECT 't_equipe','idclient','t_corrcli','idclient' UNION ALL
+	SELECT 't_brevets','Gerant','t_corrcli','Code' UNION ALL
+	SELECT 't_brevets','GerantAnnuite','t_corrcli','Code' UNION ALL
+	SELECT 't_brevets','DonneurOrdre','t_corrcli','Code' UNION ALL
+	SELECT 't_brevets','DonneurOrdreAn','t_corrcli','Code' UNION ALL
+	SELECT 't_brevets','AgentAnnuite','t_corrcli','Code' UNION ALL
+	SELECT 't_brevets','Correspondant','t_corrcli','Code' UNION ALL
+	SELECT 't_bre_cli','idbrevet','t_corrcli','Code' UNION ALL
+	SELECT 't_bre_cli','idbrevet','t_corrcli','Code' UNION ALL
+	SELECT 't_bre_cliAN','CodeClient','t_corrcli','Code' UNION ALL
+	SELECT 't_bre_dep','CodeDeposant','t_corrcli','Code' UNION ALL
+	SELECT 't_bre_tit','CodeTitulaire','t_corrcli','Code' UNION ALL
+	SELECT 't_dossiers','CodeClient','t_corrcli','Code' UNION ALL
+	SELECT 't_brevets','NoDossier','t_dossiers','NoDossier' UNION ALL
+	SELECT 't_dos_inv','NoDossier','t_dossiers','NoDossier' UNION ALL
+	SELECT 't_bre_cli','NoDossier','t_dossiers','NoDossier' UNION ALL
+	SELECT 't_bre_cliAN','NoDossier','t_dossiers','NoDossier' UNION ALL
+	SELECT 't_bre_dep','NoDossier','t_dossiers','NoDossier' UNION ALL
+	SELECT 't_bre_tit','NoDossier','t_dossiers','NoDossier' UNION ALL
+	SELECT 't_equipecontact','idequipe','t_equipe','idequipe' UNION ALL
+	SELECT 't_bre_eq','idequipe','t_equipe','idequipe' UNION ALL
+	SELECT 't_brevets','idequipe','t_equipe','idequipe' UNION ALL
+	SELECT 't_brevets','idequipeAN','t_equipe','idequipe' UNION ALL
+	SELECT 't_equipeadresse','idequipe','t_equipe','idequipe' UNION ALL
+	SELECT 't_dos_inv','CodeInventeur','t_invent','CodeInventeur' UNION ALL
+	SELECT 't_bre_dep','id_raison_sociale','t_raison_sociale','id_raison_sociale' UNION ALL
+	SELECT 't_bre_tit','id_raison_sociale','t_raison_sociale','id_raison_sociale' UNION ALL
+	SELECT 't_bre_pays','Pays','tpays','pays' UNION ALL
+	SELECT 't_brevets','Responsable','tresponsable','CodeResponsable' UNION ALL
+	SELECT 't_brevets','RespAdm','tresponsable','CodeResponsable' UNION ALL
+	SELECT 't_brevets','RespIng_old','tresponsable','CodeResponsable' UNION ALL
+	SELECT 't_brevets','RespIngSenior','tresponsable','CodeResponsable' UNION ALL
+	SELECT 't_corrcli_responsable','CodeResponsable','tresponsable','CodeResponsable' UNION ALL
+	SELECT 't_raison_sociale','CreationUtilisateur','tresponsable','CodeResponsable' UNION ALL
+	SELECT 't_raison_sociale','MajUtilisateur','tresponsable','CodeResponsable' UNION ALL
+	SELECT 'tconsultation','coderesponsable','tresponsable','CodeResponsable' UNION ALL
+	SELECT 'tconsultation','codeadm','tresponsable','CodeResponsable' UNION ALL
+	SELECT 'tconsultation_agenda_lola','Createur','tresponsable','CodeResponsable' UNION ALL
+	SELECT 't_dossiers','Responsable','tresponsable','CodeResponsable' UNION ALL
+	SELECT 't_dossiers','RespAdm','tresponsable','CodeResponsable' UNION ALL
+	SELECT 't_dossiers','RespIng_old','tresponsable','CodeResponsable' UNION ALL
+	SELECT 't_dossiers','RespIngSenior','tresponsable','CodeResponsable' UNION ALL
+	SELECT 't_dossiers','RspModif','tresponsable','CodeResponsable' UNION ALL
+	SELECT 't_dossiers','Createur','tresponsable','CodeResponsable' UNION ALL
+	SELECT 't_dossiers','Redacteur','tresponsable','CodeResponsable' UNION ALL
+	SELECT 'tresponsable','idsite','tsite','idsite' UNION ALL
+	SELECT 't_corrcli','idtva','ttva','idtva'
+), cte2 AS (
+	SELECT DISTINCT from_box.idbox AS idbox_from, 
+			from_field.idfield AS idfield_from, 
+			to_box.idbox AS idbox_to,
+			to_field.idfield AS idfield_to
+	FROM cte
+	JOIN box from_box ON from_box.title = fromBoxTitle
+	JOIN field from_field ON from_field.idbox = from_box.idbox AND from_field.name=fromFieldName
+	JOIN box to_box ON to_box.title = toBoxTitle
+	JOIN field to_field ON to_field.idbox = to_box.idbox AND to_field.name=toFieldName
+), cte3 AS (
+	SELECT idbox_from, idfield_from, idbox_to, idfield_to,
+		ROW_NUMBER() OVER(PARTITION BY idbox_from+idbox_to, idbox_from*idbox_to ORDER BY idbox_from,idbox_to) AS rn
+	FROM cte2
+)
+INSERT INTO link(idbox_from, idfield_from, idbox_to, idfield_to)
+SELECT idbox_from, idfield_from, idbox_to, idfield_to
+FROM cte3
