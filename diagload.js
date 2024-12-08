@@ -775,10 +775,13 @@ async function updateColorLinks(){
    				UNION ALL
        			SELECT idtag, idfield_to
       			FROM colored_link
+		), cte2 AS (
+  			SELECT DISTINCT from_key, to_key
+     			FROM cte
 		)
   		INSERT INTO graph(from_table, from_key, to_table, to_key)
-    		SELECT DISTINCT 'tag', from_key, 'field', to_key
-      		FROM cte
+    		SELECT 'tag', from_key, 'field', to_key
+      		FROM cte2
 /*
 	available in PostgreSQL 17
 
