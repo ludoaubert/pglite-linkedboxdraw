@@ -745,6 +745,14 @@ async function updateColorLinks(){
 	const pg_version = ret.rows[0].version;
 
 	const ret2 = await db.query(`
+		DELETE FROM graph
+		WHERE from_table='tag' AND to_table='field' 
+   		AND from_key IN (
+   			SELECT idtag
+       			FROM tag
+	   		WHERE type_code='LINK_COLOR'
+		);
+ 
 		WITH cte_link AS (
  			SELECT *, DENSE_RANK() OVER (ORDER BY idbox_to, idfield_to) rk
    			FROM link
@@ -771,14 +779,6 @@ async function updateColorLinks(){
     			FROM graph
        			WHERE from_table='tag' AND to_table='field'
 	  		AND from_key IN (SELECT idtag FROM link_color)
-		),cte_delete AS (
-			DELETE FROM graph g
-			WHERE idgraph IN (SELECT idgraph FROM cte_graph) 
-   			  AND NOT EXISTS (
-   				SELECT *
-       				FROM cte2
-	   			WHERE g.from_key=cte2.from_key AND g.to_key=cte2.to_key
-			)
 		)
   		INSERT INTO graph(from_table, from_key, to_table, to_key)
     		SELECT 'tag', from_key, 'field', to_key
