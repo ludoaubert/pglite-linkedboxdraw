@@ -744,6 +744,11 @@ async function updateColorLinks(){
 	const ret = await db.query('SELECT version();');
 	const pg_version = ret.rows[0].version;
 
+	const ret1 = await db.query(`
+ 		SELECT COUNT(*) FROM graph;
+ 	`);
+	console.log(ret1);
+
 	const ret2 = await db.query(`
 		DELETE FROM graph
 		WHERE from_table='tag' AND to_table='field' 
