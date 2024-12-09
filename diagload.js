@@ -611,14 +611,16 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 	  			f.idbox, --%1
      				f.idfield, --%2
 	  			f.name),  --%3
-      				'\n' ORDER BY g.from_key, f.name) AS html
+      				'\n' ORDER BY sub.color, f.name) AS html
 			FROM field f
   			JOIN rectangle r ON r.idbox=f.idbox
-    			JOIN translation t ON t.idrectangle=r.idrectangle
-       			LEFT JOIN graph g ON g.from_table='tag'
+    			JOIN translation t ON t.idrectangle=r.idrectangle      
+       			LEFT JOIN LATERAL (SELECT tag.code AS color
+	  			FROM graph g 
+      				JOIN tag ON tag.type_code='LINK_COLOR AND tag.idtag=g.from_key
+	  			WHERE g.from_table='tag'
 	  				AND g.to_table='field'
-       					AND g.to_key=f.idfield 
-	  				AND g.from_key IN (SELECT idtag FROM tag WHERE type_code='LINK_COLOR')
+       					AND g.to_key=f.idfield ORDER BY g.idgraph LIMIT 1) sub ON true 
        			GROUP BY t.context, f.idbox
   				UNION ALL
    			SELECT t.context, r.idbox, 3 AS position, FORMAT('
