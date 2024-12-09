@@ -57,7 +57,6 @@ var fromCardinalityCombo ;
 var toBoxCombo ;
 var toFieldCombo ;
 var toCardinalityCombo ;
-var categoryCombo ;
 var newValueEditField ;
 var colorBoxCombo ;
 var colorFieldCombo ;
@@ -136,7 +135,6 @@ async function init() {
 	toBoxCombo = document.getElementById("to boxes");
 	toFieldCombo = document.getElementById("to fields");
 	toCardinalityCombo = document.getElementById("to cardinality");
-	categoryCombo = document.getElementById("category");
 	newValueEditField = document.getElementById("new value");
 	colorBoxCombo = document.getElementById("color boxes");
 	colorFieldCombo = document.getElementById("color fields");
