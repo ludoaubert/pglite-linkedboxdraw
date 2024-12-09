@@ -617,7 +617,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
     			JOIN translation t ON t.idrectangle=r.idrectangle      
        			LEFT JOIN LATERAL (SELECT tag.code AS color
 	  			FROM graph g 
-      				JOIN tag ON tag.type_code='LINK_COLOR AND tag.idtag=g.from_key
+      				JOIN tag ON tag.type_code='LINK_COLOR' AND tag.idtag=g.from_key
 	  			WHERE g.from_table='tag'
 	  				AND g.to_table='field'
        					AND g.to_key=f.idfield ORDER BY g.idgraph LIMIT 1) sub ON true 
