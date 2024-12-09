@@ -118,7 +118,7 @@ async function data2contexts() {
 	const jsonTranslations = JSON.stringify(translations);
 	console.log(jsonTranslations);
 	
-	const ret3 = await db.query(`
+	const ret4 = await db.query(`
   		INSERT INTO translation(idrectangle, context, x, y)
      		SELECT id+1 AS idrectangle, index+1 AS context, x, y
   		FROM json_to_recordset('${jsonTranslations}') AS transl("index" int, "id" int, "x" int, "y" int)
