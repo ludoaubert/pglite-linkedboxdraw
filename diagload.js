@@ -47,6 +47,30 @@ function hex(i,n) {
 }
 
 
+async function compute_tr2_lnk_tags()
+{
+	const ret = await db.query(`
+		DELETE FROM graph
+  		WHERE from_table='tag' AND to_table='link' AND from_key=(
+  			SELECT idtag FROM tag WHERE type_code='RELATION_CATEGORY' AND code='TR2'	
+		);
+
+		INSERT INTO graph(from_table, from_key, to_table, to_key)
+  		SELECT 'tag', t.idtag, 'link', l.idlink
+    		FROM link l
+      		JOIN tag t ON t.type_code='RELATION_CATEGORY' AND t.code='TR2'
+		WHERE EXISTS (
+  			SELECT *
+    			FROM link l1
+      			JOIN link l2 ON l2.idbox_from = l1.idbox_to
+	 		WHERE l1.idbox_from = l.idbox_from AND l2.idbox_to = l.idbox_to
+    		);
+ 	`);
+
+	console.log(ret);
+}
+
+
 async function data2contexts() {
 
 	const ret1 = await db.query(`
@@ -69,24 +93,6 @@ async function data2contexts() {
 	const rectdim = ret1.rows[0].string_agg;
 
 	const ret2 = await db.query(`
-		DELETE FROM graph
-  		WHERE from_table='tag' AND to_table='link' AND from_key=(
-  			SELECT idtag FROM tag WHERE type_code='RELATION_CATEGORY' AND code='TR2'	
-		);
-
-		INSERT INTO graph(from_table, from_key, to_table, to_key)
-  		SELECT 'tag', t.idtag, 'link', l.idlink
-    		FROM link l
-      		JOIN tag t ON t.type_code='RELATION_CATEGORY' AND t.code='TR2'
-		WHERE EXISTS (
-  			SELECT *
-    			FROM link l1
-      			JOIN link l2 ON l2.idbox_from = l1.idbox_to
-	 		WHERE l1.idbox_from = l.idbox_from AND l2.idbox_to = l.idbox_to
-    		);
- 	`)
-
-	const ret3 = await db.query(`
  		WITH cte AS (
    			SELECT *, ROW_NUMBER() OVER(PARTITION BY idbox_from, idbox_to ORDER BY idlink) AS rn
       			FROM link
@@ -101,7 +107,7 @@ async function data2contexts() {
      		);
  	`);
 
-	const slinks = ret3.rows[0].string_agg;
+	const slinks = ret2.rows[0].string_agg;
 
 	const bombix = bombixModule.cwrap("bombix","string",["string","string","string","string"]);
 	const latuile = latuileModule.cwrap("latuile","string",["string","string"]);
@@ -118,7 +124,7 @@ async function data2contexts() {
 	const jsonTranslations = JSON.stringify(translations);
 	console.log(jsonTranslations);
 	
-	const ret4 = await db.query(`
+	const ret3 = await db.query(`
   		INSERT INTO translation(idrectangle, context, x, y)
      		SELECT id+1 AS idrectangle, index+1 AS context, x, y
   		FROM json_to_recordset('${jsonTranslations}') AS transl("index" int, "id" int, "x" int, "y" int)
