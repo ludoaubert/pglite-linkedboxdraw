@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS link(
   FOREIGN KEY (idbox_from, idfield_from) REFERENCES field(idbox, idfield),
   FOREIGN KEY (idbox_to) REFERENCES box(idbox),
   FOREIGN KEY (idbox_to, idfield_to) REFERENCES field(idbox, idfield),
-  UNIQUE(idbox_from, idbox_to)
+  UNIQUE(idbox_from, idfield_from, idbox_to, idfield_to)
 );
 
 CREATE TABLE IF NOT EXISTS tag(
