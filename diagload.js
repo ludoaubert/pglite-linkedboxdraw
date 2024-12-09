@@ -765,6 +765,7 @@ window.main = async function main()
 	var sheet = document.createElement('style');
 	sheet.id="dynamic-sheet";
 	document.body.appendChild(sheet);
+	await compute_tr2_link_tags();
 	await drawDiag();
 	await init();
 }
