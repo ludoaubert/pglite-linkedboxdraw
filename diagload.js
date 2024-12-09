@@ -766,10 +766,10 @@ window.main = async function main()
 	await db.exec(schema);
 	await db.exec(sample_diagdata);
 	await db.exec(sample_contexts);
+	await compute_tr2_link_tags();
 	var sheet = document.createElement('style');
 	sheet.id="dynamic-sheet";
 	document.body.appendChild(sheet);
-	await compute_tr2_link_tags();
 	await drawDiag();
 	await init();
 }
