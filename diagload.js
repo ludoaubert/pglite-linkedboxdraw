@@ -47,7 +47,7 @@ function hex(i,n) {
 }
 
 
-async function compute_tr2_lnk_tags()
+async function compute_tr2_link_tags()
 {
 	const ret = await db.query(`
 		DELETE FROM graph
