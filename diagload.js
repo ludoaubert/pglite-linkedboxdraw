@@ -51,12 +51,16 @@ function hex(i,n) {
 
 async function compute_tr2_link_tags()
 {
-	const ret = await db.query(`
+	const ret1 = await db.query(`
 		DELETE FROM graph
   		WHERE from_table='tag' AND to_table='link' AND from_key=(
   			SELECT idtag FROM tag WHERE type_code='RELATION_CATEGORY' AND code='TR2'	
 		);
+  	`);
 
+	console.log(ret1);
+	
+	const ret2 = await db.query(`
 		INSERT INTO graph(from_table, from_key, to_table, to_key)
   		SELECT 'tag', t.idtag, 'link', l.idlink
     		FROM link l
@@ -69,7 +73,7 @@ async function compute_tr2_link_tags()
     		);
  	`);
 
-	console.log(ret);
+	console.log(ret2);
 }
 
 
