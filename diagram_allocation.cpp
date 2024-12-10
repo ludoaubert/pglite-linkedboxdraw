@@ -6,6 +6,7 @@
 *
 */
 #include <vector>
+#include <algorithm>
 #include "MPD_Arc.h"
 #include "permutation.h"
 #include "KMeansRexCore.h"
@@ -13,6 +14,7 @@
 #include <Eigen/Eigenvalues>
 using namespace std;
 using namespace Eigen ;
+using namespace std::ranges;
 
 vector<vector<MPD_Arc> > compute_adjacency_list_(const Matrix<int8_t,-1,-1>& OW)
 {
