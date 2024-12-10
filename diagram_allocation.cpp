@@ -296,6 +296,7 @@ const char* diagram_allocation(int n, //nb boxes
 	struct Context
 	{
 		vector<int> nodes;
+		vector<vector<int> > adjacency_list;
 	};
 	
         vector<MPD_Arc> edges;
