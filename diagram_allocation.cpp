@@ -341,7 +341,7 @@ n3|     |       |  cc3      |
 */
 //to create a permutation matrix, permute the columns of the identity matrix.
 	vector<int> permutation1(n) ;
-	ranges::copy(views::iota(0,n), begin(permutation1)) ;
+	ranges::copy(views::iota(0,n), permutation1.begin()) ;
 	ranges::sort(permutation1, {}, [&](int i){return connected_component[i];}) ;
 	permutation1 = compute_reverse_permutation(permutation1) ;
 	PermutationMatrix<Dynamic> perm1(n) ;
