@@ -194,7 +194,7 @@ non null eigenvalues => each corresponds to a cut.
 
 //to create a permutation matrix, permute the columns of the identity matrix
 		vector<int> permutation2(n) ;
-		ranges::copy(views::iota(0,n), begin(permutation2)) ;
+		ranges::copy(views::iota(0,n), permutation2.begin()) ;
 		ranges::sort(permutation2, ranges::greater(), [&](int i){return Z_OUT[i];}) ;
 		permutation2 = compute_reverse_permutation(permutation2) ;
 		ranges::copy(permutation2, perm2.indices().data()) ;
