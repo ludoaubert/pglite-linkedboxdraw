@@ -377,43 +377,43 @@ n3|     |       |  cc3      |
 
 	int n_acc = 0 ;
 
-	for (int i=0; i < component_distribution.size(); i++)
+	int* pnp;
+	
+	while ((pnp = &*ranges::max_element(component_distribution)) && *pnp > max_nb_boxes_per_diagram)
 	{
-		int np = component_distribution[i] ;
+		int np = *pnp;
+		int i=std::distance(&component_distribution[0], pnp);
 
-		if (np > max_nb_boxes_per_diagram)
-		{
 //keep on cutting
-			PermutationMatrix<Dynamic> perm2(n), perm3(np) ;
-			perm2.setIdentity() ;
-			vector<int> sub_component_distribution ;
+		PermutationMatrix<Dynamic> perm2(n), perm3(np) ;
+		perm2.setIdentity() ;
+		vector<int> sub_component_distribution ;
 
-			bool b = minimum_cut(
-					(perm1 * WW * perm1.transpose()).block(n_acc, n_acc, np, np),
-					perm3,
-					sub_component_distribution
-				) ;
+		bool b = minimum_cut(
+				(perm1 * WW * perm1.transpose()).block(n_acc, n_acc, np, np),
+				perm3,
+				sub_component_distribution
+			) ;
 
-			if (b)
-			{
-				std::transform(
-					perm3.indices().data(),
-					perm3.indices().data()+np,
-					perm2.indices().data()+n_acc,
-					[&](int pi){return pi+n_acc;}
-				) ;
-	//			perm2.block(n_acc, n_acc, np, np) = perm3 ;
+		if (b)
+		{
+			std::transform(
+				perm3.indices().data(),
+				perm3.indices().data()+np,
+				perm2.indices().data()+n_acc,
+				[&](int pi){return pi+n_acc;}
+			) ;
+	//		perm2.block(n_acc, n_acc, np, np) = perm3 ;
 	// if we want to apply P2 on P1*W*tP1 : 
 	// P2*(P1* W* tP1)* tP2  or  (P2 * P1) * W * t(P2 * P1) so the new permutation is P2*P1
-				perm1 = perm2 * perm1 ;
-				component_distribution.erase(component_distribution.begin()+i) ;
-				component_distribution.insert(component_distribution.begin()+i, 
-											sub_component_distribution.begin(), 
-											sub_component_distribution.end()) ;
+			perm1 = perm2 * perm1 ;
+			component_distribution.erase(component_distribution.begin()+i) ;
+			component_distribution.insert(component_distribution.begin()+i, 
+								sub_component_distribution.begin(), 
+								sub_component_distribution.end()) ;
 	//re-initialize the loop : force it to make as many cuts as necessary
-				i = -1 ;
-				n_acc = - np ;
-			}
+			i = -1 ;
+			n_acc = - np ;
 		}
 
 		n_acc += np ;
