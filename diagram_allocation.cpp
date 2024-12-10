@@ -289,7 +289,7 @@ const char* diagram_allocation(int n, //nb boxes
                       const char* sedges)
 {        
         vector<MPD_Arc> edges;
-        pos = 0;
+        int pos = 0;
 	MPD_Arc edge;
 	while (edges.size() < edge_count &&
 	    sscanf(edges + pos, "%3x%3x%n", &edge._i, &edge._j, &nn) == 2)
