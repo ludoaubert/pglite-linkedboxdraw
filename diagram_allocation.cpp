@@ -13,10 +13,6 @@
 using namespace std;
 using namespace Eigen ;
 
-typedef Matrix<WidgetContext,Dynamic,Dynamic> MatrixXw ;
-typedef Matrix<MyRect,Dynamic,Dynamic> MatrixXr ;
-
-
 //input: (P1 * W * P1.transpose()).block(0, 0, np, np)
 //output: P2, component_distribution
 bool minimum_cut(const MatrixXd& W, 
