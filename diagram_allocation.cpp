@@ -287,6 +287,8 @@ n2|  C  |        D          |
 }
 
 
+//interface for emscripten wasm
+extern "C" {
 const char* diagram_allocation(int n, //nb boxes
                       int max_nb_boxes_per_diagram,
                       int edge_count,
@@ -472,6 +474,7 @@ perm * A : permute rows
 	
 	return buffer;
 }
+}//extern "C"
 
 /*
 Linux command to install eigen3 directory:
