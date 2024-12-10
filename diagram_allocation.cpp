@@ -452,10 +452,25 @@ perm * A : permute rows
 		ctx.adjacency_list.resize(ctx.nodes.size()) ;
 		contexts.push_back(ctx) ;
 	}
+
+	int printpos=0;
+	static char buffer[100000];
+
+	printpos += sprintf(buffer + printpos, "{[\n");
+
+	for (int contextIndex=0; contextIndex < contexts.size(); contextIndex++)
+	{
+		const Context& ctx = contexts[contextIndex];
+		for (const int& i : ctx.nodes)
+		{
+			printpos += sprintf(buffer + printpos, "{\"id\":%d, \"context\":%d}%c\n", i, contextIndex,
+                              &i == &ctx.nodes.back() ? ' ' : ',');
+		}
+		printpos += sprintf(buffer + printpos, "\n]}\n");		
 	
-	static char res[100000];
+	}
 	
-	return res;
+	return buffer;
 }
 
 /*
@@ -466,6 +481,6 @@ Linux command to lookup eigen3 directory:
 
 
 To generate diagram_allocation.wasm and diagram_allocation.js:
-emcc diagram_allocation.cpp permutation.cpp KMeansRexCore..cpp MPD_Arc.cpp -o diagram_allocation.js -I/usr/include/eigen3 -Wno-c++11-narrowing -s EXPORTED_FUNCTIONS='["allocate_diagrams"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s ALLOW_MEMORY_GROWTH=1  -s EXPORT_ES6=1 -s MODULARIZE=1 -s EXPORT_NAME="createAllocationModule"  -s TOTAL_STACK=32MB  -std=c++20
+emcc diagram_allocation.cpp permutation.cpp KMeansRexCore..cpp MPD_Arc.cpp -o diagram_allocation.js -I/usr/include/eigen3 -Wno-c++11-narrowing -s EXPORTED_FUNCTIONS='["diagram_allocation"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s ALLOW_MEMORY_GROWTH=1  -s EXPORT_ES6=1 -s MODULARIZE=1 -s EXPORT_NAME="createAllocationModule"  -s TOTAL_STACK=32MB  -std=c++20
 
 */
