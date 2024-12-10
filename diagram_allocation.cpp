@@ -290,6 +290,8 @@ const char* diagram_allocation(int n, //nb boxes
                       int edge_count,
                       const char* sedges)
 {
+	vector<int> nodes(n);
+	ranges::copy(views::iota(0,n), nodes.begin());
 
 	struct Context
 	{
@@ -421,7 +423,7 @@ n3|     |       |  cc3      |
 A * perm : permute columns
 perm * A : permute rows
 */
-		Map<MatrixXd>(my_nodes.data(), np,1) = (perm1 * Map<MatrixXd>(rectangles.data(), n,1)).block(n_acc, 0, np, 1) ;
+		Map<MatrixXd>(my_nodes.data(), np,1) = (perm1 * Map<MatrixXd>(nodes.data(), n,1)).block(n_acc, 0, np, 1) ;
 
 		if (np != 1)
 		{
