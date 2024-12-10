@@ -119,7 +119,7 @@ async function data2contexts() {
 
 	const bombix = bombixModule.cwrap("bombix","string",["string","string","string","string"]);
 	const latuile = latuileModule.cwrap("latuile","string",["string","string"]);
-	const diagram_allocation = allocationModule.cwrap("diagram_allocation","string",["integer","integer","integer","string"]");
+	const diagram_allocation = allocationModule.cwrap("diagram_allocation","string",["integer","integer","integer","string"]);
 
 	const n = rectdim.length / 6; //nb boxes
         const max_nb_boxes_per_diagram = 20;
