@@ -63,6 +63,39 @@ vector<vector<MPD_Arc> > compute_adjacency_list(const MatrixXd& OW)
 	return adjacency_list ;
 }
 
+//must be computed from unoriented graph
+void connected_components(const vector<vector<MPD_Arc> >& adjacency_list,
+			  vector<int>& connected_component)
+{
+	int n = adjacency_list.size() ;
+	vector<bool> visited(n, false) ;
+	int comp=0 ;
+	for (int i=0; i < adjacency_list.size(); i++)
+	{
+		if (visited[i])
+			continue ;
+		stack<int> Q ;
+		Q.push(i) ;
+		while (!Q.empty())
+		{
+			int ii = Q.top() ;
+			Q.pop() ;
+			if (visited[ii])
+				continue ;
+			connected_component[ii] = comp ;
+			visited[ii] = true ;
+
+			for (int k=0; k < adjacency_list[ii].size(); k++)
+			{
+				int j=adjacency_list[ii][k]._j ;
+				if (!visited[j])
+					Q.push(j) ;
+			}
+		}
+		comp++ ;
+	}
+}
+
 //input: (P1 * W * P1.transpose()).block(0, 0, np, np)
 //output: P2, component_distribution
 bool minimum_cut(const MatrixXd& W, 
@@ -247,39 +280,6 @@ n2|  C  |        D          |
 	perm2 = perm1 * perm2 ;
 
 	return true ;
-}
-
-//must be computed from unoriented graph
-void connected_components(const vector<vector<MPD_Arc> >& adjacency_list,
-			  vector<int>& connected_component)
-{
-	int n = adjacency_list.size() ;
-	vector<bool> visited(n, false) ;
-	int comp=0 ;
-	for (int i=0; i < adjacency_list.size(); i++)
-	{
-		if (visited[i])
-			continue ;
-		stack<int> Q ;
-		Q.push(i) ;
-		while (!Q.empty())
-		{
-			int ii = Q.top() ;
-			Q.pop() ;
-			if (visited[ii])
-				continue ;
-			connected_component[ii] = comp ;
-			visited[ii] = true ;
-
-			for (int k=0; k < adjacency_list[ii].size(); k++)
-			{
-				int j=adjacency_list[ii][k]._j ;
-				if (!visited[j])
-					Q.push(j) ;
-			}
-		}
-		comp++ ;
-	}
 }
 
 
