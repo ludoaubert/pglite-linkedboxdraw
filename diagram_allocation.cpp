@@ -288,7 +288,13 @@ const char* diagram_allocation(int n, //nb boxes
                       int max_nb_boxes_per_diagram,
                       int edge_count,
                       const char* sedges)
-{        
+{
+
+	struct Context
+	{
+		vector<int> nodes;
+	};
+	
         vector<MPD_Arc> edges;
         int pos = 0;
 	int nn=0;
@@ -380,7 +386,7 @@ n3|     |       |  cc3      |
 
 			if (b)
 			{
-				transform(
+				std::transform(
 					perm3.indices().data(),
 					perm3.indices().data()+np,
 					perm2.indices().data()+n_acc,
@@ -403,39 +409,38 @@ n3|     |       |  cc3      |
 		n_acc += np ;
 	}
 
-	vector<MyRect> single_tables ;
+	vector<int> single_nodes ;
 
 	n_acc=0 ;
 	for (int np : component_distribution)
 	{
 		vector<vector<MPD_Arc> > my_adjacency_list = compute_adjacency_list_( (perm1 * OW * perm1.transpose()).block(n_acc, n_acc, np, np)) ;
-		vector<MyRect> my_rectangles(np) ;
+		vector<int> my_nodes(np) ;
 /*
 A * perm : permute columns
 perm * A : permute rows
 */
-		Map<MatrixXr>(my_rectangles.data(), np,1) = (perm1 * Map<MatrixXr>(rectangles.data(), n,1)).block(n_acc, 0, np, 1) ;
+		Map<MatrixXd>(my_nodes.data(), np,1) = (perm1 * Map<MatrixXd>(rectangles.data(), n,1)).block(n_acc, 0, np, 1) ;
 
 		if (np != 1)
 		{
 			Context ctx ;
-			ctx.rectangles = my_rectangles ;
+			ctx.nodes = my_nodes ;
 			ctx.adjacency_list = my_adjacency_list ;
 			contexts.push_back(ctx) ;
 		}
 		else
 		{
-			MyRect &rect = my_rectangles[0] ;
-			single_tables.push_back(rect) ;
+			single_nodes.push_back(my_nodes[0] ) ;
 		}
 
 		n_acc += np ;
 	}
 
-	if (!single_tables.empty())
+	if (!single_nodes.empty())
 	{
 		Context ctx ;
-		ctx.rectangles = single_tables ;
+		ctx.nodes = single_nodes ;
 		ctx.adjacency_list.resize(ctx.rectangles.size()) ;
 		contexts.push_back(ctx) ;
 	}
