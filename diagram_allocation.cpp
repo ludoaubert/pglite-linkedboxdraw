@@ -7,6 +7,7 @@
 */
 #include <vector>
 #include <algorithm>
+#include <ranges>
 #include "MPD_Arc.h"
 #include "permutation.h"
 #include "KMeansRexCore.h"
