@@ -14,6 +14,53 @@
 using namespace std;
 using namespace Eigen ;
 
+vector<vector<MPD_Arc> > compute_adjacency_list_(const Matrix<int8_t,-1,-1>& OW)
+{
+	assert(OW.rows() == OW.cols()) ;
+
+	int n = OW.rows() ;
+
+	vector<vector<MPD_Arc> > adjacency_list(n) ;
+
+	for (int i=0; i < n; i++)
+	{
+		for (int j=0; j < n; j++)
+		{
+                        if (OW(i,j) == 0)
+				continue ;
+			adjacency_list[i].push_back(MPD_Arc{i,j}) ;
+		}
+	}
+
+	return adjacency_list ;
+}
+
+
+vector<vector<MPD_Arc> > compute_adjacency_list(const MatrixXd& OW)
+{
+	assert(OW.rows() == OW.cols()) ;
+
+	int n = OW.rows() ;
+
+	vector<vector<MPD_Arc> > adjacency_list(n) ;
+
+	for (int i=0; i < n; i++)
+	{
+		for (int j=0; j < n; j++)
+		{
+			double val = OW(i,j) ;
+			if (OW(i,j) == 0.0f)
+				continue ;
+			MPD_Arc a ;
+			a._i = i ;
+			a._j = j ;
+			adjacency_list[a._i].push_back(a) ;
+		}
+	}
+
+	return adjacency_list ;
+}
+
 //input: (P1 * W * P1.transpose()).block(0, 0, np, np)
 //output: P2, component_distribution
 bool minimum_cut(const MatrixXd& W, 
