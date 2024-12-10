@@ -18,7 +18,7 @@ using namespace std;
 using namespace Eigen ;
 using namespace std::ranges;
 
-typedef Matrix<int, Dynamic, Dynamic> MatrixXi
+typedef Matrix<int, Dynamic, Dynamic> MatrixXi;
 
 vector<vector<MPD_Arc> > compute_adjacency_list_(const Matrix<int8_t,-1,-1>& OW)
 {
