@@ -85,7 +85,7 @@ bool minimum_cut(const MatrixXd& W,
 	MatrixXd V = es.eigenvectors().real() ;
 
 	std::vector<double*> evp(n) ;
-	transform(ev.data(), ev.data()+n, evp.data(), [](double& val){return &val;}) ; 
+	std::transform(ev.data(), ev.data()+n, evp.data(), [](double& val){return &val;}) ; 
 	ranges::sort(evp, {}, [](double *p){return *p;}) ;
 /*
 non null eigenvalues => each corresponds to a cut.
