@@ -298,6 +298,8 @@ const char* diagram_allocation(int n, //nb boxes
 		vector<int> nodes;
 		vector<vector<int> > adjacency_list;
 	};
+
+	vector<Context> contexts;
 	
         vector<MPD_Arc> edges;
         int pos = 0;
