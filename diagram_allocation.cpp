@@ -447,7 +447,7 @@ perm * A : permute rows
 	{
 		Context ctx ;
 		ctx.nodes = single_nodes ;
-		ctx.adjacency_list.resize(ctx.rectangles.size()) ;
+		ctx.adjacency_list.resize(ctx.nodes.size()) ;
 		contexts.push_back(ctx) ;
 	}
 	
