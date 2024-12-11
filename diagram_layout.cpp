@@ -1028,7 +1028,7 @@ const char* diagram_layout(int rect_border,
 
 	pos = 0;
     	MyRect r{0,0,0,0};
-	while (sscanf(srects + pos, "%3hx%3hx%3hx%3hx%n", &r.m_left, &r.m_right, &r.m_top, &r.m_bottom, &nn) == 2)
+	while (sscanf(srects + pos, "%3hx%3hx%n", &r.m_right, &r.m_bottom, &nn) == 2)
 	{
 	//use variable 'MyRect.no_sequence' to keep the original position of the box.
 	//keep in mind that variable 'MyRect.i' is used internally by some algorithms and cannot be used for that purpose.
@@ -1036,6 +1036,8 @@ const char* diagram_layout(int rect_border,
 		rectangles.push_back(r);
 		pos += nn;
 	}
+
+	printf("rectangles.size()=%zu\n", rectangles.size());
 	
         vector<MPD_Arc> edges;
         pos = 0;
