@@ -126,7 +126,7 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, vector<vector<MPD_Arc> 
 				value(translation, normal->direction) = value(*rr, normal->direction, normal->sens) -
 															value(*r, normal->direction, normal->sens) ;
 				normal++ ;
-				if (distance(normal4, normal) >= 4)
+				if (std::distance(normal4, normal) >= 4)
 					break ;
 
 				prec = 0 ;
