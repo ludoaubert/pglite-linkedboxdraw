@@ -698,7 +698,7 @@ Detection des chaines : # liens == # rectangles - 1 (en retirant les liens self)
 	edge_count /= 2 ;
 	int max_cardinality = 0 ;
 	for (vector<int>& adj : unoriented_adjacency_list)
-		max_cardinality = max<int>(max_cardinality, adj.size()) ;
+		max_cardinality = std::max<int>(max_cardinality, adj.size()) ;
 
 	if (edge_count == n - 1 && max_cardinality == 2)
 	{
