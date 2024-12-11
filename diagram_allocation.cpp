@@ -124,6 +124,13 @@ string JSON_stringify(const vector<double>& v)
 	return buffer;
 }
 
+string serialise(const MatrixXd& W)
+{
+	ostringstream buffer ;
+	buffer << W ;
+	return buffer.str();
+}
+
 //input: (P1 * W * P1.transpose()).block(0, 0, np, np)
 //output: P2, component_distribution
 bool minimum_cut(const MatrixXd& W, 
@@ -131,10 +138,8 @@ bool minimum_cut(const MatrixXd& W,
 		vector<int> &component_distribution)
 {
 
-	ostringstream buffer ;
-	buffer << W ;
-	const string sbuffer = buffer.str();
-	printf("W=%s\n", sbuffer.c_str());
+	string sW = serialise(W);
+	printf("W=%s\n", sW.c_str());
 	fflush(stdout);
 
 	int n = W.rows() ;
@@ -142,6 +147,10 @@ bool minimum_cut(const MatrixXd& W,
 	MatrixXd D = W.rowwise().sum().asDiagonal() ;
 // Ulrike von Luxburg : we thus advocate for using Lrw (Laplacien randow walk).
 	MatrixXd Lrw = D.inverse() * (D - W) ;
+
+	string sLrw = serialise(Lrw);
+	printf("sLrw=%s\n", sLrw.c_str());
+	fflush(stdout);	
 
 	EigenSolver<MatrixXd> es(Lrw) ;
 	VectorXd ev = es.eigenvalues().real() ;
