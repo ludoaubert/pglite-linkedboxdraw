@@ -13,8 +13,6 @@ const MONOSPACE_FONT_PIXEL_WIDTH=7;
 const CHAR_RECT_HEIGHT=17.5;	// in reality 14,8 + 1 + 1 (top and bottom padding) = 16,8
 const RECTANGLE_BOTTOM_CAP=200;
 
-const RECT_BORDER=20;
-
 var bombixModule;
 var allocationModule;
 var layoutModule;
