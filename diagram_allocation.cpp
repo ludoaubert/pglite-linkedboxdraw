@@ -399,7 +399,7 @@ n3|     |       |  cc3      |
 		int i=std::distance(&component_distribution[0], pnp);
 
 		string jsonComponentDistrib = JSON_stringify(component_distribution);
-		printf("%s\n", jsonComponentDistrib.c_str());
+		printf("component_distribution=%s\n", jsonComponentDistrib.c_str());
 		printf("np=%d\n", np);
 		printf("i=%d\n", i);
 
@@ -413,6 +413,9 @@ n3|     |       |  cc3      |
 				perm3,
 				sub_component_distribution
 			) ;
+
+		string jsonSubComponentDistrib = JSON_stringify(sub_component_distribution);
+		printf("sub_component_distribution=%s\n", jsonSubComponentDistrib.c_str());
 
 		if (b)
 		{
