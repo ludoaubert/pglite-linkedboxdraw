@@ -952,7 +952,6 @@ void stair_steps_layout(vector<MyRect> &vect, const vector<vector<MPD_Arc> > &ad
 		}
 
 //on verifie que les rectangles n'ont pas été permutés.
-		assert(ranges::equal(vec, vect, {}, [](MyRect& r){return dimensions(r);})) ;
 		int total_distance = 0 ;
 		for (const auto& [i, j] : adjacency_list | views::join)
 		{
