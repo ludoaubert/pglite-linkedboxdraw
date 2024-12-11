@@ -978,7 +978,7 @@ void stair_steps_layout(vector<MyRect> &vect, const vector<vector<MPD_Arc> > &ad
 	}
 
         auto rg = adjacency_list | views::join ;
-        vector<MPD_Arc> edges(begin(rg), end(rg));
+        vector<MPD_Arc> edges(rg.begin(), rg.end());
 
 	vector<tuple<int, RectCorner, int, RectCorner> > swaps ;
 	do
