@@ -119,7 +119,7 @@ string JSON_stringify(const vector<double>& v)
 	int pos=0;
 	pos += sprintf(buffer+pos, "[]");
 	pos--;
-	for (const int& i : v)
+	for (const double& i : v)
 		pos += sprintf(buffer+pos, "%f%c", i, &i==&v.back() ? ']' : ','); 
 	return buffer;
 }
