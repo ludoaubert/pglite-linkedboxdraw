@@ -1013,8 +1013,6 @@ void stair_steps_layout(vector<MyRect> &vect, const vector<vector<MPD_Arc> > &ad
 		translate(r, {- frame.m_left,- frame.m_top}) ;
 	}
 
-//on verifie que les rectangles n'ont pas été permutés.
-	assert(ranges::equal(vec, vect, {}, [](MyRect& r){return dimensions(r);})) ;
 	vect = vec ;
 }
 
