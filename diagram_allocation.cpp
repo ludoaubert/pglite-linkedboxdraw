@@ -130,10 +130,11 @@ bool minimum_cut(const MatrixXd& W,
 		PermutationMatrix<Dynamic>& perm2, 
 		vector<int> &component_distribution)
 {
-#ifdef _DEBUG
+
 	ostringstream buffer ;
 	buffer << W ;
-#endif
+	string sbuffer = buffer.str();
+	sprintf("W=%s\n", buffer.c_str());
 
 	int n = W.rows() ;
 
