@@ -140,11 +140,14 @@ bool minimum_cut(const MatrixXd& W,
 
 	string sW = serialise(W);
 	printf("W=%s\n", sW.c_str());
-	fflush(stdout);
 
 	int n = W.rows() ;
 
 	MatrixXd D = W.rowwise().sum().asDiagonal() ;
+
+	string sD = serialise(D);
+	printf("sD=%s\n", sD.c_str());
+	
 // Ulrike von Luxburg : we thus advocate for using Lrw (Laplacien randow walk).
 	MatrixXd Lrw = D.inverse() * (D - W) ;
 
