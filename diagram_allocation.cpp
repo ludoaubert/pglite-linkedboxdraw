@@ -364,6 +364,9 @@ const char* diagram_allocation(int n, //nb boxes
 		pos += nn;
 	}
 
+	printf("edges.size()=%d\n" edges.size());
+	printf("edge_count=%d\n", edge_count);
+
 	MatrixXd W = MatrixXd::Zero(n, n) ;
 	for (const auto& [i, j] : edges)
 	{
