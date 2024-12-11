@@ -437,7 +437,7 @@ n3|     |       |  cc3      |
 	{
 		int np = *pnp;
 		int i=std::distance(&component_distribution[0], pnp);
-		auto rg = component_distribution | views::take(np) ;
+		auto rg = component_distribution | views::take(i) ;
 		int n_acc = std::accumulate(rg.begin(), rg.end(), 0);
 		printf("n_acc=%d\n", n_acc);
 		string jsonComponentDistrib = JSON_stringify(component_distribution);
