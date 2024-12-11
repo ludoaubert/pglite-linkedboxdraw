@@ -3,6 +3,7 @@ import {sample_contexts} from "./contexts.js";
 import {default as createBombixModule} from "./bombix.js";
 import {default as createLatuileModule} from "./latuile.js";
 import {default as createAllocationModule} from "./diagram_allocation.js"
+import {default as createLayoutModule} from "./diagram_layout.js"
 import {db, init, displayCurrent} from "./table_edit.js";
 import {schema} from "./schema.js"
 import {sample_diagdata} from "./diagdata.js"
@@ -18,6 +19,7 @@ const RECTANGLE_BOTTOM_CAP=200;
 var bombixModule;
 var latuileModule;
 var allocationModule;
+var layoutModule;
 
 var mycontexts = sample_contexts;
 
@@ -121,7 +123,8 @@ async function data2contexts() {
 	const bombix = bombixModule.cwrap("bombix","string",["string","string","string","string"]);
 	const latuile = latuileModule.cwrap("latuile","string",["string","string"]);
 	const diagram_allocation = allocationModule.cwrap("diagram_allocation","string",["integer","integer","integer","string"]);
-
+	const diagram_layout = layoutModule.cwrap("diagram_layout","string",["integer","string","string"]);
+	
 	const n = rectdim.length / 6; //nb boxes
         const max_nb_boxes_per_diagram = 20;
         const edge_count = slinks.length / 6;
