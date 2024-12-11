@@ -1,4 +1,4 @@
-/* minimum.cpp
+/* diagram_allocation.cpp
 *
 * Copyright (c) 2005-2025 Ludovic Aubert. ALL RIGHTS RESERVED.
 * ludo.aubert@gmail.com
@@ -475,12 +475,7 @@ n3|     |       |  cc3      |
 			component_distribution.insert(component_distribution.begin()+i, 
 								sub_component_distribution.begin(), 
 								sub_component_distribution.end()) ;
-	//re-initialize the loop : force it to make as many cuts as necessary
-			i = -1 ;
-			n_acc = - np ;
 		}
-
-		n_acc += np ;
 	}
 
 	vector<int> single_nodes ;
