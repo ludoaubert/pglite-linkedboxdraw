@@ -527,9 +527,8 @@ perm * A : permute rows
 			printpos += sprintf(buffer + printpos, "{\"id\":%d, \"context\":%d}%c\n", i, contextIndex,
                               &i == &ctx.nodes.back() ? ' ' : ',');
 		}
-		printpos += sprintf(buffer + printpos, "\n]}\n");		
-	
 	}
+	printpos += sprintf(buffer + printpos, "]}\n");
 	
 	return buffer;
 }
