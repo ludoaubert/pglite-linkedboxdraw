@@ -295,7 +295,7 @@ string JSON_stringify(const vector<int>& v)
 	int pos=0;
 	pos += sprintf(buffer+pos, "[]");
 	pos--;
-	for (int& i : v)
+	for (const int& i : v)
 		pos += sprintf(buffer+pos, "%d%c", i, &i==&v.back() ? ']' : ','); 
 	return buffer;
 }
