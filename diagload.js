@@ -14,6 +14,8 @@ const MONOSPACE_FONT_PIXEL_WIDTH=7;
 const CHAR_RECT_HEIGHT=17.5;	// in reality 14,8 + 1 + 1 (top and bottom padding) = 16,8
 const RECTANGLE_BOTTOM_CAP=200;
 
+const RECT_BORDER=20;
+
 var bombixModule;
 var latuileModule;
 var allocationModule;
@@ -179,12 +181,19 @@ async function data2contexts() {
        				JOIN tag t ON t.idtag = g.from_key AND t.type_code='RELATION_CATEGORY' AND t.code='TR2' 
 	  			WHERE g.from_table='tag' AND g.to_table='link' AND g.to_key=l.idlink
      			)
- 	`	`);
+ 		`);
 
 		const slinks = ret5.rows[0].string_agg;
 		console.log(slinks);
 
-		diagram_layout(rectdim, slinks);
+		const jsonTranslations = diagram_layout(RECT_BORDER, rectdim, slinks);
+		console.log(jsonTranslations);
+
+		const ret6 = await db.query(`
+  			INSERT INTO translation(idrectangle, context, x, y)
+     			SELECT id+1 AS idrectangle, context+1 AS context, NULL AS x, NULL AS y
+  			FROM json_to_recordset('${jsonTranslations}') AS trans("id" int, "x" int, "y" int)
+  		`);
 	}
 	
 	const jsonResponse = latuile(rectdim, slinks);
