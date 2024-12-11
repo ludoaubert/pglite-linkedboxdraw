@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <ranges>
 #include <stack>
+#include <string>
 #include "MPD_Arc.h"
 #include "permutation.h"
 #include "KMeansRexCore.h"
@@ -285,6 +286,14 @@ n2|  C  |        D          |
 	perm2 = perm1 * perm2 ;
 
 	return true ;
+}
+
+
+string JSON_stringify(const vector<int>& v)
+{
+	return '[' + 
+	v | views::transform(std::to_string) | views::join_with(',') | views::to<string>()
+	+ ']';
 }
 
 
