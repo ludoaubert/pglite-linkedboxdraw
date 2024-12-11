@@ -193,7 +193,7 @@ async function data2contexts() {
 	 			WHERE t.context = ${selectedContextIndex}
 			)
    			UPDATE translation t
-			SET t.x = trans.x, t.y = trans.y
+			SET x = trans.x, y = trans.y
   			FROM json_to_recordset('${jsonTranslations}') AS trans("id" int, "x" int, "y" int)
      			JOIN cte_box b ON trans.id + 1 = b.rk
    			WHERE t.idrectangle = b.idrectangle
