@@ -1,5 +1,4 @@
 import {default as createBombixModule} from "./bombix.js";
-import {default as createLatuileModule} from "./latuile.js";
 import {default as createAllocationModule} from "./diagram_allocation.js"
 import {default as createLayoutModule} from "./diagram_layout.js"
 import {db, init, displayCurrent} from "./table_edit.js";
@@ -17,7 +16,6 @@ const RECTANGLE_BOTTOM_CAP=200;
 const RECT_BORDER=20;
 
 var bombixModule;
-var latuileModule;
 var allocationModule;
 var layoutModule;
 
@@ -121,7 +119,6 @@ async function data2contexts() {
 	console.log(slinks);
 
 	const bombix = bombixModule.cwrap("bombix","string",["string","string","string","string"]);
-	const latuile = latuileModule.cwrap("latuile","string",["string","string"]);
 	const diagram_allocation = allocationModule.cwrap("diagram_allocation","string",["integer","integer","integer","string"]);
 	const diagram_layout = layoutModule.cwrap("diagram_layout","string",["integer","string","string"]);
 	
@@ -190,29 +187,22 @@ async function data2contexts() {
 		console.log(jsonTranslations);
 
 		const ret6 = await db.query(`
-  			INSERT INTO translation(idrectangle, context, x, y)
-     			SELECT id+1 AS idrectangle, context+1 AS context, NULL AS x, NULL AS y
+    			WITH cte_box AS (
+     				SELECT r.idbox, DENSE_RANK() OVER (ORDER BY r.idbox) AS rk 
+	 			FROM rectangle r
+     				JOIN translation t ON t.idrectangle = r.idrectangle
+	 			WHERE t.context = ${selectedContextIndex}
+			)
+   			UPDATE translation t
+			SET t.x = trans.x, t.y = trans.y
   			FROM json_to_recordset('${jsonTranslations}') AS trans("id" int, "x" int, "y" int)
+     			JOIN cte_box b ON trans.id = b.rk-1
+			JOIN rectangle r ON r.idbox = cte_box.idbox
+   			WHERE t.idrectangle = r.idrectangle
   		`);
+
+		console.log(ret6);
 	}
-	
-	const jsonResponse = latuile(rectdim, slinks);
-	console.log(jsonResponse);
-
-	const contexts = JSON.parse(jsonResponse);
-
-	const translations = contexts.contexts
-					.map((context, index) => context.translatedBoxes.map(({id,translation:{x,y}}) => ({index, id, x, y})))
-					.flat();
-
-	const jsonTranslations = JSON.stringify(translations);
-	console.log(jsonTranslations);
-	
-	const ret33 = await db.query(`
-  		INSERT INTO translation(idrectangle, context, x, y)
-     		SELECT id+1 AS idrectangle, index+1 AS context, x, y
-  		FROM json_to_recordset('${jsonTranslations}') AS transl("index" int, "id" int, "x" int, "y" int)
-	`);
 
 	await drawDiag();
 }
@@ -846,7 +836,6 @@ async function compute_rectangles(selectedContextIndex)
 window.main = async function main()
 {
 	bombixModule = await createBombixModule();
-	latuileModule = await createLatuileModule();
 	allocationModule = await createAllocationModule();
 	layoutModule = await createLayoutModule();
 	await db.exec(schema);
