@@ -10,6 +10,7 @@
 #include <ranges>
 #include <stack>
 #include <string>
+#include <numeric>
 #include "MPD_Arc.h"
 #include "permutation.h"
 #include "KMeansRexCore.h"
