@@ -19,7 +19,7 @@ var latuileModule;
 var allocationModule;
 var layoutModule;
 
-var mycontexts = sample_contexts;
+var mycontexts ;
 
 function setContexts(mycontexts_)
 {
