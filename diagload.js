@@ -133,9 +133,13 @@ async function data2contexts() {
   		FROM json_to_recordset('${jsonAllocation}') AS alloc("id" int, "context" int)
  	`);
 
+	console.log(ret3);
+
 	const ret4 = await db.query(`
  		SELECT DISTINCT context FROM translation ORDER BY context
  	`);
+
+	console.log(ret4);
 
 	const contexts = ret4.rows;
 
