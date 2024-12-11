@@ -1047,7 +1047,6 @@ const char* diagram_layout(int rect_border,
 	}
 
 	printf("edges.size()=%zu\n", edges.size());
-	printf("edge_count=%d\n", edge_count);
 
 	int n=rectangles.size();
 
@@ -1064,7 +1063,7 @@ const char* diagram_layout(int rect_border,
 
 	for (const MyRect& r : rectangles)
 	{
-		printpos += sprintf(buffer + printpos, "{\"id\":%d, \"x\":%d, \"y\":%d}%c\n", i, r.m_left, r.m_top,
+		printpos += sprintf(buffer + printpos, "{\"id\":%d, \"x\":%d, \"y\":%d}%c\n", r.i, r.m_left, r.m_top,
                           &r == &rectangles.back() ? ' ' : ',');
 	}
 
