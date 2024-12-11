@@ -134,7 +134,8 @@ bool minimum_cut(const MatrixXd& W,
 	ostringstream buffer ;
 	buffer << W ;
 	const string sbuffer = buffer.str();
-	sprintf("W=%s\n", sbuffer.c_str());
+	printf("W=%s\n", sbuffer.c_str());
+	fflush(stdout);
 
 	int n = W.rows() ;
 
