@@ -782,6 +782,7 @@ window.main = async function main()
 	bombixModule = await createBombixModule();
 	latuileModule = await createLatuileModule();
 	allocationModule = await createAllocationModule();
+	layoutModule = await createLayoutModule();
 	await db.exec(schema);
 	await db.exec(sample_diagdata);
 	await compute_tr2_link_tags();
