@@ -847,57 +847,16 @@ FunctionTimer ft("lulu");
         }
 	};
 
-	unsigned hc = 1;// thread::hardware_concurrency();
-	printf("hardware_concurrency=%d\n", hc);
 
-auto job=[&](){
-
-for(int loop=0; loop * hc < TEST_LOOP_REPEAT; loop++)
-{
-	for (const auto& [testid, input_rectangles, edges, expected_translations] : test_contexts)
+	for(int loop=0; loop * hc < TEST_LOOP_REPEAT; loop++)
 	{
-		int n = input_rectangles.size();
-		vector<RectTranslation> translations = compute_compact_frame_transform_(input_rectangles) ;
-                bool bOK = translations == expected_translations;
-if constexpr (TEST_LOOP_REPEAT==1)
-{
-                int dm1 = dim_max(compute_frame(input_rectangles));
+		for (const auto& [testid, input_rectangles, edges, expected_translations] : test_contexts)
+		{
+			int n = input_rectangles.size();
+			vector<RectTranslation> translations = compute_compact_frame_transform_(input_rectangles) ;
+                	bool bOK = translations == expected_translations;
+			(bOK ? nbOK : nbKO)++;
+		}
+	}
 
-                vector<vector<MPD_Arc> > adjacency_list(n) ;
-                for (const Edge& e : edges)
-                {
-                        adjacency_list[e.from].push_back({e.from, e.to}) ;
-                }
-		vector<int> stress_line[2];
-		compute_stress_line(input_rectangles, stress_line);
-/*
-		int dm2 = dim_max(compute_frame(input_rectangles + translations));
-
-		latuile_test_json_output(input_rectangles,
-					input_rectangles + translations,
-					edges,
-					input_rectangles + expected_translations,
-					"compact_frame",
-					testid);
-
-        	D(printf("compact_frame testid=%d : %s\n", testid, bOK ? "OK" : "KO"));
-		D(printf("dim_max(frame) : %d => %d\n", dm1, dm2));
-*/
-}//if constexpr (TEST_LOOP_REPEAT==1)
-		(bOK ? nbOK : nbKO)++;
-	}//for (const auto& [testid, input_rectangles, edges, expected_translations] : test_contexts)
-}//for(int loop=0; loop<TEST_LOOP_REPEAT; loop++)
-};//auto job=[&](int id){
-
-    ThreadPool tp;
-
-    // queue work tasks
-    for (int i=0; i<hc; ++i)
-        tp.enqueue(job);
-
-    tp.waitFinished();
-    printf("tp.getProcessed(): %d\n", tp.getProcessed());
-
-    // destructor will close down thread pool
-    //return EXIT_SUCCESS;
 }
