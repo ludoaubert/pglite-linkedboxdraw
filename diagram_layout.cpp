@@ -32,6 +32,7 @@
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
 using namespace std ;
+using namespace std::ranges;
 using namespace std::chrono;
 using namespace Eigen ;
 
