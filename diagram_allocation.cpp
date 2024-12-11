@@ -292,7 +292,7 @@ n2|  C  |        D          |
 string JSON_stringify(const vector<int>& v)
 {
 	return '[' + 
-	v | views::transform(std::to_string) | views::join_with(',') | ranges::to<string>()
+	v | views::transform([](int i){return std::to_string(i);}) | views::join_with(',') | ranges::to<string>()
 	+ ']';
 }
 
