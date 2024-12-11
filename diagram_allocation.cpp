@@ -385,6 +385,9 @@ n3|     |       |  cc3      |
 		int np = *pnp;
 		int i=std::distance(&component_distribution[0], pnp);
 
+		printf("np=%d\n", np);
+		printf("i=%d\n", i);
+
 //keep on cutting
 		PermutationMatrix<Dynamic> perm2(n), perm3(np) ;
 		perm2.setIdentity() ;
