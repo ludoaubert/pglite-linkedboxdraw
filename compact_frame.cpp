@@ -10,7 +10,6 @@
 #include <cstdint>
 #include <assert.h>
 #include "latuile_test_json_output.h"
-#include "thread_pool.h"
 using namespace std ;
 
 #define _TRACE_
