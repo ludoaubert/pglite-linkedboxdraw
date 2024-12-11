@@ -125,7 +125,6 @@ async function data2contexts() {
         const edge_count = slinks.length / 6;
 	const jsonAllocation = diagram_allocation(n, max_nb_boxes_per_diagram, edge_count, slinks);
 
-	const allocation = JSON.parse(jsonAllocation);
 	console.log(jsonAllocation);
 	
 	const ret3 = await db.query(`
