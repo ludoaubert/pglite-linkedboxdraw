@@ -149,18 +149,29 @@ async function data2contexts() {
    			SELECT STRING_AGG(FORMAT('%1$s%2$s', LPAD(to_hex(r.width),3,'0'), LPAD(to_hex(r.height),3,'0')), '' ORDER BY idbox)
       			FROM rectangle r
 			JOIN translation t ON t.idrectangle = r.idrectangle
-   			WHERE t.context=${selectedContextIndex}
+   			WHERE t.context = ${selectedContextIndex}
   		`);
 		const rectdim = ret4.rows[0].string_agg;
 		console.log(rectdim);
 
 		const ret5 = await db.query(`
+  			WITH cte_box AS (
+     				SELECT r.idbox, DENSE_RANK() OVER (ORDER BY r.idbox) AS rk 
+	 			FROM rectangle r
+     				JOIN translation t ON t.idrectangle = r.idrectangle
+	 			WHERE t.context = ${selectedContextIndex}
+			)
   			WITH cte_link AS (
-   				SELECT *, ROW_NUMBER() OVER(PARTITION BY idbox_from, idbox_to ORDER BY idlink) AS rn
-      				FROM link
-			), cte_box AS (
+   				SELECT l.idlink,
+       					box_from.rk AS rk_from,
+       					box_to.rk AS rk_to,
+	    				ROW_NUMBER() OVER(PARTITION BY idbox_from, idbox_to ORDER BY idlink) AS rn
+      				FROM link l
+	  			JOIN cte_box box_from ON box_from.idbox = l.idbox_from
+      				JOIN cte_box box_to ON box_to.idbox = l.idbox_to
+			)
 
- 			SELECT STRING_AGG(FORMAT('%1$s%2$s', LPAD(to_hex(l.idbox_from-1),3,'0'), LPAD(to_hex(l.idbox_to-1),3,'0')),'' ORDER BY l.idlink)
+ 			SELECT STRING_AGG(FORMAT('%1$s%2$s', LPAD(to_hex(l.rk_from-1),3,'0'), LPAD(to_hex(l.rk_to-1),3,'0')),'' ORDER BY l.idlink)
    			FROM cte_link l
      			WHERE rn=1 AND NOT EXISTS (
      				SELECT *
