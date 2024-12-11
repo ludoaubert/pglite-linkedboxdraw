@@ -157,8 +157,7 @@ async function data2contexts() {
 	 			FROM rectangle r
      				JOIN translation t ON t.idrectangle = r.idrectangle
 	 			WHERE t.context = ${selectedContextIndex}
-			)
-  			WITH cte_link AS (
+			), cte_link AS (
    				SELECT l.idlink,
        					box_from.rk AS rk_from,
        					box_to.rk AS rk_to,
@@ -167,7 +166,6 @@ async function data2contexts() {
 	  			JOIN cte_box box_from ON box_from.idbox = l.idbox_from
       				JOIN cte_box box_to ON box_to.idbox = l.idbox_to
 			)
-
  			SELECT STRING_AGG(FORMAT('%1$s%2$s', LPAD(to_hex(l.rk_from-1),3,'0'), LPAD(to_hex(l.rk_to-1),3,'0')),'' ORDER BY l.idlink)
    			FROM cte_link l
      			WHERE rn=1 AND NOT EXISTS (
