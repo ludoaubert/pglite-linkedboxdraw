@@ -838,11 +838,11 @@ window.main = async function main()
 	layoutModule = await createLayoutModule();
 	await db.exec(schema);
 	await db.exec(sample_diagdata);
-	await compute_tr2_link_tags();
-	await data2contexts();
 	var sheet = document.createElement('style');
 	sheet.id="dynamic-sheet";
 	document.body.appendChild(sheet);
+	await compute_tr2_link_tags();
+	await data2contexts();
 	await drawDiag();
 	await init();
 }
