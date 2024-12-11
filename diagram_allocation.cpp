@@ -293,10 +293,10 @@ string JSON_stringify(const vector<int>& v)
 {
 	char buffer[1000];
 	int pos=0;
-	pos += sprintf(buffer+pos, "[");
+	pos += sprintf(buffer+pos, "[]");
+	pos--;
 	for (int& i : v)
-		pos += sprintf(buffer+pos, "%d%c", i, &i==&v.back() ? '' : ','); 
-	pos += sprintf(buffer+pos, "]");
+		pos += sprintf(buffer+pos, "%d%c", i, &i==&v.back() ? ']' : ','); 
 	return buffer;
 }
 
