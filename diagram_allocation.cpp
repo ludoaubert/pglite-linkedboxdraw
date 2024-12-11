@@ -102,6 +102,28 @@ void connected_components(const vector<vector<MPD_Arc> >& adjacency_list,
 	}
 }
 
+string JSON_stringify(const vector<int>& v)
+{
+	char buffer[1000];
+	int pos=0;
+	pos += sprintf(buffer+pos, "[]");
+	pos--;
+	for (const int& i : v)
+		pos += sprintf(buffer+pos, "%d%c", i, &i==&v.back() ? ']' : ','); 
+	return buffer;
+}
+
+string JSON_stringify(const vector<double>& v)
+{
+	char buffer[1000];
+	int pos=0;
+	pos += sprintf(buffer+pos, "[]");
+	pos--;
+	for (const int& i : v)
+		pos += sprintf(buffer+pos, "%f%c", i, &i==&v.back() ? ']' : ','); 
+	return buffer;
+}
+
 //input: (P1 * W * P1.transpose()).block(0, 0, np, np)
 //output: P2, component_distribution
 bool minimum_cut(const MatrixXd& W, 
@@ -132,6 +154,10 @@ non null eigenvalues => each corresponds to a cut.
 	const static double epsilon = pow(10,-6) ;
 	vector<int> cut_indexes = index_if(evp, [=](double *p){return *p > epsilon;}) ;
 	cut_indexes.push_back(0) ;
+
+	string jsonCutIndexes = JSON_stringify(cut_indexes);
+	printf("cut_indexes=%s\n", jsonCutIndexes.c_str());
+	
 	double min_Ncut = INT_MAX ;
 	int n1, n2 ;
 
@@ -140,6 +166,10 @@ non null eigenvalues => each corresponds to a cut.
 		int column = evp[pos] - &ev[0] ;
 		VectorXd fiedler_vector = V.col(column) ;
 		std::vector<double> fv(fiedler_vector.data(), fiedler_vector.data()+n) ;
+
+		string jsonFV = JSON_stringify(fv);
+		printf("fv=%s\n", jsonFV.c_str());
+
 		int DD=1, K=2, Niter = 100, seed = 14567437496 ;
 		const char *initname = "random" ;//either "random" or "plusplus"
 		vector<double> Mu_OUT(K), Z_OUT(n) ;
@@ -286,18 +316,6 @@ n2|  C  |        D          |
 	perm2 = perm1 * perm2 ;
 
 	return true ;
-}
-
-
-string JSON_stringify(const vector<int>& v)
-{
-	char buffer[1000];
-	int pos=0;
-	pos += sprintf(buffer+pos, "[]");
-	pos--;
-	for (const int& i : v)
-		pos += sprintf(buffer+pos, "%d%c", i, &i==&v.back() ? ']' : ','); 
-	return buffer;
 }
 
 
