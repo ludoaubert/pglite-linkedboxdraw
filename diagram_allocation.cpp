@@ -517,7 +517,7 @@ perm * A : permute rows
 	int printpos=0;
 	static char buffer[100000];
 
-	printpos += sprintf(buffer + printpos, "{[\n");
+	printpos += sprintf(buffer + printpos, "[\n");
 
 	for (int contextIndex=0; contextIndex < contexts.size(); contextIndex++)
 	{
@@ -528,7 +528,7 @@ perm * A : permute rows
                               &i == &ctx.nodes.back() ? ' ' : ',');
 		}
 	}
-	printpos += sprintf(buffer + printpos, "]}\n");
+	printpos += sprintf(buffer + printpos, "]\n");
 	
 	return buffer;
 }
