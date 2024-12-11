@@ -128,7 +128,53 @@ async function data2contexts() {
         const edge_count = slinks.length / 6;
 	const jsonAllocation = diagram_allocation(n, max_nb_boxes_per_diagram, edge_count, slinks);
 
+	const allocation = JSON.parse(jsonAllocation);
 	console.log(jsonAllocation);
+	
+	const ret3 = await db.query(`
+ 		INSERT INTO translation(idrectangle, context, x, y)
+     		SELECT id+1 AS idrectangle, context+1 AS context, NULL AS x, NULL AS y
+  		FROM json_to_recordset('${jsonAllocation}') AS alloc("id" int, "context" int)
+ 	`);
+
+	const ret4 = await db.query(`
+ 		SELECT DISTINCT context FROM translation ORDER BY context
+ 	`);
+
+	const contexts = ret4.rows;
+
+	for (const {context:selectedContextIndex} of contexts)
+	{
+		const ret4 = await db.query(`
+   			SELECT STRING_AGG(FORMAT('%1$s%2$s', LPAD(to_hex(r.width),3,'0'), LPAD(to_hex(r.height),3,'0')), '' ORDER BY idbox)
+      			FROM rectangle r
+			JOIN translation t ON t.idrectangle = r.idrectangle
+   			WHERE t.context=${selectedContextIndex}
+  		`);
+		const rectdim = ret4.rows[0].string_agg;
+		console.log(rectdim);
+
+		const ret5 = await db.query(`
+  			WITH cte_link AS (
+   				SELECT *, ROW_NUMBER() OVER(PARTITION BY idbox_from, idbox_to ORDER BY idlink) AS rn
+      				FROM link
+			), cte_box AS (
+
+ 			SELECT STRING_AGG(FORMAT('%1$s%2$s', LPAD(to_hex(l.idbox_from-1),3,'0'), LPAD(to_hex(l.idbox_to-1),3,'0')),'' ORDER BY l.idlink)
+   			FROM cte_link l
+     			WHERE rn=1 AND NOT EXISTS (
+     				SELECT *
+				FROM graph g 
+       				JOIN tag t ON t.idtag = g.from_key AND t.type_code='RELATION_CATEGORY' AND t.code='TR2' 
+	  			WHERE g.from_table='tag' AND g.to_table='link' AND g.to_key=l.idlink
+     			)
+ 	`	`);
+
+		const slinks = ret5.rows[0].string_agg;
+		console.log(slinks);
+
+		diagram_layout(rectdim, slinks);
+	}
 	
 	const jsonResponse = latuile(rectdim, slinks);
 	console.log(jsonResponse);
@@ -142,7 +188,7 @@ async function data2contexts() {
 	const jsonTranslations = JSON.stringify(translations);
 	console.log(jsonTranslations);
 	
-	const ret3 = await db.query(`
+	const ret33 = await db.query(`
   		INSERT INTO translation(idrectangle, context, x, y)
      		SELECT id+1 AS idrectangle, index+1 AS context, x, y
   		FROM json_to_recordset('${jsonTranslations}') AS transl("index" int, "id" int, "x" int, "y" int)
