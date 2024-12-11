@@ -926,7 +926,7 @@ void stair_steps_layout(vector<MyRect> &vect, const vector<vector<MPD_Arc> > &ad
 	int count = 0 ;
 	walk_composite(_rectangles, [&](WidgetContext& widget){if (widget.type==WidgetType::COMPOSITE_WIDGET && widget.widgets.size()>1)count++ ;}) ;
 //cap count otherwise the possibilities might become overwhelming.
-	count = min(count, 3) ;
+	count = std::min(count, 3) ;
 	int best_rotation_bitmap = -1 ;
 	int min_total_distance = INT_MAX ;
 	for (int rotation_bitmap=0; rotation_bitmap < pow(2, 2*NR_DIRECTIONS*count) ; rotation_bitmap++)
