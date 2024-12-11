@@ -291,9 +291,13 @@ n2|  C  |        D          |
 
 string JSON_stringify(const vector<int>& v)
 {
-	return '[' + 
-	v | views::transform([](int i){return std::to_string(i);}) | views::join_with(',') | ranges::to<string>()
-	+ ']';
+	char buffer[1000];
+	int pos=0;
+	pos += sprintf(buffer+pos, "[");
+	for (int& i : v)
+		pos += sprintf(buffer+pos, "%d%c", i, &i==&v.back() ? '' : ','); 
+	pos += sprintf(buffer+pos, "]");
+	return buffer;
 }
 
 
