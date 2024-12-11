@@ -398,6 +398,8 @@ n3|     |       |  cc3      |
 		int np = *pnp;
 		int i=std::distance(&component_distribution[0], pnp);
 
+		string jsonComponentDistrib = JSON_stringify(component_distribution);
+		printf("%s\n", jsonComponentDistrib.c_str());
 		printf("np=%d\n", np);
 		printf("i=%d\n", i);
 
