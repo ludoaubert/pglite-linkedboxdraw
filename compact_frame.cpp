@@ -847,16 +847,12 @@ FunctionTimer ft("lulu");
         }
 	};
 
-
-	for(int loop=0; loop * hc < TEST_LOOP_REPEAT; loop++)
+	for (const auto& [testid, input_rectangles, edges, expected_translations] : test_contexts)
 	{
-		for (const auto& [testid, input_rectangles, edges, expected_translations] : test_contexts)
-		{
-			int n = input_rectangles.size();
-			vector<RectTranslation> translations = compute_compact_frame_transform_(input_rectangles) ;
-                	bool bOK = translations == expected_translations;
-			(bOK ? nbOK : nbKO)++;
-		}
+		int n = input_rectangles.size();
+		vector<RectTranslation> translations = compute_compact_frame_transform_(input_rectangles) ;
+               	bool bOK = translations == expected_translations;
+		(bOK ? nbOK : nbKO)++;
 	}
 
 }
