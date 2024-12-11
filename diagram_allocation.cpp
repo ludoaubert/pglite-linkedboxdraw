@@ -127,8 +127,8 @@ string JSON_stringify(const vector<double>& v)
 //input: (P1 * W * P1.transpose()).block(0, 0, np, np)
 //output: P2, component_distribution
 bool minimum_cut(const MatrixXd& W, 
-				 PermutationMatrix<Dynamic>& perm2, 
-				 vector<int> &component_distribution)
+		PermutationMatrix<Dynamic>& perm2, 
+		vector<int> &component_distribution)
 {
 #ifdef _DEBUG
 	ostringstream buffer ;
