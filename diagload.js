@@ -1,5 +1,3 @@
-import {sample_contexts} from "./contexts.js";
-
 import {default as createBombixModule} from "./bombix.js";
 import {default as createLatuileModule} from "./latuile.js";
 import {default as createAllocationModule} from "./diagram_allocation.js"
@@ -786,8 +784,8 @@ window.main = async function main()
 	allocationModule = await createAllocationModule();
 	await db.exec(schema);
 	await db.exec(sample_diagdata);
-	await db.exec(sample_contexts);
 	await compute_tr2_link_tags();
+	await data2contexts();
 	var sheet = document.createElement('style');
 	sheet.id="dynamic-sheet";
 	document.body.appendChild(sheet);
