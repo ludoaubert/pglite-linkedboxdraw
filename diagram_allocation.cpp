@@ -402,6 +402,10 @@ n3|     |       |  cc3      |
 	ranges::copy(views::iota(0,n), permutation1.begin()) ;
 	ranges::sort(permutation1, {}, [&](int i){return connected_component[i];}) ;
 	permutation1 = compute_reverse_permutation(permutation1) ;
+
+	string jsonPermutation1 = JSON_stringify(permutation1);
+	printf("permutation1=%s\n", jsonPermutation1.c_str());
+	
 	PermutationMatrix<Dynamic> perm1(n) ;
 	ranges::copy(permutation1, perm1.indices().data()) ;
 
