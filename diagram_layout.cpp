@@ -1095,6 +1095,6 @@ Linux command to lookup eigen3 directory:
 
 
 To generate diagram_layout.wasm and diagram_layout.js:
-emcc diagram_layout.cpp binpack.cpp KMeansRexCore.cpp compact_frame.cpp compact_rectangles.cpp fit_together.cpp MyRect.cpp optimize_rectangle_positions.cpp permutation.cpp swap_rectangles.cpp WidgetContext.cpp FunctionTimer.cpp MPD_Arc.cpp -o diagram_layout.js -I/usr/include/eigen3 -Wno-c++11-narrowing -s EXPORTED_FUNCTIONS='["_latuile"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s ALLOW_MEMORY_GROWTH=1  -s EXPORT_ES6=1 -s MODULARIZE=1 -s EXPORT_NAME="createLayoutModule"  -s TOTAL_STACK=32MB  -std=c++20
+emcc diagram_layout.cpp binpack.cpp KMeansRexCore.cpp compact_frame.cpp compact_rectangles.cpp fit_together.cpp MyRect.cpp optimize_rectangle_positions.cpp permutation.cpp swap_rectangles.cpp WidgetContext.cpp FunctionTimer.cpp MPD_Arc.cpp -o diagram_layout.js -I/usr/include/eigen3 -Wno-c++11-narrowing -s EXPORTED_FUNCTIONS='["_diagram_layout"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s ALLOW_MEMORY_GROWTH=1  -s EXPORT_ES6=1 -s MODULARIZE=1 -s EXPORT_NAME="createLayoutModule"  -s TOTAL_STACK=32MB  -std=c++20
 
 */
