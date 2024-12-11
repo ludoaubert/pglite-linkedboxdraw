@@ -102,7 +102,7 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, vector<vector<MPD_Arc> 
 			{
 				MyPoint translation ;
 				value(translation, normal->direction) = value(*rr, normal->direction, normal->sens) -
-															value(*r, normal->direction, reverse(normal->sens)) ;
+															value(*r, normal->direction, ::reverse(normal->sens)) ;
 				value(translation, transpose(normal->direction)) = value(*rr, transpose(normal->direction), normal->sens) -
 															value(*r, transpose(normal->direction), normal->sens) ;
 				translate(*r, translation) ;
