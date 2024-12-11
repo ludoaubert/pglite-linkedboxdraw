@@ -187,7 +187,7 @@ async function data2contexts() {
 
 		const ret6 = await db.query(`
     			WITH cte_box AS (
-     				SELECT r.idbox, DENSE_RANK() OVER (ORDER BY r.idbox) AS rk 
+     				SELECT r.idbox, r.idrectangle, DENSE_RANK() OVER (ORDER BY r.idbox) AS rk 
 	 			FROM rectangle r
      				JOIN translation t ON t.idrectangle = r.idrectangle
 	 			WHERE t.context = ${selectedContextIndex}
@@ -195,9 +195,8 @@ async function data2contexts() {
    			UPDATE translation t
 			SET t.x = trans.x, t.y = trans.y
   			FROM json_to_recordset('${jsonTranslations}') AS trans("id" int, "x" int, "y" int)
-     			JOIN cte_box b ON trans.id = b.rk-1
-			JOIN rectangle r ON r.idbox = cte_box.idbox
-   			WHERE t.idrectangle = r.idrectangle
+     			JOIN cte_box b ON trans.id + 1 = b.rk
+   			WHERE t.idrectangle = b.idrectangle
   		`);
 
 		console.log(ret6);
