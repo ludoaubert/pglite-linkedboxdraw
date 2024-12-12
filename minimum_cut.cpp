@@ -133,25 +133,30 @@ bool minimum_cut(const MatrixXd& W,
 		PermutationMatrix<Dynamic>& perm2, 
 		vector<int> &component_distribution)
 {
+/*
 #ifndef __EMSCRIPTEN__
 	string sW = serialise(W);
 	printf("W=%s\n", sW.c_str());
 #endif
+*/
 	int n = W.rows() ;
 
 	MatrixXd D = W.rowwise().sum().asDiagonal() ;
+/*
 #ifndef __EMSCRIPTEN__
 	string sD = serialise(D);
 	printf("sD=%s\n", sD.c_str());
 #endif
+*/
 // Ulrike von Luxburg : we thus advocate for using Lrw (Laplacien randow walk).
 	MatrixXd Lrw = D.inverse() * (D - W) ;
-
+/*
 #ifndef __EMSCRIPTEN__
 	string sLrw = serialise(Lrw);
 	printf("sLrw=%s\n", sLrw.c_str());
 	fflush(stdout);	
 #endif
+*/
 	EigenSolver<MatrixXd> es(Lrw) ;
 	VectorXd ev = es.eigenvalues().real() ;
 	MatrixXd V = es.eigenvectors().real() ;
@@ -165,10 +170,12 @@ non null eigenvalues => each corresponds to a cut.
 	const static double epsilon = pow(10,-6) ;
 	vector<int> cut_indexes = index_if(evp, [=](double *p){return *p > epsilon;}) ;
 	cut_indexes.push_back(0) ;
+/*
 #ifndef __EMSCRIPTEN__
 	string jsonCutIndexes = JSON_stringify(cut_indexes);
 	printf("cut_indexes=%s\n", jsonCutIndexes.c_str());
 #endif
+*/
 	double min_Ncut = INT_MAX ;
 	int n1, n2 ;
 
@@ -177,10 +184,12 @@ non null eigenvalues => each corresponds to a cut.
 		int column = evp[pos] - &ev[0] ;
 		VectorXd fiedler_vector = V.col(column) ;
 		std::vector<double> fv(fiedler_vector.data(), fiedler_vector.data()+n) ;
+/*
 #ifndef __EMSCRIPTEN__
 		string jsonFV = JSON_stringify(fv);
 		printf("fv=%s\n", jsonFV.c_str());
 #endif
+*/
 		int DD=1, K=2, Niter = 100, seed = 14567437496 ;
 		const char *initname = "random" ;//either "random" or "plusplus"
 		vector<double> Mu_OUT(K), Z_OUT(n) ;
