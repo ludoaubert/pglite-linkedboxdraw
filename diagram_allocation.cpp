@@ -13,6 +13,7 @@
 #include <numeric>
 #include "MPD_Arc.h"
 #include "minimum_cut.h"
+#include "permutation.h"
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
 using namespace std;
