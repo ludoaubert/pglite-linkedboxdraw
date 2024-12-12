@@ -12,10 +12,7 @@
 #include <string>
 #include <numeric>
 #include "MPD_Arc.h"
-#include "permutation.h"
-#include "KMeansRexCore.h"
 #include "minimum_cut.h"
-#include "index_from.h"
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
 using namespace std;
