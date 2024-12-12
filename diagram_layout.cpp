@@ -599,13 +599,14 @@ bool stair_steps_(vector<MyRect> &rectangles, vector<vector<MPD_Arc> > &adj_list
 				W(i,j) = W(j,i) = 1 ;
 			}
                         vector<int> v(n);
-			if (selected != 0 && minimum_cut(W, perm, v)==false)
+			bool mc = minimum_cut(W, perm, v);
+			if (selected != 0 && mc==false)
 			{
 				composite_from_selected_rectangles(rects, adjacency_list) ;
 				if (rects.size() == n)
 					break ;	// composite hat nichts gebracht
 			}
-			if (selected != 0 && minimum_cut(W, perm, v)==true)
+			if (selected != 0 && mc==true)
 			{
 				break ;
 			}
