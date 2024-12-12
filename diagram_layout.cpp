@@ -286,7 +286,7 @@ const char* diagram_layout(int rect_border,
 		r.m_bottom += rect_border;
 	}
 
-	stair_steps_layout_(rectangles, adjacency_list);
+	stair_steps_(rectangles, adjacency_list);
 
 	compact_frame(rectangles, adjacency_list) ;
 	optimize_rectangle_positions(rectangles, adjacency_list) ;
