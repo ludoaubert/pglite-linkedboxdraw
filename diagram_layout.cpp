@@ -277,6 +277,7 @@ bool stair_steps_(vector<MyRect> &rectangles, vector<vector<MPD_Arc> > &adj_list
 		{
 			int selected = rects.size() - not_selected ;
 			int n = rects.size() ;
+/*
 			MatrixXd W = MatrixXd::Zero(n,n) ;
 			PermutationMatrix<Dynamic> perm(n) ;
 			for (const auto& [i, j] : adjacency_list | views::join)
@@ -297,6 +298,7 @@ bool stair_steps_(vector<MyRect> &rectangles, vector<vector<MPD_Arc> > &adj_list
 			}
 
 			n = rects.size() ;
+   */
 			vector<MyRect> rectangles_(n) ;
 			for (int i=0; i < n; i++)
 			{
@@ -318,7 +320,7 @@ bool stair_steps_(vector<MyRect> &rectangles, vector<vector<MPD_Arc> > &adj_list
 			}
 		}
 
-		rects = collapse_composite(rects) ;
+//		rects = collapse_composite(rects) ;
 		vector<MyRect> rects2(rects.size()) ;
 		for (WidgetContext &widget : rects)
 		{
