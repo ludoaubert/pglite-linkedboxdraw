@@ -743,7 +743,7 @@ const char* diagram_layout(int rect_border,
 	for (MPD_Arc &edge : edges)
 		adjacency_list[edge._i].push_back(edge);
 
-	stair_steps_layout(rectangles, adjacency_list, rect_border);
+	stair_steps_layout_(rectangles, adjacency_list);
 
 	int printpos=0;
 	static char buffer[100000];
