@@ -297,8 +297,8 @@ const char* diagram_layout(int rect_border,
 		expand_by(r, - rect_border) ;
 	}
 
-	MyRect frame = compute_frame(vec) ;
-	for (MyRect &r : vec)
+	MyRect frame = compute_frame(rectangles) ;
+	for (MyRect &r : rectangles)
 	{
 		translate(r, {- frame.m_left,- frame.m_top}) ;
 	}
