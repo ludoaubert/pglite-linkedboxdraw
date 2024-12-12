@@ -770,9 +770,7 @@ vector<WidgetContext> composite_stair_steps_layout(vector<WidgetContext>& rectan
 			OW(i, j) = 1 ;
 		}
 		vector<int> component_distribution ;
-		minimum_cut(W,
-					perm,
-					component_distribution) ;
+		minimum_cut(W, perm, component_distribution) ;
 		int nc = component_distribution.size() ;
 		int n_acc = 0 ;
 
