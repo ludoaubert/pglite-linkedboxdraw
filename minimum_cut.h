@@ -8,6 +8,8 @@ typedef Eigen::Matrix<MyRect,Eigen::Dynamic,Eigen::Dynamic> MatrixXr ;
 
 typedef Eigen::Matrix<int, Eigen::Dynamic, Eigen::Dynamic> MatrixXi;
 
+typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> MatrixXd;
+
 
 std::vector<std::vector<MPD_Arc> > compute_adjacency_list_(const Eigen::Matrix<int8_t,-1,-1>& OW);
 
