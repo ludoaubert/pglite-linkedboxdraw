@@ -430,7 +430,7 @@ vector<WidgetContext> composite_stair_steps_layout(vector<WidgetContext>& rectan
 	}
 
 	bool result = stair_steps(vec, adjacency_list) ;
-	if (result)
+//	if (result)
 	{
 		vector<WidgetContext> rectangles_ = rectangles ;
 		for (int i=0; i < vec.size(); i++)
@@ -443,7 +443,7 @@ vector<WidgetContext> composite_stair_steps_layout(vector<WidgetContext>& rectan
 		}
 		return rectangles_ ;
 	}
-	else
+/*	else
 	{
 		MatrixXd W = MatrixXd::Zero(n,n) ;
 		PermutationMatrix<Dynamic> perm(n) ;
@@ -487,6 +487,7 @@ vector<WidgetContext> composite_stair_steps_layout(vector<WidgetContext>& rectan
 
 		return composite_widgets ;
 	}
+ */
 }
 
 
