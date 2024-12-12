@@ -524,11 +524,10 @@ perm * A : permute rows
 		const Context& ctx = contexts[contextIndex];
 		for (const int& i : ctx.nodes)
 		{
-			printpos += sprintf(buffer + printpos, "{\"id\":%d, \"context\":%d}%c\n", i, contextIndex,
-                              &i == &ctx.nodes.back() ? ' ' : ',');
+			printpos += sprintf(buffer + printpos, "{\"id\":%d, \"context\":%d},\n", i, contextIndex);
 		}
 	}
-	printpos += sprintf(buffer + printpos, "]\n");
+	printpos += sprintf(buffer + printpos -1, "]\n");
 	
 	return buffer;
 }
