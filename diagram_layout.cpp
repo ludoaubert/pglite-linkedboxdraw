@@ -11,12 +11,10 @@
 #include "swap_rectangles.h"
 #include "compact_rectangles.h"
 #include "compact_frame.h"
-#include "index_from.h"
 #include "binpack.h"
 #include "optimize_rectangle_positions.h"
 #include "fit_together.h"
 #include "permutation.h"
-#include "KMeansRexCore.h"
 #include "FunctionTimer.h"
 #include "minimum_cut.h"
 #include <vector>
