@@ -7,7 +7,6 @@
 */
 #include "MyRect.h"
 #include "MPD_Arc.h"
-#include "WidgetContext.h"
 #include "swap_rectangles.h"
 #include "compact_rectangles.h"
 #include "compact_frame.h"
@@ -17,12 +16,9 @@
 #include "index_from.h"
 #include "permutation.h"
 #include "FunctionTimer.h"
-#include "minimum_cut.h"
 #include <vector>
 #include <stack>
 #include <iterator>
-#include <unordered_map>
-#include <unordered_set>
 #include <algorithm>
 #include <ranges>
 #include <numeric>
@@ -30,14 +26,10 @@
 #include <fstream>
 #include <assert.h>
 #include <chrono>
-#include <Eigen/Core>
-#include <Eigen/Eigenvalues>
 using namespace std ;
 using namespace std::ranges;
 using namespace std::chrono;
-using namespace Eigen ;
 
-typedef Matrix<WidgetContext,Dynamic,Dynamic> MatrixXw ;
 
 bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, vector<vector<MPD_Arc> > &adjacency_list)
 {
@@ -348,6 +340,6 @@ Linux command to lookup eigen3 directory:
 
 
 To generate diagram_layout.wasm and diagram_layout.js:
-emcc diagram_layout.cpp minimum_cut.cpp binpack.cpp KMeansRexCore.cpp compact_frame.cpp compact_rectangles.cpp fit_together.cpp MyRect.cpp optimize_rectangle_positions.cpp permutation.cpp swap_rectangles.cpp WidgetContext.cpp FunctionTimer.cpp MPD_Arc.cpp -o diagram_layout.js -I/usr/include/eigen3 -Wno-c++11-narrowing -s EXPORTED_FUNCTIONS='["_diagram_layout"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s ALLOW_MEMORY_GROWTH=1  -s EXPORT_ES6=1 -s MODULARIZE=1 -s EXPORT_NAME="createLayoutModule"  -s TOTAL_STACK=32MB  -std=c++20
+emcc diagram_layout.cpp binpack.cpp compact_frame.cpp compact_rectangles.cpp fit_together.cpp MyRect.cpp optimize_rectangle_positions.cpp permutation.cpp swap_rectangles.cpp FunctionTimer.cpp MPD_Arc.cpp -o diagram_layout.js -Wno-c++11-narrowing -s EXPORTED_FUNCTIONS='["_diagram_layout"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s ALLOW_MEMORY_GROWTH=1  -s EXPORT_ES6=1 -s MODULARIZE=1 -s EXPORT_NAME="createLayoutModule"  -s TOTAL_STACK=32MB  -std=c++20
 
 */
