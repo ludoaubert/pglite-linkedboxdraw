@@ -122,8 +122,7 @@ async function data2contexts() {
 	
 	const n = rectdim.length / 6; //nb boxes
         const max_nb_boxes_per_diagram = 20;
-        const edge_count = slinks.length / 6;
-	const jsonAllocation = diagram_allocation(n, max_nb_boxes_per_diagram, edge_count, slinks);
+	const jsonAllocation = diagram_allocation(n, max_nb_boxes_per_diagram, slinks);
 
 	console.log(jsonAllocation);
 	
