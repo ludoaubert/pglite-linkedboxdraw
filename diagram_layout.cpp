@@ -198,13 +198,15 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, const vector<vector<MPD
 
 bool stair_steps_(vector<MyRect> &rectangles, const vector<vector<MPD_Arc> > &adj_list)
 {
-	int n = rectangles.size() ;
+	const int n = rectangles.size() ;
 
 	vector<vector<MyRect> > solutions ;
 
 	for (int i=0; i < n; i++)
 	{
 		printf("i=%d\n", i);
+		fflush(stdout);
+
 		vector<MyRect> rectangles_ = rectangles ;
 		for (MyRect& r : rectangles_)
 			r.selected = false;
