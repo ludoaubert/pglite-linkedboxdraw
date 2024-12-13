@@ -219,6 +219,7 @@ non null eigenvalues => each corresponds to a cut.
 			return false ;
 		component.pop_back() ;
 		component.pop_back() ;
+		printf("component.size()=%zu\n", component.size());
 		for (int comp : component)
 		{
 			for (int i=0 ; i < n ; i++)
@@ -241,6 +242,7 @@ non null eigenvalues => each corresponds to a cut.
 		}
 		connected_components(adj, cc) ;
 		nr_comp = 1 + ranges::max(cc) ;
+		printf("nr_comp=%d\n", nr_comp);
 
 //to create a permutation matrix, permute the columns of the identity matrix
 		vector<int> permutation2(n) ;
