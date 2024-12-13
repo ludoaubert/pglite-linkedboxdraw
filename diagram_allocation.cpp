@@ -52,7 +52,7 @@ const char* diagram_allocation(int n, //nb boxes
 	vector<int> connected_component(n, -1) ;
 	connected_components(compute_adjacency_list(W), connected_component) ;
 
-	int nr_comp = 1 + *ranges::max_element(connected_component) ;
+	int nr_comp = 1 + ranges::max(connected_component) ;
 	vector<int> component_distribution(nr_comp, 0) ;
 	for (int comp : connected_component)
 		component_distribution[comp]++;
