@@ -30,7 +30,6 @@ using namespace std ;
 using namespace std::ranges;
 using namespace std::chrono;
 
-int nbOK, nbKO;
 
 bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, vector<vector<MPD_Arc> > &adjacency_list)
 {
