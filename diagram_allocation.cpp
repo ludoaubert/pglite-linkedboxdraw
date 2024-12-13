@@ -29,14 +29,6 @@ const char* diagram_allocation(int n, //nb boxes
 {
 	vector<int> nodes(n);
 	ranges::copy(views::iota(0,n), nodes.begin());
-
-	struct Context
-	{
-		vector<int> nodes;
-		vector<vector<MPD_Arc> > adjacency_list;
-	};
-
-	vector<Context> contexts;
 	
         vector<MPD_Arc> edges;
         int pos = 0;
@@ -111,8 +103,15 @@ n3|     |       |  cc3      |
 		WW(i, j) = WW(j, i) = value ;
 	}
 
-	int n_acc = 0 ;
+	struct Context
+	{
+		vector<int> nodes;
+		vector<vector<MPD_Arc> > adjacency_list;
+	};
 
+	vector<Context> contexts;
+	
+	int n_acc = 0 ;
 	int* pnp;
 	
 	while ((pnp = &*ranges::max_element(component_distribution)) && *pnp > max_nb_boxes_per_diagram)
