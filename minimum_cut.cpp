@@ -134,30 +134,23 @@ bool minimum_cut(const MatrixXd& W,
 		PermutationMatrix<Dynamic>& perm2, 
 		vector<int> &component_distribution)
 {
-/*
-#ifndef __EMSCRIPTEN__
 	string sW = serialise(W);
 	printf("W=%s\n", sW.c_str());
-#endif
-*/
+
 	int n = W.rows() ;
 
 	MatrixXd D = W.rowwise().sum().asDiagonal() ;
-/*
-#ifndef __EMSCRIPTEN__
+
 	string sD = serialise(D);
 	printf("sD=%s\n", sD.c_str());
-#endif
-*/
+
 // Ulrike von Luxburg : we thus advocate for using Lrw (Laplacien randow walk).
 	MatrixXd Lrw = D.inverse() * (D - W) ;
-/*
-#ifndef __EMSCRIPTEN__
+
 	string sLrw = serialise(Lrw);
 	printf("sLrw=%s\n", sLrw.c_str());
 	fflush(stdout);	
-#endif
-*/
+
 	EigenSolver<MatrixXd> es(Lrw) ;
 	VectorXd ev = es.eigenvalues().real() ;
 	MatrixXd V = es.eigenvectors().real() ;
@@ -171,12 +164,10 @@ non null eigenvalues => each corresponds to a cut.
 	const static double epsilon = pow(10,-6) ;
 	vector<int> cut_indexes = index_if(evp, [=](double *p){return *p > epsilon;}) ;
 	cut_indexes.push_back(0) ;
-/*
-#ifndef __EMSCRIPTEN__
+
 	string jsonCutIndexes = JSON_stringify(cut_indexes);
 	printf("cut_indexes=%s\n", jsonCutIndexes.c_str());
-#endif
-*/
+
 	double min_Ncut = INT_MAX ;
 	int n1, n2 ;
 
@@ -185,12 +176,10 @@ non null eigenvalues => each corresponds to a cut.
 		int column = evp[pos] - &ev[0] ;
 		VectorXd fiedler_vector = V.col(column) ;
 		std::vector<double> fv(fiedler_vector.data(), fiedler_vector.data()+n) ;
-/*
-#ifndef __EMSCRIPTEN__
+
 		string jsonFV = JSON_stringify(fv);
 		printf("fv=%s\n", jsonFV.c_str());
-#endif
-*/
+
 		int DD=1, K=2, Niter = 100, seed = 14567437496 ;
 		const char *initname = "random" ;//either "random" or "plusplus"
 		vector<double> Mu_OUT(K), Z_OUT(n) ;
@@ -198,6 +187,9 @@ non null eigenvalues => each corresponds to a cut.
 		n1 = ranges::count(Z_OUT, 1.0) ;
 		n2 = ranges::count(Z_OUT, 0.0) ;
 
+		printf("n1=%d\n", n1);
+		printf("n2=%d\n", n2);
+		
 		if (n1 == 0 || n2 == 0)
 			return false ;
 
@@ -213,13 +205,16 @@ non null eigenvalues => each corresponds to a cut.
 		}
 		connected_components(adj, cc) ;
 		int nr_comp = 1 + ranges::max(cc) ;
+		printf("nr_comp=%d\n", nr_comp);
 		vector<int> distribution(nr_comp, 0) ;
 		for (int comp : cc)
 			distribution[comp]++ ;
+		
 		vector<int> component(nr_comp) ;
 		for (int comp=0; comp < nr_comp; comp++)
 			component[comp] = comp ;
 		ranges::sort(component, {}, [&](int comp){return distribution[comp]; }) ;
+		printf("component.size()=%zu\n", component.size());
 		if (component.size() < 2)
 			return false ;
 		component.pop_back() ;
