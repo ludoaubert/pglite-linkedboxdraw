@@ -15,7 +15,6 @@
 #include "fit_together.h"
 #include "index_from.h"
 #include "permutation.h"
-#include "FunctionTimer.h"
 #include <vector>
 #include <stack>
 #include <iterator>
@@ -28,12 +27,10 @@
 #include <chrono>
 using namespace std ;
 using namespace std::ranges;
-using namespace std::chrono;
 
 
 bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, vector<vector<MPD_Arc> > &adjacency_list)
 {
-        FunctionTimer ft("stair_steps");
 	int n = rectangles.size() ;
 
 	vector<vector<MyRect*> > unordered_adjacency_list(n) ;
@@ -201,7 +198,6 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, vector<vector<MPD_Arc> 
 
 bool stair_steps_(vector<MyRect> &rectangles, vector<vector<MPD_Arc> > &adj_list)
 {
-        FunctionTimer ft("stair_steps_");
 	int n = rectangles.size() ;
 
 	vector<vector<MyRect> > solutions ;
@@ -214,13 +210,7 @@ bool stair_steps_(vector<MyRect> &rectangles, vector<vector<MPD_Arc> > &adj_list
 		for (MyRect& r : rectangles_)
 			r.selected = false;
 
-		while(int not_selected = ranges::count_if(rectangles_, [](const MyRect& r){return r.selected==false ;}))
-		{
-			int selected = rectangles_.size() - not_selected ;
-			int n = rectangles.size() ;
-
-			bool result = stair_steps(rectangles_, rectangles_[i < n ? i : n-1], adjacency_list) ;
-		}
+		bool result = stair_steps(rectangles_, rectangles_[i], adjacency_list) ;
 
 		if (index_from_if(rectangles_,[](const MyRect& r){return r.selected==false;}) == -1)
 			solutions.push_back(rectangles_) ;
