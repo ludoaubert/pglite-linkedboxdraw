@@ -117,7 +117,7 @@ async function data2contexts() {
 	console.log(slinks);
 
 	const bombix = bombixModule.cwrap("bombix","string",["string","string","string","string"]);
-	const diagram_allocation = allocationModule.cwrap("diagram_allocation","string",["integer","integer","integer","string"]);
+	const diagram_allocation = allocationModule.cwrap("diagram_allocation","string",["integer","integer","string"]);
 	const diagram_layout = layoutModule.cwrap("diagram_layout","string",["integer","string","string"]);
 	
 	const n = rectdim.length / 6; //nb boxes
