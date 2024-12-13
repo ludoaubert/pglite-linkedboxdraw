@@ -44,8 +44,6 @@ const char* diagram_allocation(int n, //nb boxes
 	MPD_Arc edge;
 	while (sscanf(sedges + pos, "%3x%3x%n", &edge._i, &edge._j, &nn) == 2)
 	{
-                assert(edge._i < n);
-                assert(edge._j < n);
 		edges.push_back(edge);
 		pos += nn;
 	}
