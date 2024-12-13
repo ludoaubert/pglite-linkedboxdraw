@@ -273,8 +273,8 @@ const char* diagram_layout(int rect_border,
 
 	for (MyRect& r : rectangles)
 	{
-		r.m_right += rect_border;
-		r.m_bottom += rect_border;
+		r.m_right += 2*rect_border;
+		r.m_bottom += 2*rect_border;
 	}
 
 	stair_steps_(rectangles, adjacency_list);
