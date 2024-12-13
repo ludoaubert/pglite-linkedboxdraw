@@ -25,7 +25,6 @@ using namespace std::ranges;
 extern "C" {
 const char* diagram_allocation(int n, //nb boxes
                       int max_nb_boxes_per_diagram,
-                      int edge_count,
                       const char* sedges)
 {
 	vector<int> nodes(n);
@@ -43,8 +42,7 @@ const char* diagram_allocation(int n, //nb boxes
         int pos = 0;
 	int nn=0;
 	MPD_Arc edge;
-	while (edges.size() < edge_count &&
-	    sscanf(sedges + pos, "%3x%3x%n", &edge._i, &edge._j, &nn) == 2)
+	while (sscanf(sedges + pos, "%3x%3x%n", &edge._i, &edge._j, &nn) == 2)
 	{
                 assert(edge._i < n);
                 assert(edge._j < n);
@@ -53,7 +51,6 @@ const char* diagram_allocation(int n, //nb boxes
 	}
 
 	printf("edges.size()=%zu\n", edges.size());
-	printf("edge_count=%d\n", edge_count);
 
 	MatrixXd W = MatrixXd::Zero(n, n) ;
 	for (const auto& [i, j] : edges)
@@ -224,9 +221,8 @@ int main(int argc, char* argv[])
 {
 	const int n = 68;  //nb boxes
 	const int max_nb_boxes_per_diagram = 20;
-	const int edge_count = 60;
 	const char* sedges = "00200700302300301b00400500502300600200803c00801500901b00a01b00b01300c02300d01b00e00f00f01301001101101b01302301402301501801902301901b01a01b01b03701b02c01c01b01e01b02001b02101102202602201102402302502802602302702302802402902302a02302b02302f02303001a03102803200503303203302803403503403003601b03703803803703903703902303b03703d00803e03c03f01b040013041043041008043023";
-	const char* jsonAllocation = diagram_allocation(n, max_nb_boxes_per_diagram, edge_count, sedges);
+	const char* jsonAllocation = diagram_allocation(n, max_nb_boxes_per_diagram, sedges);
 	printf("%s", jsonAllocation);
 }
 
