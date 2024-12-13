@@ -29,7 +29,7 @@ using namespace std ;
 using namespace std::ranges;
 
 
-bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, vector<vector<MPD_Arc> > &adjacency_list)
+bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, const vector<vector<MPD_Arc> > &adjacency_list)
 {
 	int n = rectangles.size() ;
 
@@ -196,7 +196,7 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, vector<vector<MPD_Arc> 
 }
 
 
-bool stair_steps_(vector<MyRect> &rectangles, vector<vector<MPD_Arc> > &adj_list)
+bool stair_steps_(vector<MyRect> &rectangles, const vector<vector<MPD_Arc> > &adj_list)
 {
 	int n = rectangles.size() ;
 
@@ -204,13 +204,12 @@ bool stair_steps_(vector<MyRect> &rectangles, vector<vector<MPD_Arc> > &adj_list
 
 	for (int i=0; i < n; i++)
 	{
-		vector<vector<MPD_Arc> > adjacency_list = adj_list ;
-
+		printf("i=%d\n", i);
 		vector<MyRect> rectangles_ = rectangles ;
 		for (MyRect& r : rectangles_)
 			r.selected = false;
 
-		bool result = stair_steps(rectangles_, rectangles_[i], adjacency_list) ;
+		bool result = stair_steps(rectangles_, rectangles_[i], adj_list) ;
 
 		if (index_from_if(rectangles_,[](const MyRect& r){return r.selected==false;}) == -1)
 			solutions.push_back(rectangles_) ;
