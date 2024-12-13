@@ -309,11 +309,11 @@ n2|  C  |        D          |
 	connected_components(compute_adjacency_list( (perm2 * W * perm2.transpose()).block(n1, n1, n2, n2) ),
 						  cc2) ;
 	for (int &comp : cc2)
-		comp += 1 + *ranges::max_element(cc1) ;
+		comp += 1 + ranges::max(cc1) ;
 	vector<int> connected_component ;
 	ranges::copy(cc1, back_inserter(connected_component)) ;
 	ranges::copy(cc2, back_inserter(connected_component)) ;
-	int nr_comp = 1 + *ranges::max_element(connected_component) ;
+	int nr_comp = 1 + ranges::max(connected_component) ;
 	component_distribution = vector<int>(nr_comp, 0) ;
 	for (int comp : connected_component)
 		component_distribution[comp]++;
