@@ -212,7 +212,7 @@ non null eigenvalues => each corresponds to a cut.
 			adj[i].push_back({i, j}) ;
 		}
 		connected_components(adj, cc) ;
-		int nr_comp = 1 + *ranges::max_element(cc) ;
+		int nr_comp = 1 + ranges::max(cc) ;
 		vector<int> distribution(nr_comp, 0) ;
 		for (int comp : cc)
 			distribution[comp]++ ;
@@ -245,7 +245,7 @@ non null eigenvalues => each corresponds to a cut.
 			adj[i].push_back({i, j}) ;
 		}
 		connected_components(adj, cc) ;
-		nr_comp = 1 + *ranges::max_element(cc) ;
+		nr_comp = 1 + ranges::max(cc) ;
 
 //to create a permutation matrix, permute the columns of the identity matrix
 		vector<int> permutation2(n) ;
