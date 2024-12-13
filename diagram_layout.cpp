@@ -278,16 +278,16 @@ const char* diagram_layout(int rect_border,
 	}
 
 	stair_steps_(rectangles, adjacency_list);
-	printf("exit stair_steps_();\n", i);
+	printf("exit stair_steps_();\n");
 	fflush(stdout);
 	compact_frame(rectangles, adjacency_list) ;
-	printf("exit compute_frame();\n", i);
+	printf("exit compute_frame();\n");
 	fflush(stdout);
 	optimize_rectangle_positions(rectangles, adjacency_list) ;
-	printf("exit optimize_rectangle_positions();\n", i);
+	printf("exit optimize_rectangle_positions();\n");
 	fflush(stdout);
 	compact_frame(rectangles, adjacency_list) ;
-	printf("exit compact_frame();\n", i);
+	printf("exit compact_frame();\n");
 	fflush(stdout);
 
 	for (MyRect &r : rectangles)
