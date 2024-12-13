@@ -318,7 +318,7 @@ n2|  C  |        D          |
 	for (int comp : connected_component)
 		component_distribution[comp]++;
 
-	vector<int> permutation = views::iota(0,n) | ranges::to<vector>() ;
+	vector<int> permutation = views::iota(0,n) | ranges::to<vector<int> >() ;
 	ranges::sort(permutation, {}, [&](int i){return connected_component[i];}) ;
 	permutation = compute_reverse_permutation(permutation) ;
 	PermutationMatrix<Dynamic> perm1(n) ;
