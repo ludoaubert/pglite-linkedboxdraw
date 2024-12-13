@@ -322,10 +322,10 @@ const char* diagram_layout(int rect_border,
 
 int main(int argc, char* argv[])
 {
+	const int rect_border = 20;
 	const char* rectdim = "07f02b0b003d04007106a08307f03d11204e04709404e04e0cc04e07006007107106208304003d03804e09a06006203d07003d07004e03203d0b6083";
 	const char* links = "00200e00200501100700600e00600500100e00300400501100800900e00700701000c00e00a01200a01000a00901300a01300701300801300b01000300b00d00900f007000";
-	const int rect_border = 20;
-	const char* jsonLayout = diagram_layout(rectdim, links, rect_border);
+	const char* jsonLayout = diagram_layout(rect_border, rectdim, links);
 	printf("%s", jsonLayout);
 }
 
