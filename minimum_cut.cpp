@@ -220,7 +220,7 @@ non null eigenvalues => each corresponds to a cut.
 		printf("Line %d. component.size()=%zu\n", __LINE__, component.size());
 		if (component.size() < 2)
 		{
-			printf(component.size()=%zu: no cut!\n", component.size());
+			printf("Line %d. component.size()=%zu: no cut!\n", __LINE__, component.size());
 			return false ;
 		}
 		component.pop_back() ;
