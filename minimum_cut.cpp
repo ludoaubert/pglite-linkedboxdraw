@@ -169,12 +169,12 @@ bool minimum_cut(const MatrixXd& W,
 /*
 non null eigenvalues => each corresponds to a cut.
 */
-	const double epsilon = pow(10,-6) ;
+	const double EPSILON = pow(10,-6) ;
 
 	double min_Ncut = INT_MAX ;
 	int n1, n2 ;
 
-	for (const auto {eigenValue, fiedler_vector} : esv | views::filter([&]const EigenStruct& es){return &es=&esv[0] || es.eigenValue > epsilon;}))
+	for (const auto {eigenValue, fiedler_vector} : esv | views::filter([&](const EigenStruct& es){return &es=&esv[0] || es.eigenValue > EPSILON;}))
 	{
 		printf("Line %d. looping on pos in cut_indexes. pos=%d eigenValue=%f\n", __LINE__, pos, eigenValue);
 
