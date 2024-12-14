@@ -320,6 +320,7 @@ n2|  C  |        D          |
 	ranges::copy(cc1, back_inserter(connected_component)) ;
 	ranges::copy(cc2, back_inserter(connected_component)) ;
 	int nr_comp = 1 + ranges::max(connected_component) ;
+	printf("Line %d. nr_comp=%d\n", __LINE__, nr_comp);
 	component_distribution = vector<int>(nr_comp, 0) ;
 	for (int comp : connected_component)
 		component_distribution[comp]++;
@@ -342,5 +343,6 @@ n2|  C  |        D          |
 // P1*(P2* W* tP2)* tP1  or  (P1 * P2) * W * t(P1 * P2) so the new permutation is P1*P2
 	perm2 = perm1 * perm2 ;
 
+	printf("Line %d. return true;\n", __LINE__);
 	return true ;
 }
