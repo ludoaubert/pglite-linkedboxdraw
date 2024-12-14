@@ -135,20 +135,20 @@ bool minimum_cut(const MatrixXd& W,
 		vector<int> &component_distribution)
 {
 	string sW = serialise(W);
-	printf("W=%s\n", sW.c_str());
+	printf("Line %d. W=%s\n", __LINE__, sW.c_str());
 
 	int n = W.rows() ;
 
 	MatrixXd D = W.rowwise().sum().asDiagonal() ;
 
 	string sD = serialise(D);
-	printf("sD=%s\n", sD.c_str());
+	printf("Line %d. sD=%s\n", __LINE__, sD.c_str());
 
 // Ulrike von Luxburg : we thus advocate for using Lrw (Laplacien randow walk).
 	MatrixXd Lrw = D.inverse() * (D - W) ;
 
 	string sLrw = serialise(Lrw);
-	printf("sLrw=%s\n", sLrw.c_str());
+	printf("Line %d. sLrw=%s\n", __LINE__, sLrw.c_str());
 	fflush(stdout);	
 
 	EigenSolver<MatrixXd> es(Lrw) ;
@@ -166,7 +166,7 @@ non null eigenvalues => each corresponds to a cut.
 	cut_indexes.push_back(0) ;
 
 	string jsonCutIndexes = JSON_stringify(cut_indexes);
-	printf("cut_indexes=%s\n", jsonCutIndexes.c_str());
+	printf("Line %d. cut_indexes=%s\n", __LINE__, jsonCutIndexes.c_str());
 
 	double min_Ncut = INT_MAX ;
 	int n1, n2 ;
@@ -178,7 +178,7 @@ non null eigenvalues => each corresponds to a cut.
 		std::vector<double> fv(fiedler_vector.data(), fiedler_vector.data()+n) ;
 
 		string jsonFV = JSON_stringify(fv);
-		printf("fv=%s\n", jsonFV.c_str());
+		printf("Line %d. fv=%s\n", __LINE__, jsonFV.c_str());
 
 		int DD=1, K=2, Niter = 100, seed = 14567437496 ;
 		const char *initname = "random" ;//either "random" or "plusplus"
@@ -187,11 +187,14 @@ non null eigenvalues => each corresponds to a cut.
 		n1 = ranges::count(Z_OUT, 1.0) ;
 		n2 = ranges::count(Z_OUT, 0.0) ;
 
-		printf("n1=%d\n", n1);
-		printf("n2=%d\n", n2);
+		printf("Line %d. n1=%d\n", __LINE__, n1);
+		printf("Line %d. n2=%d\n", __LINE__, n2);
 		
 		if (n1 == 0 || n2 == 0)
+		{
+			printf("Line %d. n1=%d, n2=%d: no cut!\n", __LINE__, n1, n2);
 			return false ;
+		}
 
 //if there are small connected components as side effect of the cut, move them to the other side where they
 //might be connected.
@@ -205,7 +208,7 @@ non null eigenvalues => each corresponds to a cut.
 		}
 		connected_components(adj, cc) ;
 		int nr_comp = 1 + ranges::max(cc) ;
-		printf("nr_comp=%d\n", nr_comp);
+		printf("Line %d. nr_comp=%d\n", __LINE__, nr_comp);
 		vector<int> distribution(nr_comp, 0) ;
 		for (int comp : cc)
 			distribution[comp]++ ;
@@ -214,12 +217,15 @@ non null eigenvalues => each corresponds to a cut.
 		for (int comp=0; comp < nr_comp; comp++)
 			component[comp] = comp ;
 		ranges::sort(component, {}, [&](int comp){return distribution[comp]; }) ;
-		printf("component.size()=%zu\n", component.size());
+		printf("Line %d. component.size()=%zu\n", __LINE__, component.size());
 		if (component.size() < 2)
+		{
+			printf(component.size()=%zu: no cut!\n", component.size());
 			return false ;
+		}
 		component.pop_back() ;
 		component.pop_back() ;
-		printf("component.size()=%zu\n", component.size());
+		printf("Line %d. component.size()=%zu\n", __LINE__, component.size());
 		for (int comp : component)
 		{
 			for (int i=0 ; i < n ; i++)
@@ -242,7 +248,7 @@ non null eigenvalues => each corresponds to a cut.
 		}
 		connected_components(adj, cc) ;
 		nr_comp = 1 + ranges::max(cc) ;
-		printf("nr_comp=%d\n", nr_comp);
+		printf("Line %d. nr_comp=%d\n", __LINE__, nr_comp);
 
 //to create a permutation matrix, permute the columns of the identity matrix
 		vector<int> permutation2(n) ;
@@ -298,7 +304,10 @@ n2|  C  |        D          |
 	}
 
 	if (n1==0 || n2==0)
+	{
+		printf("Line %d. n1=%d, n2=%d: no cut!\n", __LINE__, n1, n2);
 		return false ;
+	}
 
 	vector<int> cc1(n1), cc2(n2) ;
 	connected_components(compute_adjacency_list( (perm2 * W * perm2.transpose()).block(0, 0, n1, n1) ),
