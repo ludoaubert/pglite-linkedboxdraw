@@ -239,6 +239,8 @@ non null eigenvalues => each corresponds to a cut.
 		n1 = ranges::count(Z_OUT, 1.0) ;
 		n2 = ranges::count(Z_OUT, 0.0) ;
 
+		printf("Line %d. n1=%d, n2=%d\n", __LINE__, n1, n2);
+
 		adj = vector<vector<MPD_Arc> >(n) ;
 		cc = vector<int>(n,0) ;
 		for (const auto& [i, j] : adj_ | views::join)
@@ -287,7 +289,8 @@ n2|  C  |        D          |
 		double cut = (perm2 * W * perm2.transpose()).block(0, n1, n1, n2).sum() + (perm2 * W * perm2.transpose()).block(n1, 0, n2, n1).sum() ;
 
 //critere de qualité pour choisir la meilleure cut - Cf Ulrike von Luxburg paragraph 5
-		double Ncut = cut / intra2[0] + cut / intra2[1] ; 
+		double Ncut = cut / intra2[0] + cut / intra2[1] ;
+		printf("Line %d. Ncut=%f\n", __LINE__, Ncut);
 //penalty to make a small n1 (resp. n2) be taken into account as being added to nr_comp.
 //goal is to make small asymmetric cut less attractive.
 		int penalty = 0 ;
@@ -296,10 +299,13 @@ n2|  C  |        D          |
 		if (n2*4 <= n)
 			penalty+= abs(n-2*n2) ;
 		Ncut = 1.0/(1.0+n1) + 1.0/(1.0+n2) + 1.0*(nr_comp+penalty)/(1.0+n)  ;
+		printf("Line %d. Ncut=%f\n", __LINE__, Ncut);
 		if (Ncut < min_Ncut)
 		{
 			min_Ncut = Ncut ;
+			printf("Line %d. Ncut=%f min_Ncut=%f\n", __LINE__, Ncut, min_Ncut);
 //play again the best at loop end.
+			printf("Line %d. cut_indexes.back() = %d\n", __LINE__, pos);
 			cut_indexes.back() = pos ;
 		}
 	}
@@ -309,6 +315,8 @@ n2|  C  |        D          |
 		printf("Line %d. n1=%d, n2=%d: no cut!\n", __LINE__, n1, n2);
 		return false ;
 	}
+
+	printf("Line %d. n1=%d, n2=%d\n", __LINE__, n1, n2);
 
 	vector<int> cc1(n1), cc2(n2) ;
 	connected_components(compute_adjacency_list( (perm2 * W * perm2.transpose()).block(0, 0, n1, n1) ),
