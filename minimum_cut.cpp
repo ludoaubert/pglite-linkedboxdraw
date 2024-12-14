@@ -169,19 +169,13 @@ bool minimum_cut(const MatrixXd& W,
 /*
 non null eigenvalues => each corresponds to a cut.
 */
-	const static double epsilon = pow(10,-6) ;
-	vector<int> cut_indexes = index_if(esv, [=](const EigenStruct &e){return e.eigenValue > epsilon;});
-	cut_indexes.push_back(0) ;
-
-	string jsonCutIndexes = JSON_stringify(cut_indexes);
-	printf("Line %d. cut_indexes=%s\n", __LINE__, jsonCutIndexes.c_str());
+	const double epsilon = pow(10,-6) ;
 
 	double min_Ncut = INT_MAX ;
 	int n1, n2 ;
-	
-	for (int pos : cut_indexes)
+
+	for (const auto {eigenValue, fiedler_vector} : esv | views::filter([&]const EigenStruct& es){return &es=&esv[0] || e.eigenValue > epsilon;}))
 	{
-		const {eigenValue, fiedler_vector} = esv[pos] ;
 		printf("Line %d. looping on pos in cut_indexes. pos=%d eigenValue=%f\n", __LINE__, pos, eigenValue);
 
 		vector<double> fv(fiedler_vector.data(), fiedler_vector.data()+n) ;
