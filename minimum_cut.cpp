@@ -1,6 +1,6 @@
 /* minimum_cut.cpp
 *
-* Copyright (c) 2005-2015 Ludovic Aubert. ALL RIGHTS RESERVED.
+* Copyright (c) 2005-2025 Ludovic Aubert. ALL RIGHTS RESERVED.
 * ludo.aubert@gmail.com
 * This file should not be transmitted nor published.
 *
