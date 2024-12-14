@@ -155,6 +155,18 @@ bool minimum_cut(const MatrixXd& W,
 	VectorXd ev = es.eigenvalues().real() ;
 	MatrixXd V = es.eigenvectors().real() ;
 
+	struct EigenStruct
+	{
+		double eigenValue;
+		VectorXd eigenVector;
+	};
+
+	vector<EigenStruct> esv(n);
+	for (int i=0; i<n; i++)
+		esv[i] = {ev.data[i], &V.col(i)};
+
+	ranges::sort(esv, {}, &EigenStruct::eigenValue);
+
 	std::vector<double*> evp(n) ;
 	std::transform(ev.data(), ev.data()+n, evp.data(), [](double& val){return &val;}) ; 
 	ranges::sort(evp, {}, [](double *p){return *p;}) ;
