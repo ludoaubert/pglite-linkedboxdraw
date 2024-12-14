@@ -114,8 +114,9 @@ n3|     |       |  cc3      |
 	
 	int n_acc = 0 ;
 	int* pnp;
+	bool b=true;
 	
-	while ((pnp = &*ranges::max_element(component_distribution)) && *pnp > max_nb_boxes_per_diagram)
+	while (b && (pnp = &*ranges::max_element(component_distribution)) && *pnp > max_nb_boxes_per_diagram)
 	{
 		int np = *pnp;
 		int i=std::distance(&component_distribution[0], pnp);
@@ -132,7 +133,7 @@ n3|     |       |  cc3      |
 		perm2.setIdentity() ;
 		vector<int> sub_component_distribution ;
 
-		bool b = minimum_cut(
+		b = minimum_cut(
 				(perm1 * WW * perm1.transpose()).block(n_acc, n_acc, np, np),
 				perm3,
 				sub_component_distribution
