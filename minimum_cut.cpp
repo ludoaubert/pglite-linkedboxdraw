@@ -166,15 +166,11 @@ bool minimum_cut(const MatrixXd& W,
 		esv[i] = EigenStruct{*(ev.data()+i), V.col(i)};
 
 	ranges::sort(esv, {}, &EigenStruct::eigenValue);
-
-	std::vector<double*> evp(n) ;
-	std::transform(ev.data(), ev.data()+n, evp.data(), [](double& val){return &val;}) ; 
-	ranges::sort(evp, {}, [](double *p){return *p;}) ;
 /*
 non null eigenvalues => each corresponds to a cut.
 */
 	const static double epsilon = pow(10,-6) ;
-	vector<int> cut_indexes = index_if(evp, [=](double *p){return *p > epsilon;}) ;
+	vector<int> cut_indexes = index_if(esv, [=](const EigenStruct &e){return e.eigenValue > epsilon;});
 	cut_indexes.push_back(0) ;
 
 	string jsonCutIndexes = JSON_stringify(cut_indexes);
@@ -185,10 +181,10 @@ non null eigenvalues => each corresponds to a cut.
 	
 	for (int pos : cut_indexes)
 	{
-		printf("Line %d. looping on pos in cut_indexes. pos=%d\n", __LINE__, pos);
-		int column = evp[pos] - &ev[0] ;
-		VectorXd fiedler_vector = V.col(column) ;
-		std::vector<double> fv(fiedler_vector.data(), fiedler_vector.data()+n) ;
+		const {eigenValue, fiedler_vector} = esv[pos] ;
+		printf("Line %d. looping on pos in cut_indexes. pos=%d eigenValue=%f\n", __LINE__, pos, eigenValue);
+
+		vector<double> fv(fiedler_vector.data(), fiedler_vector.data()+n) ;
 
 		string jsonFV = JSON_stringify(fv);
 		printf("Line %d. fv=%s\n", __LINE__, jsonFV.c_str());
