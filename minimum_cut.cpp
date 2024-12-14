@@ -163,7 +163,7 @@ bool minimum_cut(const MatrixXd& W,
 
 	vector<EigenStruct> esv(n);
 	for (int i=0; i<n; i++)
-		esv[i] = {ev.data[i], &V.col(i)};
+		esv[i] = {ev.data[i], V.col(i)};
 
 	ranges::sort(esv, {}, &EigenStruct::eigenValue);
 
