@@ -53,6 +53,7 @@ const char* diagram_allocation(int n, //nb boxes
 	connected_components(compute_adjacency_list(W), connected_component) ;
 
 	int nr_comp = 1 + ranges::max(connected_component) ;
+	printf("nr_comp=%d\n", nr_comp);
 	vector<int> component_distribution(nr_comp, 0) ;
 	for (int comp : connected_component)
 		component_distribution[comp]++;
@@ -156,6 +157,9 @@ n3|     |       |  cc3      |
 			component_distribution.insert(component_distribution.begin()+i, 
 								sub_component_distribution.begin(), 
 								sub_component_distribution.end()) ;
+
+			string jsonComponentDistrib = JSON_stringify(component_distribution);
+			printf("component_distribution=%s\n", jsonComponentDistrib.c_str());
 		}
 	}
 
