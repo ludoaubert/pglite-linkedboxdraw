@@ -170,9 +170,6 @@ non null eigenvalues => each corresponds to a cut.
 
 	double min_Ncut = INT_MAX ;
 	int n1, n2 ;
-
-	string jsonCutIndexes = JSON_stringify(cut_indexes);
-	printf("Line %d. cut_indexs=%s\n", __LINE__, jsonCutIndexes.c_str());
 	
 	for (int pos : cut_indexes)
 	{
