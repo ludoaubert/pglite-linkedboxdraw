@@ -171,8 +171,12 @@ non null eigenvalues => each corresponds to a cut.
 	double min_Ncut = INT_MAX ;
 	int n1, n2 ;
 
+	string jsonCutIndexes = JSON_stringify(cut_indexes);
+	printf("Line %d. cut_indexs=%s\n", __LINE__, jsonCutIndexes.c_str());
+	
 	for (int pos : cut_indexes)
 	{
+		printf("Line %d. looping on pos in cut_indexes. pos=%d\n", __LINE__, pos);
 		int column = evp[pos] - &ev[0] ;
 		VectorXd fiedler_vector = V.col(column) ;
 		std::vector<double> fv(fiedler_vector.data(), fiedler_vector.data()+n) ;
