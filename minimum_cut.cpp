@@ -131,7 +131,7 @@ string serialise(const MatrixXd& W)
 //input: (P1 * W * P1.transpose()).block(0, 0, np, np)
 //output: P2, component_distribution
 bool minimum_cut(const MatrixXd& W, 
-		PermutationMatrix<Dynamic>& perm2, 
+		PermutationMatrix<Dynamic>& perm2_, 
 		vector<int> &component_distribution)
 {
 	string sW = serialise(W);
@@ -161,8 +161,6 @@ bool minimum_cut(const MatrixXd& W,
 		VectorXd eigenVector;
 		vector<double> Z_OUT;
 		double Ncut;
-		int n1, n2;
-		PermutationMatrix<Dynamic> perm2;
 	};
 
 	vector<EigenStruct> esv(n);
@@ -177,7 +175,7 @@ non null eigenvalues => each corresponds to a cut.
 
 	auto rg = esv | views::filter([=](const EigenStruct& es){return &es==&esv[0] || es.eigenValue > EPSILON;});
 
-	for (auto& [eigenValue, fiedler_vector, Z_OUT, Ncut, n1, n2, perm2] : rg)
+	for (auto& [eigenValue, fiedler_vector, Z_OUT, Ncut] : rg)
 	{
 		printf("Line %d. looping on pos in cut_indexes. eigenValue=%f\n", __LINE__, eigenValue);
 
@@ -261,6 +259,7 @@ non null eigenvalues => each corresponds to a cut.
 		printf("Line %d. nr_comp=%d\n", __LINE__, nr_comp);
 */
 //to create a permutation matrix, permute the columns of the identity matrix
+		PermutationMatrix<Dynamic> perm2(n);
 		vector<int> permutation2(n) ;
 		ranges::copy(views::iota(0,n), permutation2.begin()) ;
 		ranges::sort(permutation2, ranges::greater(), [&](int i){return Z_OUT[i];}) ;
