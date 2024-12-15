@@ -203,6 +203,7 @@ non null eigenvalues => each corresponds to a cut.
 
 //if there are small connected components as side effect of the cut, move them to the other side where they
 //might be connected.
+/*
 		vector<int> cc(n) ;
 		vector<vector<MPD_Arc> > adj(n), adj_ = compute_adjacency_list(W) ;
 		for (const auto& [i, j] : adj_ | views::join)
@@ -256,7 +257,7 @@ non null eigenvalues => each corresponds to a cut.
 		connected_components(adj, cc) ;
 		nr_comp = 1 + ranges::max(cc) ;
 		printf("Line %d. nr_comp=%d\n", __LINE__, nr_comp);
-
+*/
 //to create a permutation matrix, permute the columns of the identity matrix
 		vector<int> permutation2(n) ;
 		ranges::copy(views::iota(0,n), permutation2.begin()) ;
