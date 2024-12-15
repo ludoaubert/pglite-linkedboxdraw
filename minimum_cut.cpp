@@ -176,7 +176,7 @@ non null eigenvalues => each corresponds to a cut.
 
 	auto rg = esv | views::filter([=](const EigenStruct& es){return &es==&esv[0] || es.eigenValue > EPSILON;});
 
-	for (const auto& [eigenValue, fiedler_vector] : rg)
+	for (auto& [eigenValue, fiedler_vector] : rg)
 	{
 		printf("Line %d. looping on pos in cut_indexes. eigenValue=%f\n", __LINE__, eigenValue);
 
