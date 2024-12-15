@@ -178,7 +178,7 @@ non null eigenvalues => each corresponds to a cut.
 
 	for (const auto& [eigenValue, fiedler_vector] : rg)
 	{
-		printf("Line %d. looping on pos in cut_indexes. pos=%d eigenValue=%f\n", __LINE__, pos, eigenValue);
+		printf("Line %d. looping on pos in cut_indexes. eigenValue=%f\n", __LINE__, eigenValue);
 
 		vector<double> fv(fiedler_vector.data(), fiedler_vector.data()+n) ;
 
