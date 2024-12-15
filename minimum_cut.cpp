@@ -174,7 +174,7 @@ non null eigenvalues => each corresponds to a cut.
 	double min_Ncut = INT_MAX ;
 	int n1, n2 ;
 
-	auto rg = esv | views::filter([=](const EigenStruct& es){return &es=&esv[0] || es.eigenValue > EPSILON;});
+	auto rg = esv | views::filter([=](const EigenStruct& es){return &es==&esv[0] || es.eigenValue > EPSILON;});
 
 	for (const auto& {eigenValue, fiedler_vector} : rg)
 	{
