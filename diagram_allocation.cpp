@@ -144,16 +144,32 @@ n3|     |       |  cc3      |
 
 		if (b)
 		{
-			perm2.block(n_acc, n_acc, np, np) = perm3 * MatrixXd::Identity(np, np)*n_acc;
+			perm2.block(n_acc, n_acc, np, np) = perm3 * MatrixXd::Identity(np, np)*n_acc;//TODO: faux!!!
 
 	// if we want to apply P2 on P1*W*tP1 : 
 	// P2*(P1* W* tP1)* tP2  or  (P2 * P1) * W * t(P2 * P1) so the new permutation is P2*P1
 			perm1 = perm2 * perm1 ;
+//TODO: use views::concat
+/*
+	component_stribution = views::concat(component_distribution | views::take(i), 
+ 					sub_component_distribution, 
+      					component_distribution | views::drop(i+1)
+	   				) | ranges::to<vector<int> >();
+*/
+			vector<int> v;
+			for (int a : component_distribution | views::take(i))
+				v.push_back(a);
+			for (int a : sub_component_distribution)
+				v.push_back(a);
+			for (int a : component_distribution | views::drop(i+1))
+				v.push_back(a);
+			component_ditribution = v;
+/*
 			component_distribution.erase(component_distribution.begin()+i) ;
 			component_distribution.insert(component_distribution.begin()+i, 
 								sub_component_distribution.begin(), 
 								sub_component_distribution.end()) ;
-
+*/
 			string jsonComponentDistrib = JSON_stringify(component_distribution);
 			printf("component_distribution=%s\n", jsonComponentDistrib.c_str());
 		}
