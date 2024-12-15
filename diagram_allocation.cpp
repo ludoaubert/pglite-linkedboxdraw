@@ -163,7 +163,7 @@ n3|     |       |  cc3      |
 				v.push_back(a);
 			for (int a : component_distribution | views::drop(i+1))
 				v.push_back(a);
-			component_ditribution = v;
+			component_distribution = v;
 /*
 			component_distribution.erase(component_distribution.begin()+i) ;
 			component_distribution.insert(component_distribution.begin()+i, 
