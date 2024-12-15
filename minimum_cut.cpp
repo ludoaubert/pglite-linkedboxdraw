@@ -160,12 +160,21 @@ bool minimum_cut(const MatrixXd& W,
 		double eigenValue;
 		VectorXd eigenVector;
 		vector<double> Z_OUT;
-		double Ncut;
+		int n1, n2;
+		double Ncut, Ncut2;
 	};
 
 	vector<EigenStruct> esv(n);
 	for (int i=0; i<n; i++)
-		esv[i] = EigenStruct{*(ev.data()+i), V.col(i)};
+		esv[i] = EigenStruct{
+				.eigenValue = *(ev.data()+i),
+				.eigenVector = V.col(i),
+				.Z_OUT = vector<double>(n),
+				.n1=0,
+				.n2=0,
+				.Ncut=0,
+				.Ncut2=0
+			};
 
 	ranges::sort(esv, {}, &EigenStruct::eigenValue);
 /*
@@ -175,9 +184,9 @@ non null eigenvalues => each corresponds to a cut.
 
 	auto rg = esv | views::filter([=](const EigenStruct& es){return &es==&esv[0] || es.eigenValue > EPSILON;});
 
-	for (auto& [eigenValue, fiedler_vector, Z_OUT, Ncut] : rg)
+	for (auto& [eigenValue, fiedler_vector, Z_OUT, n1, n2, Ncut, Ncut2] : rg)
 	{
-		printf("Line %d. looping on pos in cut_indexes. eigenValue=%f\n", __LINE__, eigenValue);
+		printf("Line %d. looping on pos in esv. eigenValue=%f\n", __LINE__, eigenValue);
 
 		vector<double> fv(fiedler_vector.data(), fiedler_vector.data()+n) ;
 
@@ -187,7 +196,6 @@ non null eigenvalues => each corresponds to a cut.
 		const int DD=1, K=2, Niter = 100, seed = 14567437496 ;
 		const char *initname = "random" ;//either "random" or "plusplus"
 		vector<double> Mu_OUT(K);
-		Z_OUT = vector<double>(n) ;
 		RunKMeans(fiedler_vector.data(), n, DD, K, Niter, seed, initname, &Mu_OUT[0], &Z_OUT[0]);
 		n1 = ranges::count(Z_OUT, 1.0) ;
 		n2 = ranges::count(Z_OUT, 0.0) ;
@@ -201,63 +209,6 @@ non null eigenvalues => each corresponds to a cut.
 			return false ;
 		}
 
-//if there are small connected components as side effect of the cut, move them to the other side where they
-//might be connected.
-/*
-		vector<int> cc(n) ;
-		vector<vector<MPD_Arc> > adj(n), adj_ = compute_adjacency_list(W) ;
-		for (const auto& [i, j] : adj_ | views::join)
-		{
-			if (Z_OUT[i] != Z_OUT[j])
-				continue ;
-			adj[i].push_back({i, j}) ;
-		}
-		connected_components(adj, cc) ;
-		int nr_comp = 1 + ranges::max(cc) ;
-		printf("Line %d. nr_comp=%d\n", __LINE__, nr_comp);
-		vector<int> distribution(nr_comp, 0) ;
-		for (int comp : cc)
-			distribution[comp]++ ;
-		
-		vector<int> component(nr_comp) ;
-		for (int comp=0; comp < nr_comp; comp++)
-			component[comp] = comp ;
-		ranges::sort(component, {}, [&](int comp){return distribution[comp]; }) ;
-		printf("Line %d. component.size()=%zu\n", __LINE__, component.size());
-		if (component.size() < 2)
-		{
-			printf("Line %d. component.size()=%zu: no cut!\n", __LINE__, component.size());
-			return false ;
-		}
-		component.pop_back() ;
-		component.pop_back() ;
-		printf("Line %d. component.size()=%zu\n", __LINE__, component.size());
-		for (int comp : component)
-		{
-			for (int i=0 ; i < n ; i++)
-			{
-				if (cc[i] != comp)
-					continue ;
-				Z_OUT[i] = 1 - Z_OUT[i] ;
-			}
-		}
-		n1 = ranges::count(Z_OUT, 1.0) ;
-		n2 = ranges::count(Z_OUT, 0.0) ;
-
-		printf("Line %d. n1=%d, n2=%d\n", __LINE__, n1, n2);
-
-		adj = vector<vector<MPD_Arc> >(n) ;
-		cc = vector<int>(n,0) ;
-		for (const auto& [i, j] : adj_ | views::join)
-		{
-			if (Z_OUT[i] != Z_OUT[j])
-				continue ;
-			adj[i].push_back({i, j}) ;
-		}
-		connected_components(adj, cc) ;
-		nr_comp = 1 + ranges::max(cc) ;
-		printf("Line %d. nr_comp=%d\n", __LINE__, nr_comp);
-*/
 //to create a permutation matrix, permute the columns of the identity matrix
 		PermutationMatrix<Dynamic> perm2(n);
 		vector<int> permutation2(n) ;
@@ -305,21 +256,20 @@ n2|  C  |        D          |
 		if (n2*4 <= n)
 			penalty+= abs(n-2*n2) ;
 		const int nr_comp=2; //to be confirmed
-		Ncut = 1.0/(1.0+n1) + 1.0/(1.0+n2) + 1.0*(nr_comp+penalty)/(1.0+n)  ;
-		printf("Line %d. Ncut=%f\n", __LINE__, Ncut);
+		Ncut2 = 1.0/(1.0+n1) + 1.0/(1.0+n2) + 1.0*(nr_comp+penalty)/(1.0+n)  ;
+		printf("Line %d. Ncut2=%f\n", __LINE__, Ncut2);
 	}
 
-	const auto& [eigenValue, fiedler_vector, Z_OUT, Ncut, n1, n2, perm2] = ranges::min(rg, {}, &Ncut);
+	const auto& [eigenValue, fiedler_vector, Z_OUT, n1, n2, Ncut, Ncut2] = ranges::min(rg, {}, &Ncut2);
 
-	printf("Line %d. min(Ncut)=%f\n", __LINE__, Ncut, Ncut);
-
+	printf("Line %d. min => Ncut2=%f, NCut=%f\n", __LINE__, Ncut2, Ncut);
+	printf("Line %d. n1=%d, n2=%d\n", __LINE__, n1, n2);
+	
 	if (n1==0 || n2==0)
 	{
 		printf("Line %d. n1=%d, n2=%d: no cut!\n", __LINE__, n1, n2);
 		return false ;
 	}
-
-	printf("Line %d. n1=%d, n2=%d\n", __LINE__, n1, n2);
 
 	vector<int> cc1(n1), cc2(n2) ;
 	connected_components(compute_adjacency_list( (perm2 * W * perm2.transpose()).block(0, 0, n1, n1) ),
@@ -353,7 +303,7 @@ n2|  C  |        D          |
 */
 // if we want to apply P1 on P2*W*tP1 : 
 // P1*(P2* W* tP2)* tP1  or  (P1 * P2) * W * t(P1 * P2) so the new permutation is P1*P2
-	perm2 = perm1 * perm2 ;
+	perm2_ = perm1 * perm2_ ;
 
 	printf("Line %d. return true;\n", __LINE__);
 	return true ;
