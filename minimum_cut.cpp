@@ -174,7 +174,9 @@ non null eigenvalues => each corresponds to a cut.
 	double min_Ncut = INT_MAX ;
 	int n1, n2 ;
 
-	for (const auto& {eigenValue, fiedler_vector} : esv | views::filter([](const EigenStruct& es){return &es=&esv[0] || es.eigenValue > EPSILON;}))
+	auto rg = esv | views::filter([](const EigenStruct& es){return &es=&esv[0] || es.eigenValue > EPSILON;});
+
+	for (const auto& {eigenValue, fiedler_vector} : rg)
 	{
 		printf("Line %d. looping on pos in cut_indexes. pos=%d eigenValue=%f\n", __LINE__, pos, eigenValue);
 
