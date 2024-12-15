@@ -159,6 +159,10 @@ bool minimum_cut(const MatrixXd& W,
 	{
 		double eigenValue;
 		VectorXd eigenVector;
+		vector<double> Z_OUT;
+		double Ncut;
+		int n1, n2;
+		PermutationMatrix<Dynamic> perm2;
 	};
 
 	vector<EigenStruct> esv(n);
@@ -171,12 +175,9 @@ non null eigenvalues => each corresponds to a cut.
 */
 	const double EPSILON = pow(10,-6) ;
 
-	double min_Ncut = INT_MAX ;
-	int n1, n2 ;
-
 	auto rg = esv | views::filter([=](const EigenStruct& es){return &es==&esv[0] || es.eigenValue > EPSILON;});
 
-	for (auto& [eigenValue, fiedler_vector] : rg)
+	for (auto& [eigenValue, fiedler_vector, Z_OUT, Ncut, n1, n2, perm2] : rg)
 	{
 		printf("Line %d. looping on pos in cut_indexes. eigenValue=%f\n", __LINE__, eigenValue);
 
@@ -185,9 +186,10 @@ non null eigenvalues => each corresponds to a cut.
 		string jsonFV = JSON_stringify(fv);
 		printf("Line %d. fv=%s\n", __LINE__, jsonFV.c_str());
 
-		int DD=1, K=2, Niter = 100, seed = 14567437496 ;
+		const int DD=1, K=2, Niter = 100, seed = 14567437496 ;
 		const char *initname = "random" ;//either "random" or "plusplus"
-		vector<double> Mu_OUT(K), Z_OUT(n) ;
+		vector<double> Mu_OUT(K);
+		Z_OUT = vector<double>(n) ;
 		RunKMeans(fiedler_vector.data(), n, DD, K, Niter, seed, initname, &Mu_OUT[0], &Z_OUT[0]);
 		n1 = ranges::count(Z_OUT, 1.0) ;
 		n2 = ranges::count(Z_OUT, 0.0) ;
@@ -294,7 +296,7 @@ n2|  C  |        D          |
 		double cut = (perm2 * W * perm2.transpose()).block(0, n1, n1, n2).sum() + (perm2 * W * perm2.transpose()).block(n1, 0, n2, n1).sum() ;
 
 //critere de qualité pour choisir la meilleure cut - Cf Ulrike von Luxburg paragraph 5
-		double Ncut = cut / intra2[0] + cut / intra2[1] ;
+		Ncut = cut / intra2[0] + cut / intra2[1] ;
 		printf("Line %d. Ncut=%f\n", __LINE__, Ncut);
 //penalty to make a small n1 (resp. n2) be taken into account as being added to nr_comp.
 //goal is to make small asymmetric cut less attractive.
@@ -306,15 +308,11 @@ n2|  C  |        D          |
 		const int nr_comp=2; //to be confirmed
 		Ncut = 1.0/(1.0+n1) + 1.0/(1.0+n2) + 1.0*(nr_comp+penalty)/(1.0+n)  ;
 		printf("Line %d. Ncut=%f\n", __LINE__, Ncut);
-		if (Ncut < min_Ncut)
-		{
-			min_Ncut = Ncut ;
-			printf("Line %d. Ncut=%f min_Ncut=%f\n", __LINE__, Ncut, min_Ncut);
-//play again the best at loop end.
-			printf("Line %d. cut_indexes.back() = %d\n", __LINE__, pos);
-			cut_indexes.back() = pos ;
-		}
 	}
+
+	const auto& [eigenValue, fiedler_vector, Z_OUT, Ncut, n1, n2, perm2] = ranges::min(rg, {}, &Ncut);
+
+	printf("Line %d. min(Ncut)=%f\n", __LINE__, Ncut, Ncut);
 
 	if (n1==0 || n2==0)
 	{
