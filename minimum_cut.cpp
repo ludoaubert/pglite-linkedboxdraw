@@ -131,7 +131,7 @@ string serialise(const MatrixXd& W)
 //input: (P1 * W * P1.transpose()).block(0, 0, np, np)
 //output: P2, component_distribution
 bool minimum_cut(const MatrixXd& W, 
-		PermutationMatrix<Dynamic>& perm2_, 
+		PermutationMatrix<Dynamic>& perm2, 
 		vector<int> &component_distribution)
 {
 	string sW = serialise(W);
@@ -210,7 +210,6 @@ non null eigenvalues => each corresponds to a cut.
 		}
 
 //to create a permutation matrix, permute the columns of the identity matrix
-		PermutationMatrix<Dynamic> perm2(n);
 		vector<int> permutation2(n) ;
 		ranges::copy(views::iota(0,n), permutation2.begin()) ;
 		ranges::sort(permutation2, ranges::greater(), [&](int i){return Z_OUT[i];}) ;
@@ -286,13 +285,21 @@ n2|  C  |        D          |
 	component_distribution = vector<int>(nr_comp, 0) ;
 	for (int comp : connected_component)
 		component_distribution[comp]++;
-
+/*
+	vector<int> permutation2(n) ;
+	ranges::copy(views::iota(0,n), permutation2.begin()) ;
+	ranges::sort(permutation2, {}, [&](int i){return Z_OUT[i];}) ;
+	permutation2 = compute_reverse_permutation(permutation2) ;
+	ranges::copy(permutation2, perm2.indices().data()) ;
+*/
 	vector<int> permutation(n) ;
 	ranges::copy(views::iota(0,n), permutation.begin()) ;
 	ranges::sort(permutation, {}, [&](int i){return connected_component[i];}) ;
 	permutation = compute_reverse_permutation(permutation) ;
-	PermutationMatrix<Dynamic> perm1(n) ;
-	ranges::copy(permutation, perm1.indices().data()) ;
+//	PermutationMatrix<Dynamic> perm1(n) ;
+	ranges::copy(permutation, perm2.indices().data()) ;
+
+//	perm2 = perm1 * perm2 ;
 /*
 //output: P1, component_distribution
 	MatrixXd P1 = MatrixXd::Zero(n,n) ;
@@ -303,7 +310,6 @@ n2|  C  |        D          |
 */
 // if we want to apply P1 on P2*W*tP1 : 
 // P1*(P2* W* tP2)* tP1  or  (P1 * P2) * W * t(P1 * P2) so the new permutation is P1*P2
-	perm2_ = perm1 * perm2_ ;
 
 	printf("Line %d. return true;\n", __LINE__);
 	return true ;
