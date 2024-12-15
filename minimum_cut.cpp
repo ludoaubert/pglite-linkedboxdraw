@@ -303,6 +303,7 @@ n2|  C  |        D          |
 			penalty+= abs(n-2*n1) ;
 		if (n2*4 <= n)
 			penalty+= abs(n-2*n2) ;
+		const int nr_comp=2; //to be confirmed
 		Ncut = 1.0/(1.0+n1) + 1.0/(1.0+n2) + 1.0*(nr_comp+penalty)/(1.0+n)  ;
 		printf("Line %d. Ncut=%f\n", __LINE__, Ncut);
 		if (Ncut < min_Ncut)
