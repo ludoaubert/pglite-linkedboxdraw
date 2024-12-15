@@ -144,12 +144,15 @@ n3|     |       |  cc3      |
 
 		if (b)
 		{
+			perm2.block(n_acc, n_acc, np, np) = perm3 + MatrixXd::One(np, np)*n_acc;
+/*
 			std::transform(
 				perm3.indices().data(),
 				perm3.indices().data()+np,
 				perm2.indices().data()+n_acc,
 				[&](int pi){return pi+n_acc;}
 			) ;
+*/
 	//		perm2.block(n_acc, n_acc, np, np) = perm3 ;
 	// if we want to apply P2 on P1*W*tP1 : 
 	// P2*(P1* W* tP1)* tP2  or  (P2 * P1) * W * t(P2 * P1) so the new permutation is P2*P1
