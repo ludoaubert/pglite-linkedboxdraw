@@ -172,8 +172,8 @@ bool minimum_cut(const MatrixXd& W,
 				.Z_OUT = vector<double>(n),
 				.n1=0,
 				.n2=0,
-				.Ncut=0,
-				.Ncut2=0
+				.Ncut=0.0,
+				.Ncut2=0.0
 			};
 
 	ranges::sort(esv, {}, &EigenStruct::eigenValue);
@@ -260,7 +260,7 @@ n2|  C  |        D          |
 		printf("Line %d. Ncut2=%f\n", __LINE__, Ncut2);
 	}
 
-	const auto& [eigenValue, fiedler_vector, Z_OUT, n1, n2, Ncut, Ncut2] = ranges::min(rg, {}, &Ncut2);
+	const auto& [eigenValue, fiedler_vector, Z_OUT, n1, n2, Ncut, Ncut2] = ranges::min(rg, {}, &EigenStruct::Ncut2);
 
 	printf("Line %d. min => Ncut2=%f, NCut=%f\n", __LINE__, Ncut2, Ncut);
 	printf("Line %d. n1=%d, n2=%d\n", __LINE__, n1, n2);
