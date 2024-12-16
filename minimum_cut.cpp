@@ -95,7 +95,7 @@ int max_nb_boxes_per_diagram;
 bool minimum_cut(const string& chemin)
 { 
 	const vector<int> allocated_nodes = allocation
-			| views::filter(const NodeAllocation& na){return na.chemin==chemin;})
+			| views::filter([&](const NodeAllocation& na){return na.chemin==chemin;})
 			| views::transform(&NodeAllocation::i)
 			| ranges::to<vector> ;
 
