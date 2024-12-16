@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <ranges>
 #include <stack>
+#include "minimum_cut.h"
 #include "MPD_Arc.h"
 #include "permutation.h"
 #include "KMeansRexCore.h"
