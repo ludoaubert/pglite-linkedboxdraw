@@ -97,12 +97,12 @@ bool minimum_cut(const string& chemin)
 	const vector<int> allocated_nodes = allocation
 			| views::filter([&](const NodeAllocation& na){return na.chemin==chemin;})
 			| views::transform(&NodeAllocation::i)
-			| ranges::to<vector> ;
+			| ranges::to<vector>() ;
 
 	const allocated_edges = edges
 			| views::filter([&](const MPD_Arc& e){return dense_rank[e._i]!=-1 && dense_rank[e._j]!=-1;})
 			| views::transform([&](const MPD_Arc& e){return MPD_Arc{._i=dense_rank[e._i], ._j=dense_rank[e._j]};}
-			| ranges::to<vector> ;
+			| ranges::to<vector>() ;
 
 	const int n = allocated_nodes.size();
 
