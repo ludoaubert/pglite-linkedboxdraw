@@ -27,10 +27,9 @@ const char* diagram_allocation(int n, //nb boxes
                       int max_nb_boxes_per_diagram,
                       const char* sedges)
 {
-	vector<int> nodes(n);
+	nodes.resize(n);
 	ranges::copy(views::iota(0,n), nodes.begin());
-	
-        vector<MPD_Arc> edges;
+
         int pos = 0;
 	int nn=0;
 	MPD_Arc edge;
@@ -42,167 +41,9 @@ const char* diagram_allocation(int n, //nb boxes
 
 	printf("edges.size()=%zu\n", edges.size());
 
-	MatrixXd W = MatrixXd::Zero(n, n) ;
-	for (const auto& [i, j] : edges)
-	{
-		W(i, j) = W(j, i) = 1.0f ;
-	}
-
-//must be computed from unoriented graph
-	vector<int> connected_component(n, -1) ;
-	connected_components(compute_adjacency_list(W), connected_component) ;
-
-	int nr_comp = 1 + ranges::max(connected_component) ;
-	printf("nr_comp=%d\n", nr_comp);
-	vector<int> component_distribution(nr_comp, 0) ;
-	for (int comp : connected_component)
-		component_distribution[comp]++;
-
+	const string chemin="";
+	rec_minimum_cut(chemin);
 /*
-Matrix P1 * OW * P1.transpose() or P1 * W * P1.transpose()
-    n1      n2       n3
-  +-----+------------------+
-  |     |                   |
-n1| cc1 |                   |
-  +-----+-------+----------+    
-  |     |       |           |
-n2|     |  cc2  |           |
-  |     +-------+----------+
-  |     |       |           |
-n3|     |       |  cc3      |
-  |     |       |           |
-  +-----+-------+----------+
-*/
-//to create a permutation matrix, permute the columns of the identity matrix.
-	vector<int> permutation1(n) ;
-	ranges::copy(views::iota(0,n), permutation1.begin()) ;
-	ranges::sort(permutation1, {}, [&](int i){return connected_component[i];}) ;
-	permutation1 = compute_reverse_permutation(permutation1) ;
-
-	string jsonPermutation1 = JSON_stringify(permutation1);
-	printf("permutation1=%s\n", jsonPermutation1.c_str());
-	
-	PermutationMatrix<Dynamic> perm1(n) ;
-	ranges::copy(permutation1, perm1.indices().data()) ;
-
-	Matrix<int8_t,-1,-1> OW = Matrix<int8_t,-1,-1>::Zero(n, n) ;	//Oriented Weights
-
-	for (const auto& [i, j] : edges)
-	{
-		OW(i, j) = 1 ;
-	}
-
-	vector<int> fan_in(n, 0) ;
-	for (const auto& [i, j] : edges)
-	{
-		fan_in[j] ++ ;
-	}
-	MatrixXd WW = MatrixXd::Zero(n, n) ;
-	for (const auto& [i, j] : edges)
-	{
-		double value = 1.0f / fan_in[j] ;
-		WW(i, j) = WW(j, i) = value ;
-	}
-
-	struct Context
-	{
-		vector<int> nodes;
-		vector<vector<MPD_Arc> > adjacency_list;
-	};
-
-	vector<Context> contexts;
-	
-	int n_acc = 0 ;
-	int* pnp;
-	bool b=true;
-	
-	while (b && (pnp = &*ranges::max_element(component_distribution)) && *pnp > max_nb_boxes_per_diagram)
-	{
-		int np = *pnp;
-		int i=std::distance(&component_distribution[0], pnp);
-		auto rg = component_distribution | views::take(i) ;
-		int n_acc = std::accumulate(rg.begin(), rg.end(), 0);
-		printf("n_acc=%d\n", n_acc);
-		string jsonComponentDistrib = JSON_stringify(component_distribution);
-		printf("component_distribution=%s\n", jsonComponentDistrib.c_str());
-		printf("np=%d\n", np);
-		printf("i=%d\n", i);
-
-//keep on cutting
-		PermutationMatrix<Dynamic> perm2(n), perm3(np) ;
-		perm2.setIdentity() ;
-		vector<int> sub_component_distribution ;
-
-		b = minimum_cut(
-				(perm1 * WW * perm1.transpose()).block(n_acc, n_acc, np, np),
-				perm3,
-				sub_component_distribution
-			) ;
-
-		string jsonSubComponentDistrib = JSON_stringify(sub_component_distribution);
-		printf("sub_component_distribution=%s\n", jsonSubComponentDistrib.c_str());
-
-		if (b)
-		{
-			perm2.block(n_acc, n_acc, np, np) = perm3 * MatrixXd::Identity(np, np)*n_acc;//TODO: faux!!!
-
-	// if we want to apply P2 on P1*W*tP1 : 
-	// P2*(P1* W* tP1)* tP2  or  (P2 * P1) * W * t(P2 * P1) so the new permutation is P2*P1
-			perm1 = perm2 * perm1 ;
-//TODO: use views::concat
-/*
-	component_stribution = views::concat(component_distribution | views::take(i), 
- 					sub_component_distribution, 
-      					component_distribution | views::drop(i+1)
-	   				) | ranges::to<vector<int> >();
-*/
-			vector<int> v;
-			for (int a : component_distribution | views::take(i))
-				v.push_back(a);
-			for (int a : sub_component_distribution)
-				v.push_back(a);
-			for (int a : component_distribution | views::drop(i+1))
-				v.push_back(a);
-			component_distribution = v;
-/*
-			component_distribution.erase(component_distribution.begin()+i) ;
-			component_distribution.insert(component_distribution.begin()+i, 
-								sub_component_distribution.begin(), 
-								sub_component_distribution.end()) ;
-*/
-			string jsonComponentDistrib = JSON_stringify(component_distribution);
-			printf("component_distribution=%s\n", jsonComponentDistrib.c_str());
-		}
-	}
-
-	vector<int> single_nodes ;
-
-	n_acc=0 ;
-	for (int np : component_distribution)
-	{
-		vector<vector<MPD_Arc> > my_adjacency_list = compute_adjacency_list_( (perm1 * OW * perm1.transpose()).block(n_acc, n_acc, np, np)) ;
-		vector<int> my_nodes(np) ;
-/*
-A * perm : permute columns
-perm * A : permute rows
-*/
-		Map<MatrixXi>(my_nodes.data(), np,1) = (perm1 * Map<MatrixXi>(nodes.data(), n,1)).block(n_acc, 0, np, 1) ;
-
-		if (np != 1)
-		{
-			Context ctx ;
-			ctx.nodes = my_nodes ;
-			ctx.adjacency_list = my_adjacency_list ;
-			contexts.push_back(ctx) ;
-		}
-		else
-		{
-			single_nodes.push_back(my_nodes[0] ) ;
-		}
-
-		n_acc += np ;
-	}
-
 	if (!single_nodes.empty())
 	{
 		Context ctx ;
@@ -210,10 +51,10 @@ perm * A : permute rows
 		ctx.adjacency_list.resize(ctx.nodes.size()) ;
 		contexts.push_back(ctx) ;
 	}
-
+*/
 	int printpos=0;
 	static char buffer[100000];
-
+/*
 	printpos += sprintf(buffer + printpos, "[\n");
 
 	for (int contextIndex=0; contextIndex < contexts.size(); contextIndex++)
@@ -225,7 +66,7 @@ perm * A : permute rows
 		}
 	}
 	printpos += sprintf(buffer + printpos -1, "]\n");
-	
+*/
 	return buffer;
 }
 }//extern "C"
