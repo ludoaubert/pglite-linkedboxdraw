@@ -93,11 +93,19 @@ int max_nb_boxes_per_diagram;
 
 
 bool minimum_cut(const string& chemin)
-{ 
+{
+	vector<int> dense_rank(nodes.size(), -1);
+	
 	const vector<int> allocated_nodes = allocation
 			| views::filter([&](const NodeAllocation& na){return na.chemin==chemin;})
 			| views::transform(&NodeAllocation::i)
 			| ranges::to<vector>() ;
+
+	for (int j=0; j < allocated_nodes.size(); j++)
+	{
+		const auto [i, chemin] = allocated_nodes[j];
+		dense_rank[i] = j;
+	}
 
 	const allocated_edges = edges
 			| views::filter([&](const MPD_Arc& e){return dense_rank[e._i]!=-1 && dense_rank[e._j]!=-1;})
