@@ -19,52 +19,6 @@ using namespace std ;
 using namespace std::ranges;
 using namespace Eigen ;
 
-vector<vector<MPD_Arc> > compute_adjacency_list_(const Matrix<int8_t,-1,-1>& OW)
-{
-	assert(OW.rows() == OW.cols()) ;
-
-	int n = OW.rows() ;
-
-	vector<vector<MPD_Arc> > adjacency_list(n) ;
-
-	for (int i=0; i < n; i++)
-	{
-		for (int j=0; j < n; j++)
-		{
-                        if (OW(i,j) == 0)
-				continue ;
-			adjacency_list[i].push_back(MPD_Arc{i,j}) ;
-		}
-	}
-
-	return adjacency_list ;
-}
-
-
-vector<vector<MPD_Arc> > compute_adjacency_list(const MatrixXd& OW)
-{
-	assert(OW.rows() == OW.cols()) ;
-
-	int n = OW.rows() ;
-
-	vector<vector<MPD_Arc> > adjacency_list(n) ;
-
-	for (int i=0; i < n; i++)
-	{
-		for (int j=0; j < n; j++)
-		{
-			double val = OW(i,j) ;
-			if (OW(i,j) == 0.0f)
-				continue ;
-			MPD_Arc a ;
-			a._i = i ;
-			a._j = j ;
-			adjacency_list[a._i].push_back(a) ;
-		}
-	}
-
-	return adjacency_list ;
-}
 
 //must be computed from unoriented graph
 void connected_components(const vector<vector<MPD_Arc> >& adjacency_list,
@@ -130,51 +84,36 @@ string serialise(const MatrixXd& W)
 
 struct NodeAllocation{
 	int i;
-	string chemin ; //example : "01.02.01"
+	string chemin ; //example : ".01.02.01"
 };
 //Input
 vector<int> nodes ;
 vector<MPD_Arc> edges ;
 //Output
 vector<NodeAllocation> allocation;
-int 
+int max_nb_boxes_per_diagram;
 
-void rec_min_cut(const string& chemin)
-{
-	const int n = nodes.size();
-	vector<int> dense_rank(n, -1);
-	if (chemin = "")
-	{
-		for (int i : views::iota(0,n))
-			dense_rank[i]=i;
-	}
-	else
-	{
-		const vector<int> allocated_nodes = allocation
+
+bool minimum_cut(const string& chemin)
+{ 
+	const vector<int> allocated_nodes = allocation
 			| views::filter(const NodeAllocation& na){return na.chemin==chemin;})
 			| views::transform(&NodeAllocation::i)
 			| ranges::to<vector> ;
-		
-		for (int j=0; j < allocated_nodes.size(); j++)
-		{
-			const auto [i, chemin] = allocated_nodes[j];
-			dense_rank[i] = j;
-		}
 
-		const allocated_edges = edges
+	const allocated_edges = edges
 			| views::filter([&](const MPD_Arc& e){return dense_rank[e._i]!=-1 && dense_rank[e._j]!=-1;})
 			| views::transform([&](const MPD_Arc& e){return MPD_Arc{._i=dense_rank[e._i], ._j=dense_rank[e._j]};}
 			| ranges::to<vector> ;
+
+	const int n = allocated_nodes.size();
+
+	MatrixXd W = MatrixXd::Zero(n, n) ;
+	for (const auto& [i, j] : allocated_edges)
+	{
+		W(i, j) = W(j, i) = 1.0f ;
 	}
-}
-
-
-//input: (P1 * W * P1.transpose()).block(0, 0, np, np)
-//output: P2, component_distribution
-bool minimum_cut(const MatrixXd& W, 
-		PermutationMatrix<Dynamic>& perm2, 
-		vector<int> &component_distribution)
-{
+	
 	string sW = serialise(W);
 	printf("Line %d. W=%s\n", __LINE__, sW.c_str());
 
@@ -251,6 +190,7 @@ non null eigenvalues => each corresponds to a cut.
 		}
 
 //to create a permutation matrix, permute the columns of the identity matrix
+		PermutationMatrix<Dynamic> perm2(n) ;
 		vector<int> permutation2(n) ;
 		ranges::copy(views::iota(0,n), permutation2.begin()) ;
 		ranges::sort(permutation2, ranges::greater(), [&](int i){return Z_OUT[i];}) ;
@@ -323,35 +263,64 @@ n2|  C  |        D          |
 	ranges::copy(cc2, back_inserter(connected_component)) ;
 	int nr_comp = 1 + ranges::max(connected_component) ;
 	printf("Line %d. nr_comp=%d\n", __LINE__, nr_comp);
-	component_distribution = vector<int>(nr_comp, 0) ;
-	for (int comp : connected_component)
-		component_distribution[comp]++;
-/*
-	vector<int> permutation2(n) ;
-	ranges::copy(views::iota(0,n), permutation2.begin()) ;
-	ranges::sort(permutation2, {}, [&](int i){return Z_OUT[i];}) ;
-	permutation2 = compute_reverse_permutation(permutation2) ;
-	ranges::copy(permutation2, perm2.indices().data()) ;
-*/
-	vector<int> permutation(n) ;
-	ranges::copy(views::iota(0,n), permutation.begin()) ;
-	ranges::sort(permutation, {}, [&](int i){return connected_component[i];}) ;
-	permutation = compute_reverse_permutation(permutation) ;
-//	PermutationMatrix<Dynamic> perm1(n) ;
-	ranges::copy(permutation, perm2.indices().data()) ;
 
-//	perm2 = perm1 * perm2 ;
-/*
-//output: P1, component_distribution
-	MatrixXd P1 = MatrixXd::Zero(n,n) ;
-	for (int i=0 ; i < n; i++)
+	for (int c : views::iota(0, nr_comp))
 	{
-		P1(permutation[i], i) = 1.0f ;
+		char suffix[4] ;
+		for (int i=0; i<n; i++)
+		{
+			int c = connected_component[i];
+			sprintf(".%02d", c);
+			allocation.push_back(NodeAllocation{.i=allocated_nodes[i], .chemin=chemin+suffix});
+		}
+//	string chemin ; //example : "01.02.01"
 	}
-*/
-// if we want to apply P1 on P2*W*tP1 : 
-// P1*(P2* W* tP2)* tP1  or  (P1 * P2) * W * t(P1 * P2) so the new permutation is P1*P2
 
 	printf("Line %d. return true;\n", __LINE__);
 	return true ;
+}
+
+
+void rec_min_cut(const string& chemin)
+{
+	const int n = nodes.size();
+	vector<int> dense_rank(n, -1);
+	if (chemin = "")
+	{
+		for (int i : views::iota(0,n))
+			dense_rank[i]=i;
+	}
+	else
+	{
+		const vector<int> allocated_nodes = allocation
+			| views::filter(const NodeAllocation& na){return na.chemin==chemin;})
+			| views::transform(&NodeAllocation::i)
+			| ranges::to<vector> ;
+		
+		for (int j=0; j < allocated_nodes.size(); j++)
+		{
+			const auto [i, chemin] = allocated_nodes[j];
+			dense_rank[i] = j;
+		}
+
+		const allocated_edges = edges
+			| views::filter([&](const MPD_Arc& e){return dense_rank[e._i]!=-1 && dense_rank[e._j]!=-1;})
+			| views::transform([&](const MPD_Arc& e){return MPD_Arc{._i=dense_rank[e._i], ._j=dense_rank[e._j]};}
+			| ranges::to<vector> ;
+
+		minimum_cut(allocated_nodes, allocated_edges, chemin);
+
+		for (int i : views::iota(0, 10))
+		{
+			char suffix[4];
+			sprintf(suffix, ".%02d", i);
+			const string subchemin = chemin + suffix;
+
+			const auto rg = allocation
+					| views::filter(const NodeAllocation& na){return na.chemin==subchemin;}) ;
+			
+			if (rg.size() > max_nb_boxes_per_diagram)
+				rec_minimum_cut(chemin + suffix);
+		}
+	}
 }
