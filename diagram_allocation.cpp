@@ -41,6 +41,11 @@ const char* diagram_allocation(int n, //nb boxes
 
 	printf("edges.size()=%zu\n", edges.size());
 
+	allocation.clear();
+	
+	for (int i=0; i<n; i++)
+		allocation.push_back(NodeAllocation{.i=i, .chemin=""});
+	
 	const string chemin="";
 	rec_minimum_cut(chemin);
 /*
