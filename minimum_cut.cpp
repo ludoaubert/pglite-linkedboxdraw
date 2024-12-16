@@ -291,42 +291,34 @@ void rec_min_cut(const string& chemin)
 {
 	const int n = nodes.size();
 	vector<int> dense_rank(n, -1);
-	if (chemin = "")
-	{
-		for (int i : views::iota(0,n))
-			dense_rank[i]=i;
-	}
-	else
-	{
-		const vector<int> allocated_nodes = allocation
+	
+	const vector<int> allocated_nodes = allocation
 			| views::filter(const NodeAllocation& na){return na.chemin==chemin;})
 			| views::transform(&NodeAllocation::i)
 			| ranges::to<vector> ;
 		
-		for (int j=0; j < allocated_nodes.size(); j++)
-		{
-			const auto [i, chemin] = allocated_nodes[j];
-			dense_rank[i] = j;
-		}
+	for (int j=0; j < allocated_nodes.size(); j++)
+	{
+		const auto [i, chemin] = allocated_nodes[j];
+		dense_rank[i] = j;
+	}
 
-		const allocated_edges = edges
+	const allocated_edges = edges
 			| views::filter([&](const MPD_Arc& e){return dense_rank[e._i]!=-1 && dense_rank[e._j]!=-1;})
 			| views::transform([&](const MPD_Arc& e){return MPD_Arc{._i=dense_rank[e._i], ._j=dense_rank[e._j]};}
 			| ranges::to<vector> ;
 
-		minimum_cut(allocated_nodes, allocated_edges, chemin);
+	minimum_cut(allocated_nodes, allocated_edges, chemin);
 
-		for (int i : views::iota(0, 10))
-		{
-			char suffix[4];
-			sprintf(suffix, ".%02d", i);
-			const string subchemin = chemin + suffix;
-
-			const auto rg = allocation
+	for (int i : views::iota(0, 10))
+	{
+		char suffix[4];
+		sprintf(suffix, ".%02d", i);
+		const string subchemin = chemin + suffix;
+		const auto rg = allocation
 					| views::filter(const NodeAllocation& na){return na.chemin==subchemin;}) ;
 			
-			if (rg.size() > max_nb_boxes_per_diagram)
-				rec_minimum_cut(chemin + suffix);
-		}
+		if (rg.size() > max_nb_boxes_per_diagram)
+			rec_minimum_cut(chemin + suffix);
 	}
 }
