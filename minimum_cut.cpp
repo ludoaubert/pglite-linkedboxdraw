@@ -128,6 +128,47 @@ string serialise(const MatrixXd& W)
 	return buffer.str();
 }
 
+struct NodeAllocation{
+	int i;
+	string chemin ; //example : "01.02.01"
+};
+//Input
+vector<int> nodes ;
+vector<MPD_Arc> edges ;
+//Output
+vector<NodeAllocation> allocation;
+int 
+
+void rec_min_cut(const string& chemin)
+{
+	const int n = nodes.size();
+	vector<int> dense_rank(n, -1);
+	if (chemin = "")
+	{
+		for (int i : views::iota(0,n))
+			dense_rank[i]=i;
+	}
+	else
+	{
+		const vector<int> allocated_nodes = allocation
+			| views::filter(const NodeAllocation& na){return na.chemin==chemin;})
+			| views::transform(&NodeAllocation::i)
+			| ranges::to<vector> ;
+		
+		for (int j=0; j < allocated_nodes.size(); j++)
+		{
+			const auto [i, chemin] = allocated_nodes[j];
+			dense_rank[i] = j;
+		}
+
+		const allocated_edges = edges
+			| views::filter([&](const MPD_Arc& e){return dense_rank[e._i]!=-1 && dense_rank[e._j]!=-1;})
+			| views::transform([&](const MPD_Arc& e){return MPD_Arc{._i=dense_rank[e._i], ._j=dense_rank[e._j]};}
+			| ranges::to<vector> ;
+	}
+}
+
+
 //input: (P1 * W * P1.transpose()).block(0, 0, np, np)
 //output: P2, component_distribution
 bool minimum_cut(const MatrixXd& W, 
