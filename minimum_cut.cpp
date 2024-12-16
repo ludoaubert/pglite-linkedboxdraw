@@ -82,10 +82,7 @@ string serialise(const MatrixXd& W)
 	return buffer.str();
 }
 
-struct NodeAllocation{
-	int i;
-	string chemin ; //example : ".01.02.01"
-};
+
 //Input
 vector<int> nodes ;
 vector<MPD_Arc> edges ;
