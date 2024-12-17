@@ -339,10 +339,11 @@ void rec_min_cut(const string& chemin)
 		dense_rank[i] = j;
 	}
 
-	const allocated_edges = edges
+	auto rg2 = edges
 			| views::filter([&](const MPD_Arc& e){return dense_rank[e._i]!=-1 && dense_rank[e._j]!=-1;})
-			| views::transform([&](const MPD_Arc& e){return MPD_Arc{._i=dense_rank[e._i], ._j=dense_rank[e._j]};}
-			| ranges::to<vector> ;
+			| views::transform([&](const MPD_Arc& e){return MPD_Arc{._i=dense_rank[e._i], ._j=dense_rank[e._j]};});
+	vector<MPD_Arc> allocated_edges(std::distance(rg2.begin(), rg2.end()));
+	ranges::copy(rg2, &allocated_edges[0]);
 
 	minimum_cut(allocated_nodes, allocated_edges, chemin);
 
