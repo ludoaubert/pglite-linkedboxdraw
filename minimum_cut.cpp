@@ -326,12 +326,13 @@ void rec_min_cut(const string& chemin)
 {
 	minimum_cut(chemin);
 
+	char suffix[4];
+
 	for (int i : views::iota(0, 10))
 	{
-		char suffix[4];
 		sprintf(suffix, ".%02d", i);
 		const string subchemin = chemin + suffix;
-		const auto rg = allocation
+		auto rg = allocation
 					| views::filter([&](const NodeAllocation& na){return na.chemin==subchemin;}) ;
 		const int n = std::distance(rg.begin(), rg.end());
 			
