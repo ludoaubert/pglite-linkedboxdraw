@@ -129,7 +129,7 @@ int minimum_cut(const string& chemin)
 	vector<int> allocated_nodes(std::distance(rg1.begin(), rg1.end()));
 	ranges::copy(rg1, &allocated_nodes[0]);
 
-	if (allocated_nodes.size() < max_nb_boxes_per_diagram)
+	if (allocated_nodes.size() <= max_nb_boxes_per_diagram)
 		return 0;
 	
 	for (int j=0; j < allocated_nodes.size(); j++)
