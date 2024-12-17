@@ -333,8 +333,9 @@ void rec_min_cut(const string& chemin)
 		const string subchemin = chemin + suffix;
 		const auto rg = allocation
 					| views::filter([&](const NodeAllocation& na){return na.chemin==subchemin;}) ;
+		const int n = std::distance(rg.begin(), rg.end());
 			
-		if (rg.size() > max_nb_boxes_per_diagram)
+		if (n > max_nb_boxes_per_diagram)
 			rec_minimum_cut(chemin + suffix);
 	}
 }
