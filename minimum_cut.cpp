@@ -311,7 +311,7 @@ n2|  C  |        D          |
 		for (int i=0; i<n; i++)
 		{
 			int c = connected_component[i];
-			sprintf(".%02d", c);
+			sprintf(suffix, ".%02d", c);
 			allocation.push_back(NodeAllocation{.i=allocated_nodes[i], .chemin=chemin+suffix});
 		}
 //	string chemin ; //example : "01.02.01"
