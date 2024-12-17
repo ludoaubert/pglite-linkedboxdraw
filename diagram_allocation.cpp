@@ -51,8 +51,6 @@ const char* diagram_allocation(int n, //nb boxes
 	max_nb_boxes_per_diagram = max_nb_boxes_per_diagram_;
 	const string chemin="";
 	rec_minimum_cut(chemin);
- 
-			sprintf(buffer,"{\"i\"=%d, \"chemin\"=\"%s\"}", a.i, a.chemin); 
 
 	int printpos=0;
 	static char buffer[100000];
