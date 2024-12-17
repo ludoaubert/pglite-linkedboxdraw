@@ -91,26 +91,31 @@ vector<MPD_Arc> edges ;
 vector<NodeAllocation> allocation;
 int max_nb_boxes_per_diagram;
 
-
+//TODO: use C++23 ranges::to<vector>()
 bool minimum_cut(const string& chemin)
 {
 	vector<int> dense_rank(nodes.size(), -1);
-	
-	const vector<int> allocated_nodes = allocation
+
+	auto rg1 = allocation
 			| views::filter([&](const NodeAllocation& na){return na.chemin==chemin;})
 			| views::transform(&NodeAllocation::i)
 			| ranges::to<vector>() ;
 
+	vector<int> allocated_nodes(rg1.size());
+	ranges::copy(rg1, allocated_nodes)
+	
 	for (int j=0; j < allocated_nodes.size(); j++)
 	{
 		const auto [i, chemin] = allocated_nodes[j];
 		dense_rank[i] = j;
 	}
 
-	const allocated_edges = edges
+	auto rg2 = edges
 			| views::filter([&](const MPD_Arc& e){return dense_rank[e._i]!=-1 && dense_rank[e._j]!=-1;})
 			| views::transform([&](const MPD_Arc& e){return MPD_Arc{._i=dense_rank[e._i], ._j=dense_rank[e._j]};}
 			| ranges::to<vector>() ;
+	vector<MPD_Arc> allocated_edges(rg2.size());
+	ranges::copy(rg2, allocated_edges);
 
 	const int n = allocated_nodes.size();
 
