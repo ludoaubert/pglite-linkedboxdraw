@@ -59,7 +59,7 @@ const char* diagram_allocation(int n, //nb boxes
 
 	for (const auto [i, chemin] : allocation)
 	{
-		printpos += sprintf(buffer + printpos, "\n{\"id\":%d, \"chemin\":%d},", i, chemin.c_str());
+		printpos += sprintf(buffer + printpos, "\n{\"id\":%d, \"chemin\":\"%s\"},", i, chemin.c_str());
 	}
 	printpos += sprintf(buffer + printpos -1, "]\n");
 
