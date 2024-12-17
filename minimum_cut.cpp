@@ -322,7 +322,7 @@ n2|  C  |        D          |
 }
 
 
-void rec_min_cut(const string& chemin)
+void rec_minimum_cut(const string& chemin)
 {
 	const int nr_comp = minimum_cut(chemin);
 
