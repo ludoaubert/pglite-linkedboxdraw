@@ -104,7 +104,7 @@ bool minimum_cut(const string& chemin)
 	
 	for (int j=0; j < allocated_nodes.size(); j++)
 	{
-		const auto [i, chemin] = allocated_nodes[j];
+		const int i = allocated_nodes[j];
 		dense_rank[i] = j;
 	}
 
