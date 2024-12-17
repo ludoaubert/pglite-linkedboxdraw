@@ -24,12 +24,14 @@ using namespace std::ranges;
 //interface for emscripten wasm
 extern "C" {
 const char* diagram_allocation(int n, //nb boxes
-                      int max_nb_boxes_per_diagram,
+                      int max_nb_boxes_per_diagram_,
                       const char* sedges)
 {
 	nodes.resize(n);
 	ranges::copy(views::iota(0,n), nodes.begin());
 
+	edges.clear();
+	
         int pos = 0;
 	int nn=0;
 	MPD_Arc edge;
@@ -45,18 +47,17 @@ const char* diagram_allocation(int n, //nb boxes
 	
 	for (int i=0; i<n; i++)
 		allocation.push_back(NodeAllocation{.i=i, .chemin=""});
-	
+
+	max_nb_boxes_per_diagram = max_nb_boxes_per_diagram_;
 	const string chemin="";
 	rec_minimum_cut(chemin);
-/*
-	if (!single_nodes.empty())
-	{
-		Context ctx ;
-		ctx.nodes = single_nodes ;
-		ctx.adjacency_list.resize(ctx.nodes.size()) ;
-		contexts.push_back(ctx) ;
-	}
-*/
+
+	string jsonAllocationRaw = allocation | 
+		views::transform([](const NodeAllocation& a){
+			char buffer[68]; 
+			sprintf(buffer,"{\"i\"=%d, \"chemin\"=\"%s\"}", a.i, a.chemin); 
+			return buffer;
+		}) |
 	int printpos=0;
 	static char buffer[100000];
 /*
