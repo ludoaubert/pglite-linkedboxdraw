@@ -257,6 +257,14 @@ n2|  C  |        D          |
 		return false ;
 	}
 
+//to create a permutation matrix, permute the columns of the identity matrix
+	PermutationMatrix<Dynamic> perm2(n) ;
+	vector<int> permutation2(n) ;
+	ranges::copy(views::iota(0,n), permutation2.begin()) ;
+	ranges::sort(permutation2, ranges::greater(), [&](int i){return Z_OUT[i];}) ;
+	permutation2 = compute_reverse_permutation(permutation2) ;
+	ranges::copy(permutation2, perm2.indices().data()) ;
+
 	vector<int> cc1(n1), cc2(n2) ;
 	connected_components(compute_adjacency_list( (perm2 * W * perm2.transpose()).block(0, 0, n1, n1) ),
 						  cc1) ;
