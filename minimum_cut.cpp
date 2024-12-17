@@ -331,7 +331,7 @@ void rec_min_cut(const string& chemin)
 			| views::filter([&](const NodeAllocation& na){return na.chemin==chemin;})
 			| views::transform(&NodeAllocation::i) ;
 	vector<int> allocated_nodes(std::distance(rg1.begin(), rg1.end()));
-	ranges::copy(rg1, &[allocated_nodes[0]);
+	ranges::copy(rg1, &allocated_nodes[0]);
 		
 	for (int j=0; j < allocated_nodes.size(); j++)
 	{
