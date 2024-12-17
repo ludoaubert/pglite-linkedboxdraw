@@ -51,28 +51,20 @@ const char* diagram_allocation(int n, //nb boxes
 	max_nb_boxes_per_diagram = max_nb_boxes_per_diagram_;
 	const string chemin="";
 	rec_minimum_cut(chemin);
-
-	string jsonAllocationRaw = allocation | 
-		views::transform([](const NodeAllocation& a){
-			char buffer[68]; 
+ 
 			sprintf(buffer,"{\"i\"=%d, \"chemin\"=\"%s\"}", a.i, a.chemin); 
-			return buffer;
-		}) |
+
 	int printpos=0;
 	static char buffer[100000];
-/*
+
 	printpos += sprintf(buffer + printpos, "[\n");
 
-	for (int contextIndex=0; contextIndex < contexts.size(); contextIndex++)
+	for (const auto [i, chemin] : allocation)
 	{
-		const Context& ctx = contexts[contextIndex];
-		for (const int& i : ctx.nodes)
-		{
-			printpos += sprintf(buffer + printpos, "\n{\"id\":%d, \"context\":%d},", i, contextIndex);
-		}
+		printpos += sprintf(buffer + printpos, "\n{\"id\":%d, \"chemin\":%d},", i, chemin.c_str());
 	}
 	printpos += sprintf(buffer + printpos -1, "]\n");
-*/
+
 	return buffer;
 }
 }//extern "C"
@@ -80,9 +72,9 @@ const char* diagram_allocation(int n, //nb boxes
 int main(int argc, char* argv[])
 {
 	const int n = 68;  //nb boxes
-	const int max_nb_boxes_per_diagram = 20;
+	const int max_nb_boxes_per_diagram_ = 20;
 	const char* sedges = "00200700302300301b00400500502300600200803c00801500901b00a01b00b01300c02300d01b00e00f00f01301001101101b01302301402301501801902301901b01a01b01b03701b02c01c01b01e01b02001b02101102202602201102402302502802602302702302802402902302a02302b02302f02303001a03102803200503303203302803403503403003601b03703803803703903703902303b03703d00803e03c03f01b040013041043041008043023";
-	const char* jsonAllocation = diagram_allocation(n, max_nb_boxes_per_diagram, sedges);
+	const char* jsonAllocation = diagram_allocation(n, max_nb_boxes_per_diagram_, sedges);
 	printf("%s", jsonAllocation);
 }
 
