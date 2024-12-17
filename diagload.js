@@ -131,15 +131,20 @@ async function data2contexts() {
  			SELECT id+1 AS idrectangle, chemin, COUNT(*) OVER (PARTITION BY chemin) AS nb
    			FROM json_to_recordset('${jsonAllocation}') AS alloc("id" int, "chemin" text)
       		), cte2 AS (
+			SELECT a.*
+   			FROM cte a
+      			LEFT JOIN cte b ON LENGTH(b.chemin) > LENGTH(a.chemin) AND LEFT(b.chemin, LENGTH(a.chemin))=a.chemin
+ 			WHERE b.chemin IS NULL
+		), cte3 AS (
 			SELECT idrectangle, CASE WHEN nb=1 THEN '99.99' ELSE chemin END AS chemin, nb
-  			FROM cte
-     		), cte3 AS (
+  			FROM cte2
+     		), cte4 AS (
        			SELECT idrectangle, chemin, nb, DENSE_RANK() OVER (ORDER BY chemin) AS context
-	 		FROM cte2
+	 		FROM cte3
     		)
       		INSERT INTO translation(idrectangle, context, x, y)
      		SELECT idrectangle, context, NULL AS x, NULL AS y
-       		FROM cte3
+       		FROM cte4
  	`);
 
 	console.log(ret3);
