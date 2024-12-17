@@ -125,11 +125,21 @@ async function data2contexts() {
 	const jsonAllocation = diagram_allocation(n, max_nb_boxes_per_diagram, slinks);
 
 	console.log(jsonAllocation);
-	
+
 	const ret3 = await db.query(`
- 		INSERT INTO translation(idrectangle, context, x, y)
-     		SELECT id+1 AS idrectangle, context+1 AS context, NULL AS x, NULL AS y
-  		FROM json_to_recordset('${jsonAllocation}') AS alloc("id" int, "context" int)
+ 		WITH cte AS (
+ 			SELECT id+1 AS idrectangle, chemin, COUNT(*) OVER (PARTITION BY chemin) AS nb
+   			FROM json_to_recordset('${jsonAllocation}') AS alloc("id" int, "chemin" text)
+      		), cte2 AS (
+			SELECT idrectangle, CASE WHEN nb=1 THEN '99.99' ELSE chemin END AS chemin, nb
+  			FROM cte
+     		), cte3 AS (
+       			SELECT idrectangle, chemin, nb, DENSE_RANK() OVER (ORDER BY chemin) AS context
+	 		FROM cte2
+    		)
+      		INSERT INTO translation(idrectangle, context, x, y)
+     		SELECT idrectangle, context, NULL AS x, NULL AS y
+       		FROM cte3
  	`);
 
 	console.log(ret3);
