@@ -326,15 +326,16 @@ void rec_min_cut(const string& chemin)
 {
 	const int n = nodes.size();
 	vector<int> dense_rank(n, -1);
-	
-	const vector<int> allocated_nodes = allocation
-			| views::filter(const NodeAllocation& na){return na.chemin==chemin;})
-			| views::transform(&NodeAllocation::i)
-			| ranges::to<vector> ;
+
+	auto rg1 = allocation
+			| views::filter([&](const NodeAllocation& na){return na.chemin==chemin;})
+			| views::transform(&NodeAllocation::i) ;
+	vector<int> allocated_nodes(std::distance(rg1.begin(), rg1.end());
+	ranges::copy(rg1, &[allocated_nodes[0]);
 		
 	for (int j=0; j < allocated_nodes.size(); j++)
 	{
-		const auto [i, chemin] = allocated_nodes[j];
+		const int i = allocated_nodes[j];
 		dense_rank[i] = j;
 	}
 
