@@ -99,7 +99,7 @@ bool minimum_cut(const string& chemin)
 	auto rg1 = allocation
 			| views::filter([&](const NodeAllocation& na){return na.chemin==chemin;})
 			| views::transform(&NodeAllocation::i) ;
-	vector<int> allocated_nodes(rg1.size());
+	vector<int> allocated_nodes(std::distance(rg1.begin(), rg1.end()));
 	ranges::copy(rg1, allocated_nodes)
 	
 	for (int j=0; j < allocated_nodes.size(); j++)
@@ -111,7 +111,7 @@ bool minimum_cut(const string& chemin)
 	auto rg2 = edges
 			| views::filter([&](const MPD_Arc& e){return dense_rank[e._i]!=-1 && dense_rank[e._j]!=-1;})
 			| views::transform([&](const MPD_Arc& e){return MPD_Arc{._i=dense_rank[e._i], ._j=dense_rank[e._j]};});
-	vector<MPD_Arc> allocated_edges(rg2.size());
+	vector<MPD_Arc> allocated_edges(std::distance(rg2.begin(), rg2.end()));
 	ranges::copy(rg2, allocated_edges);
 
 	const int n = allocated_nodes.size();
