@@ -9,11 +9,11 @@
 #include <algorithm>
 #include <ranges>
 #include <stack>
+#include <string>
 #include "minimum_cut.h"
 #include "MPD_Arc.h"
 #include "permutation.h"
 #include "KMeansRexCore.h"
-#include "index_from.h"
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
 using namespace std ;
@@ -124,8 +124,6 @@ bool minimum_cut(const string& chemin)
 	
 	string sW = serialise(W);
 	printf("Line %d. W=%s\n", __LINE__, sW.c_str());
-
-	int n = W.rows() ;
 
 	MatrixXd D = W.rowwise().sum().asDiagonal() ;
 
