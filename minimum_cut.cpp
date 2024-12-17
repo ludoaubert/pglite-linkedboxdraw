@@ -119,7 +119,7 @@ vector<NodeAllocation> allocation;
 int max_nb_boxes_per_diagram;
 
 //TODO: use C++23 ranges::to<vector>()
-bool minimum_cut(const string& chemin)
+int minimum_cut(const string& chemin)
 {
 	vector<int> dense_rank(nodes.size(), -1);
 
@@ -318,19 +318,19 @@ n2|  C  |        D          |
 	}
 
 	printf("Line %d. return true;\n", __LINE__);
-	return true ;
+	return nr_comp ;
 }
 
 
 void rec_min_cut(const string& chemin)
 {
-	minimum_cut(chemin);
+	const int nr_comp = minimum_cut(chemin);
 
 	char suffix[4];
 
-	for (int i : views::iota(0, 10))
+	for (int c : views::iota(0, nr_comp))
 	{
-		sprintf(suffix, ".%02d", i);
+		sprintf(suffix, ".%02d", c);
 		const string subchemin = chemin + suffix;
 		auto rg = allocation
 					| views::filter([&](const NodeAllocation& na){return na.chemin==subchemin;}) ;
