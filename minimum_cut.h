@@ -19,5 +19,5 @@ std::string JSON_stringify(const std::vector<int>& v);
 
 std::string JSON_stringify(const std::vector<double>& v);
 
-bool rec_minimum_cut(const std::string &chemin);
+void rec_minimum_cut(const std::string &chemin);
 
