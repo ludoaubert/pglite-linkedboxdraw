@@ -332,7 +332,7 @@ void rec_min_cut(const string& chemin)
 		sprintf(suffix, ".%02d", i);
 		const string subchemin = chemin + suffix;
 		const auto rg = allocation
-					| views::filter(const NodeAllocation& na){return na.chemin==subchemin;}) ;
+					| views::filter([&](const NodeAllocation& na){return na.chemin==subchemin;}) ;
 			
 		if (rg.size() > max_nb_boxes_per_diagram)
 			rec_minimum_cut(chemin + suffix);
