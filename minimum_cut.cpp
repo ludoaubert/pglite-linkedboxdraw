@@ -21,6 +21,33 @@ using namespace std::ranges;
 using namespace Eigen ;
 
 
+vector<vector<MPD_Arc> > compute_adjacency_list(const MatrixXd& OW)
+{
+	assert(OW.rows() == OW.cols()) ;
+
+	int n = OW.rows() ;
+
+	vector<vector<MPD_Arc> > adjacency_list(n) ;
+
+	for (int i=0; i < n; i++)
+	{
+		for (int j=0; j < n; j++)
+		{
+			double val = OW(i,j) ;
+			if (OW(i,j) == 0.0f)
+				continue ;
+			MPD_Arc a ;
+			a._i = i ;
+			a._j = j ;
+			adjacency_list[a._i].push_back(a) ;
+		}
+	}
+
+	return adjacency_list ;
+}
+
+
+
 //must be computed from unoriented graph
 void connected_components(const vector<vector<MPD_Arc> >& adjacency_list,
 			  vector<int>& connected_component)
