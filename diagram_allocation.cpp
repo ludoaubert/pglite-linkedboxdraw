@@ -66,7 +66,7 @@ const char* diagram_allocation(int n, //nb boxes
 	}
 	max_nb_boxes_per_diagram = max_nb_boxes_per_diagram_;
 
-	for (int c : view::iota(0, nr_comp))
+	for (int c : views::iota(0, nr_comp))
 	{
 		char chemin[4];
 		sprintf(chemin, ".02%d", c);
