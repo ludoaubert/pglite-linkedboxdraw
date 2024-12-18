@@ -329,7 +329,8 @@ n2|  C  |        D          |
 	char suffix[4] ;
 	for (int i=0; i<n; i++)
 	{
-		int c = connected_component[i];
+		int pi = permutation2[i];
+		int c = connected_component[pi];
 		sprintf(suffix, ".%02d", c);
 		allocation.push_back(NodeAllocation{.i=allocated_nodes[i], .chemin=chemin+suffix});
 	}
