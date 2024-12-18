@@ -237,8 +237,8 @@ extern "C" {
 
 //interface for emscripten wasm
 extern "C" {
-const char* binpack(int rect_border,
-			const char* srects)
+const char* diagram_layout_binpack(int rect_border,
+				const char* srects)
 {
 	vector<MyRect> rectangles;
 	int pos, nn;
@@ -262,7 +262,6 @@ const char* binpack(int rect_border,
 		r.m_bottom += 2*rect_border;
 	}
 
-	stair_steps_(rectangles, adjacency_list);
 	int w, h;
 	binpack(rectangles, w, h);
 
