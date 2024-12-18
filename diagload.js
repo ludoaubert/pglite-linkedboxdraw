@@ -126,6 +126,15 @@ async function data2contexts() {
 
 	console.log(jsonAllocation);
 
+	const ret = await db.query(`
+ 		SELECT chemin, COUNT(*) AS nb
+   		FROM json_to_recordset('${jsonAllocation}') AS alloc("id" int, "chemin" text)
+     		GROUP BY chemin
+       		ORDER BY chemin
+  	`);
+
+	console.log(ret.rows);
+	
 	const ret3 = await db.query(`
  		WITH cte AS (
  			SELECT id+1 AS idrectangle, chemin, COUNT(*) OVER (PARTITION BY chemin) AS nb
