@@ -287,7 +287,7 @@ n2|  C  |        D          |
 		connected_components(compute_adjacency_list( (perm2 * W * perm2.transpose()).block(n1, n1, n2, n2) ),
 						  cc2) ;
 		
-		const int nr_comp = 1 + ranges::max(cc1) + ranges::max(cc2) ;
+		const int nr_comp = 1 + ranges::max(cc1) + 1 + ranges::max(cc2) ;
 		printf("Line %d. nr_comp=%d\n", __LINE__, nr_comp);
 		Ncut2 = 1.0/(1.0+n1) + 1.0/(1.0+n2) + 1.0*(nr_comp+penalty)/(1.0+n)  ;
 		printf("Line %d. Ncut2=%.2f\n", __LINE__, Ncut2);
