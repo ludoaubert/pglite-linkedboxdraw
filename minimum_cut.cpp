@@ -264,14 +264,14 @@ n2|  C  |        D          |
 */
 		intra2[0] = (perm2 * W * perm2.transpose()).block(0, 0, n1, n1).sum() ;//A
 		intra2[1] = (perm2 * W * perm2.transpose()).block(n1, n1, n2, n2).sum() ;//D
-		printf("Line %d. intra2={%f, %f}\n", __LINE__, intra2[0], intra2[1]);
+		printf("Line %d. intra2={%.2f, %.2f}\n", __LINE__, intra2[0], intra2[1]);
 		//cut = B + C
 		double cut = (perm2 * W * perm2.transpose()).block(0, n1, n1, n2).sum() + (perm2 * W * perm2.transpose()).block(n1, 0, n2, n1).sum() ;
-		printf("Line %d. cut=%f\n", __LINE__, cut);
+		printf("Line %d. cut=%.2f\n", __LINE__, cut);
 		
 //critere de qualité pour choisir la meilleure cut - Cf Ulrike von Luxburg paragraph 5
 		Ncut = cut / intra2[0] + cut / intra2[1] ;
-		printf("Line %d. Ncut=%f\n", __LINE__, Ncut);
+		printf("Line %d. Ncut=%.2f\n", __LINE__, Ncut);
 //penalty to make a small n1 (resp. n2) be taken into account as being added to nr_comp.
 //goal is to make small asymmetric cut less attractive.
 		int penalty = 0 ;
@@ -290,12 +290,12 @@ n2|  C  |        D          |
 		const int nr_comp = 1 + ranges::max(cc1) + ranges::max(cc2) ;
 		printf("Line %d. nr_comp=%d\n", __LINE__, nr_comp);
 		Ncut2 = 1.0/(1.0+n1) + 1.0/(1.0+n2) + 1.0*(nr_comp+penalty)/(1.0+n)  ;
-		printf("Line %d. Ncut2=%f\n", __LINE__, Ncut2);
+		printf("Line %d. Ncut2=%.2f\n", __LINE__, Ncut2);
 	}
 
 	const auto& [eigenValue, fiedler_vector, Z_OUT, n1, n2, Ncut, Ncut2] = ranges::min(rg, {}, &EigenStruct::Ncut2);
 
-	printf("Line %d. min => Ncut2=%f, NCut=%f\n", __LINE__, Ncut2, Ncut);
+	printf("Line %d. min => Ncut2=%.2f, NCut=%.2f\n", __LINE__, Ncut2, Ncut);
 	printf("Line %d. n1=%d, n2=%d\n", __LINE__, n1, n2);
 	
 	if (n1==0 || n2==0)
