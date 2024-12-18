@@ -288,6 +288,7 @@ n2|  C  |        D          |
 						  cc2) ;
 		
 		const int nr_comp = 1 + ranges::max(cc1) + ranges::max(cc2) ;
+		printf("Line %d. nr_comp=%d\n", __LINE__, nr_comp);
 		Ncut2 = 1.0/(1.0+n1) + 1.0/(1.0+n2) + 1.0*(nr_comp+penalty)/(1.0+n)  ;
 		printf("Line %d. Ncut2=%f\n", __LINE__, Ncut2);
 	}
