@@ -320,7 +320,7 @@ n2|  C  |        D          |
 //	string chemin ; //example : "01.02.01"
 	}
 
-	printf("Line %d. return true;\n", __LINE__);
+	printf("Line %d. return nr_comp=%d;\n", __LINE__, nr_comp);
 	return nr_comp ;
 }
 
