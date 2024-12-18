@@ -206,7 +206,7 @@ async function data2contexts() {
 		const slinks = ret5.rows[0].string_agg;
 		console.log(slinks);
 
-		const jsonTranslations = slinks.length==0 ? diagram_layout_binpack(RECT_BORDER, rectdim) : diagram_layout(RECT_BORDER, rectdim, slinks);
+		const jsonTranslations = slinks===null ? diagram_layout_binpack(RECT_BORDER, rectdim) : diagram_layout(RECT_BORDER, rectdim, slinks);
 		console.log(jsonTranslations);
 
 		const ret6 = await db.query(`
