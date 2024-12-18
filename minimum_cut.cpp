@@ -124,6 +124,7 @@ int minimum_cut(const string& chemin)
 	printf("Line %d. enter minimum_cut(chemin=\"%s\")\n", __LINE__, chemin.c_str());
 	
 	vector<int> dense_rank(nodes.size(), -1);
+	printf("Line %d. vector<int> dense_rank(%zu, -1);", __LINE__, nodes.size());
 
 	auto rg1 = allocation
 			| views::filter([&](const NodeAllocation& na){return na.chemin==chemin;})
