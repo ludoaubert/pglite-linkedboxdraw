@@ -20,6 +20,17 @@
 #include "latuile_test_json_output.h"
 using namespace std ;
 
+struct BPBlock
+{
+	BPBlock(int w, int h): placed(false)
+	{
+		this->w=w ;
+		this->h=h ;
+	}
+	int w,h,x,y ;
+	bool placed ;
+	int i ;
+} ;
 
 struct BPNode
 {
