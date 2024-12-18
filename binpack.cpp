@@ -68,6 +68,9 @@ BPNode node(const MyRect& r)
 	return BPNode(width(r), height(r), r.m_left, r.m_top) ;
 }
 
+void gravity(std::vector<MyRect> &rectangles) ;
+void collapse(std::vector<MyRect> &rectangles) ;
+
 
 /*si aucun node ne peut contenir le block*/
 void split_and_fit(BPBlock& b, vector<BPNode>& nodes)
