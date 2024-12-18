@@ -43,15 +43,36 @@ const char* diagram_allocation(int n, //nb boxes
 
 	printf("edges.size()=%zu\n", edges.size());
 
+	vector<vector<MPD_Arc> > adjacency_list;
+	for (const MPD_Arc& e : edges)
+	{
+		adjacency_list[e._i].push_back(e);
+		adjacency_list[e._j].push_back(e);
+	}
+	vector<int> connected_component(n);
+
+	//must be computed from unoriented graph
+	connected_components(adjacency_list, connected_component);
+	int nr_comp = ranges::max(connected_component) + 1;
+		
 	allocation.clear();
 	
 	for (int i=0; i<n; i++)
-		allocation.push_back(NodeAllocation{.i=i, .chemin=""});
-
+	{
+		int c = connected_component[i];
+		char chemin[4];
+		sprintf(chemin, ".02%d", c);
+		allocation.push_back(NodeAllocation{.i=i, .chemin=chemin});
+	}
 	max_nb_boxes_per_diagram = max_nb_boxes_per_diagram_;
-	const string chemin="";
-	rec_minimum_cut(chemin);
 
+	for (int c : view::iota(0, nr_comp))
+	{
+		char chemin[4];
+		sprintf(chemin, ".02%d", c);
+		rec_minimum_cut(chemin);
+	}
+	
 	int printpos=0;
 	static char buffer[100000];
 
