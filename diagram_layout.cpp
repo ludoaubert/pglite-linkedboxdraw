@@ -234,6 +234,63 @@ bool stair_steps_(vector<MyRect> &rectangles, const vector<vector<MPD_Arc> > &ad
 
 //interface for emscripten wasm
 extern "C" {
+
+//interface for emscripten wasm
+extern "C" {
+const char* binpack(int rect_border,
+			const char* srects)
+{
+	vector<MyRect> rectangles;
+	int pos, nn;
+
+	pos = 0;
+    	MyRect r{0,0,0,0};
+	while (sscanf(srects + pos, "%3hx%3hx%n", &r.m_right, &r.m_bottom, &nn) == 2)
+	{
+	//use variable 'MyRect.no_sequence' to keep the original position of the box.
+	//keep in mind that variable 'MyRect.i' is used internally by some algorithms and cannot be used for that purpose.
+		r.no_sequence = r.i = rectangles.size();
+		rectangles.push_back(r);
+		pos += nn;
+	}
+
+	printf("rectangles.size()=%zu\n", rectangles.size());
+
+	for (MyRect& r : rectangles)
+	{
+		r.m_right += 2*rect_border;
+		r.m_bottom += 2*rect_border;
+	}
+
+	stair_steps_(rectangles, adjacency_list);
+	int w, h;
+	binpack(rectangles, w, h);
+
+	for (MyRect &r : rectangles)
+	{
+		expand_by(r, - rect_border) ;
+	}
+
+	MyRect frame = compute_frame(rectangles) ;
+	for (MyRect &r : rectangles)
+	{
+		translate(r, {- frame.m_left,- frame.m_top}) ;
+	}
+
+	int printpos=0;
+	static char buffer[100000];
+
+	printpos += sprintf(buffer + printpos, "[\n");
+	for (const MyRect& r : rectangles)
+	{
+		printpos += sprintf(buffer + printpos, "{\"id\":%d, \"x\":%d, \"y\":%d}%c\n", r.i, r.m_left, r.m_top,
+                          &r == &rectangles.back() ? ' ' : ',');
+	}
+	printpos += sprintf(buffer + printpos, "]\n");
+	
+	return buffer;
+}
+
 const char* diagram_layout(int rect_border,
 			const char* srects,
 			const char* sedges)
@@ -335,6 +392,6 @@ Linux command to lookup eigen3 directory:
 
 
 To generate diagram_layout.wasm and diagram_layout.js:
-emcc diagram_layout.cpp binpack.cpp compact_frame.cpp compact_rectangles.cpp fit_together.cpp MyRect.cpp optimize_rectangle_positions.cpp permutation.cpp swap_rectangles.cpp FunctionTimer.cpp MPD_Arc.cpp latuile_test_json_output.cpp -o diagram_layout.js -Wno-c++11-narrowing -s EXPORTED_FUNCTIONS='["_diagram_layout"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s ALLOW_MEMORY_GROWTH=1  -s EXPORT_ES6=1 -s MODULARIZE=1 -s EXPORT_NAME="createLayoutModule"  -s TOTAL_STACK=32MB  -std=c++20
+emcc diagram_layout.cpp binpack.cpp compact_frame.cpp compact_rectangles.cpp fit_together.cpp MyRect.cpp optimize_rectangle_positions.cpp permutation.cpp swap_rectangles.cpp FunctionTimer.cpp MPD_Arc.cpp latuile_test_json_output.cpp -o diagram_layout.js -Wno-c++11-narrowing -s EXPORTED_FUNCTIONS='["_diagram_layout","_binpack"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s ALLOW_MEMORY_GROWTH=1  -s EXPORT_ES6=1 -s MODULARIZE=1 -s EXPORT_NAME="createLayoutModule"  -s TOTAL_STACK=32MB  -std=c++20
 
 */
