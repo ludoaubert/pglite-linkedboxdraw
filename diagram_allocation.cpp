@@ -43,7 +43,7 @@ const char* diagram_allocation(int n, //nb boxes
 
 	printf("edges.size()=%zu\n", edges.size());
 
-	vector<vector<MPD_Arc> > adjacency_list;
+	vector<vector<MPD_Arc> > adjacency_list(n);
 	for (const MPD_Arc& e : edges)
 	{
 		adjacency_list[e._i].push_back(e);
