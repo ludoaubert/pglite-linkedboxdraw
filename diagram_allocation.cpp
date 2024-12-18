@@ -61,7 +61,7 @@ const char* diagram_allocation(int n, //nb boxes
 	{
 		int c = connected_component[i];
 		char chemin[4];
-		sprintf(chemin, ".02%d", c);
+		sprintf(chemin, ".%02d", c);
 		allocation.push_back(NodeAllocation{.i=i, .chemin=chemin});
 	}
 	max_nb_boxes_per_diagram = max_nb_boxes_per_diagram_;
@@ -69,7 +69,7 @@ const char* diagram_allocation(int n, //nb boxes
 	for (int c : views::iota(0, nr_comp))
 	{
 		char chemin[4];
-		sprintf(chemin, ".02%d", c);
+		sprintf(chemin, ".%02d", c);
 		rec_minimum_cut(chemin);
 	}
 	
