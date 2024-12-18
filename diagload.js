@@ -146,10 +146,10 @@ async function data2contexts() {
       			LEFT JOIN cte b ON LENGTH(b.chemin) > LENGTH(a.chemin) AND LEFT(b.chemin, LENGTH(a.chemin))=a.chemin
  			WHERE b.chemin IS NULL
 		), cte3 AS (
-			SELECT idrectangle, CASE WHEN nb=1 THEN '99.99' ELSE chemin END AS chemin, nb
+			SELECT idrectangle, CASE WHEN nb=1 THEN '99.99' ELSE chemin END AS chemin
   			FROM cte2
      		), cte4 AS (
-       			SELECT idrectangle, chemin, nb, DENSE_RANK() OVER (ORDER BY chemin) AS context
+       			SELECT idrectangle, chemin, DENSE_RANK() OVER (ORDER BY chemin) AS context
 	 		FROM cte3
     		)
       		INSERT INTO translation(idrectangle, context, x, y)
