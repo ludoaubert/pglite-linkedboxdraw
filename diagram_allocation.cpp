@@ -44,10 +44,10 @@ const char* diagram_allocation(int n, //nb boxes
 	printf("edges.size()=%zu\n", edges.size());
 
 	vector<vector<MPD_Arc> > adjacency_list(n);
-	for (const MPD_Arc& e : edges)
+	for (const auto [i, j] : edges)
 	{
-		adjacency_list[e._i].push_back(e);
-		adjacency_list[e._j].push_back(e);
+		adjacency_list[i].push_back(MPD_Arc{i,j});
+		adjacency_list[j].push_back(MPD_Arc{j,i});
 	}
 	vector<int> connected_component(n);
 
