@@ -21,3 +21,6 @@ std::string JSON_stringify(const std::vector<double>& v);
 
 void rec_minimum_cut(const std::string &chemin);
 
+//must be computed from unoriented graph
+void connected_components(const std::vector<std::vector<MPD_Arc> >& adjacency_list,
+			  std::vector<int>& connected_component);
