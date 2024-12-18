@@ -325,16 +325,12 @@ n2|  C  |        D          |
 	int nr_comp = 1 + ranges::max(connected_component) ;
 	printf("Line %d. nr_comp=%d\n", __LINE__, nr_comp);
 
-	for (int c : views::iota(0, nr_comp))
+	char suffix[4] ;
+	for (int i=0; i<n; i++)
 	{
-		char suffix[4] ;
-		for (int i=0; i<n; i++)
-		{
-			int c = connected_component[i];
-			sprintf(suffix, ".%02d", c);
-			allocation.push_back(NodeAllocation{.i=allocated_nodes[i], .chemin=chemin+suffix});
-		}
-//	string chemin ; //example : "01.02.01"
+		int c = connected_component[i];
+		sprintf(suffix, ".%02d", c);
+		allocation.push_back(NodeAllocation{.i=allocated_nodes[i], .chemin=chemin+suffix});
 	}
 
 	printf("Line %d. return nr_comp=%d;\n", __LINE__, nr_comp);
