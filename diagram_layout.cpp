@@ -235,10 +235,7 @@ bool stair_steps_(vector<MyRect> &rectangles, const vector<vector<MPD_Arc> > &ad
 //interface for emscripten wasm
 extern "C" {
 
-//interface for emscripten wasm
-extern "C" {
-const char* diagram_layout_binpack(int rect_border,
-				const char* srects)
+const char* diagram_layout_binpack(int rect_border, const char* srects)
 {
 	vector<MyRect> rectangles;
 	int pos, nn;
