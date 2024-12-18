@@ -121,6 +121,8 @@ int max_nb_boxes_per_diagram;
 //TODO: use C++23 ranges::to<vector>()
 int minimum_cut(const string& chemin)
 {
+	printf("Line %d. enter minimum_cut(chemin=\"%s\")\n", __LINE__, chemin.c_str());
+	
 	vector<int> dense_rank(nodes.size(), -1);
 
 	auto rg1 = allocation
@@ -128,6 +130,8 @@ int minimum_cut(const string& chemin)
 			| views::transform(&NodeAllocation::i) ;
 	vector<int> allocated_nodes(std::distance(rg1.begin(), rg1.end()));
 	ranges::copy(rg1, &allocated_nodes[0]);
+
+	printf("Line %d. allocated_nodes.size()=%zu\n", __LINE__, allocated_nodes.size());
 
 	if (allocated_nodes.size() <= max_nb_boxes_per_diagram)
 		return 0;
@@ -144,6 +148,8 @@ int minimum_cut(const string& chemin)
 	vector<MPD_Arc> allocated_edges(std::distance(rg2.begin(), rg2.end()));
 	ranges::copy(rg2, &allocated_edges[0]);
 
+	printf("Line %d. allocated_edges.size()=%zu\n", __LINE__, allocated_edges.size());
+
 	const int n = allocated_nodes.size();
 
 	MatrixXd W = MatrixXd::Zero(n, n) ;
@@ -152,18 +158,18 @@ int minimum_cut(const string& chemin)
 		W(i, j) = W(j, i) = 1.0f ;
 	}
 	
-	string sW = serialise(W);
+	const string sW = serialise(W);
 	printf("Line %d. W=%s\n", __LINE__, sW.c_str());
 
 	MatrixXd D = W.rowwise().sum().asDiagonal() ;
 
-	string sD = serialise(D);
+	const string sD = serialise(D);
 	printf("Line %d. sD=%s\n", __LINE__, sD.c_str());
 
 // Ulrike von Luxburg : we thus advocate for using Lrw (Laplacien randow walk).
 	MatrixXd Lrw = D.inverse() * (D - W) ;
 
-	string sLrw = serialise(Lrw);
+	const string sLrw = serialise(Lrw);
 	printf("Line %d. sLrw=%s\n", __LINE__, sLrw.c_str());
 	fflush(stdout);	
 
@@ -202,11 +208,11 @@ non null eigenvalues => each corresponds to a cut.
 
 	for (auto& [eigenValue, fiedler_vector, Z_OUT, n1, n2, Ncut, Ncut2] : rg)
 	{
-		printf("Line %d. looping on pos in esv. eigenValue=%f\n", __LINE__, eigenValue);
+		printf("Line %d. looping on esv. eigenValue=%f\n", __LINE__, eigenValue);
 
 		vector<double> fv(fiedler_vector.data(), fiedler_vector.data()+n) ;
 
-		string jsonFV = JSON_stringify(fv);
+		const string jsonFV = JSON_stringify(fv);
 		printf("Line %d. fv=%s\n", __LINE__, jsonFV.c_str());
 
 		const int DD=1, K=2, Niter = 100, seed = 14567437496 ;
@@ -258,9 +264,11 @@ n2|  C  |        D          |
 */
 		intra2[0] = (perm2 * W * perm2.transpose()).block(0, 0, n1, n1).sum() ;//A
 		intra2[1] = (perm2 * W * perm2.transpose()).block(n1, n1, n2, n2).sum() ;//D
+		printf("Line %d. intra2={%d, %d}\n", __LINE__, intra2[0], intra2[1]);
 		//cut = B + C
 		double cut = (perm2 * W * perm2.transpose()).block(0, n1, n1, n2).sum() + (perm2 * W * perm2.transpose()).block(n1, 0, n2, n1).sum() ;
-
+		printf("Line %d. cut=%d\n", __LINE__, cut);
+		
 //critere de qualité pour choisir la meilleure cut - Cf Ulrike von Luxburg paragraph 5
 		Ncut = cut / intra2[0] + cut / intra2[1] ;
 		printf("Line %d. Ncut=%f\n", __LINE__, Ncut);
@@ -271,7 +279,15 @@ n2|  C  |        D          |
 			penalty+= abs(n-2*n1) ;
 		if (n2*4 <= n)
 			penalty+= abs(n-2*n2) ;
-		const int nr_comp=2; //to be confirmed
+		printf("Line %d. penalty=%d\n", __LINE__, penalty);
+
+		vector<int> cc1(n1), cc2(n2) ;
+		connected_components(compute_adjacency_list( (perm2 * W * perm2.transpose()).block(0, 0, n1, n1) ),
+						  cc1) ;
+		connected_components(compute_adjacency_list( (perm2 * W * perm2.transpose()).block(n1, n1, n2, n2) ),
+						  cc2) ;
+		
+		const int nr_comp = 1 + ranges::max(cc1) + ranges::max(cc2) ;
 		Ncut2 = 1.0/(1.0+n1) + 1.0/(1.0+n2) + 1.0*(nr_comp+penalty)/(1.0+n)  ;
 		printf("Line %d. Ncut2=%f\n", __LINE__, Ncut2);
 	}
