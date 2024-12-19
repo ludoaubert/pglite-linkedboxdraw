@@ -205,7 +205,7 @@ bool stair_steps_(vector<MyRect> &rectangles, const vector<vector<MPD_Arc> > &ad
 
 		bool result = stair_steps(rectangles_, rectangles_[i], adj_list) ;
 
-//		if (index_from_if(rectangles_,[](const MyRect& r){return r.selected==false;}) == -1)
+		if (index_from_if(rectangles_,[](const MyRect& r){return r.selected==false;}) == -1)
 			solutions.push_back(rectangles_) ;
 	}
 
