@@ -103,7 +103,10 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, const vector<vector<MPD
 															value(*r, normal->direction, normal->sens) ;
 				normal++ ;
 				if (std::distance(normal4, normal) >= 4)
+				{
+					printf("Line %d. break because std::distance(normal4, normal) >= 4.\n", __LINE__);
 					break ;
+				}
 
 				prec = 0 ;
 				value(translation, normal->direction) = value(*rr, normal->direction, normal->sens) -
