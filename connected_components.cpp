@@ -1,5 +1,6 @@
 #include <vector>
 #include <string>
+#include <stack>
 #include "MPD_Arc.h"
 #include "connected_components.h"
 using namespace std;
