@@ -25,12 +25,24 @@ using namespace std::ranges;
 
 Sens reverse_sens(Sens sens)
 {
-	return Sens(1-sens);
+	switch (sens)
+	{
+	case INCREASE:
+		return DECREASE;
+	case DECREASE:
+		return INCREASE;
+	}
 }
 
 Direction transpose_direction(Direction direction)
 {
-	return Direction(1-direction);
+	switch (direction)
+	{
+	case EAST_WEST:
+		return NORTH_SOUTH;
+	case NORTH_SOUTH:
+		return EAST_WEST;
+	}
 }
 
 
