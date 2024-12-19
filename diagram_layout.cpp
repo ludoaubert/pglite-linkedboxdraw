@@ -241,7 +241,7 @@ bool stair_steps_(vector<MyRect> &rectangles, const vector<vector<MPD_Arc> > &ad
 
 	rectangles = ranges::min(solutions, {}, [](const vector<MyRect>& rectangles_){
 		const int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
-		const int dm = dim_max(compute_frame(rects));
+		const int dm = dim_max(compute_frame(rectangles_));
 		return make_tuple(nr, dm);
 	}) ;
 
