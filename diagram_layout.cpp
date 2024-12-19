@@ -339,7 +339,7 @@ const char* diagram_layout(int rect_border,
 	vector<int> distribution(nr_comp, 0);
 	compute_cc_distribution(connected_component, distribution);
 	string sDistribution = JSON_stringify(distribution);
-	printf("Line %d. distribution=%s\n", __LINE__, sDitribution.c_str());
+	printf("Line %d. distribution=%s\n", __LINE__, sDistribution.c_str());
 
 	for (MyRect& r : rectangles)
 	{
