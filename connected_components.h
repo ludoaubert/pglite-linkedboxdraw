@@ -2,6 +2,11 @@
 #define _CONNECTED_COMPONENTS_
 
 #include <vector>
+#include <string>
+
+std::string JSON_stringify(const std::vector<int>& v);
+
+std::string JSON_stringify(const std::vector<double>& v);
 
 //must be computed from unoriented graph
 void connected_components(const std::vector<std::vector<MPD_Arc> >& adjacency_list,
