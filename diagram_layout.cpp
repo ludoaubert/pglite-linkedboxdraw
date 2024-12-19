@@ -200,8 +200,6 @@ bool stair_steps_(vector<MyRect> &rectangles, const vector<vector<MPD_Arc> > &ad
 		fflush(stdout);
 
 		vector<MyRect> rectangles_ = rectangles ;
-		for (MyRect& r : rectangles_)
-			r.selected = false;
 
 		bool result = stair_steps(rectangles_, rectangles_[i], adj_list) ;
 
