@@ -23,6 +23,17 @@ using namespace std ;
 using namespace std::ranges;
 
 
+Sens reverse_sens(Sens sens)
+{
+	return Sens(1-sens);
+}
+
+Direction transpose_direction(Direction direction)
+{
+	return Direction(1-direction);
+}
+
+
 bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, const vector<vector<MPD_Arc> > &adjacency_list)
 {
 	int n = rectangles.size() ;
@@ -78,9 +89,9 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, const vector<vector<MPD
 			{
 				MyPoint translation ;
 				value(translation, normal->direction) = value(*rr, normal->direction, normal->sens) -
-															value(*r, normal->direction, ::reverse(normal->sens)) ;
-				value(translation, transpose(normal->direction)) = value(*rr, transpose(normal->direction), normal->sens) -
-															value(*r, transpose(normal->direction), normal->sens) ;
+															value(*r, normal->direction, reverse_sens(normal->sens)) ;
+				value(translation, transpose_direction(normal->direction)) = value(*rr, transpose_direction(normal->direction), normal->sens) -
+															value(*r, transpose_direction(normal->direction), normal->sens) ;
 				translate(*r, translation) ;
 			}
 			else if (value(*rr, next_normal->direction, next_normal->sens)*next_normal->sens >
@@ -88,10 +99,10 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, const vector<vector<MPD
 			{
 			//there is room for another step
 				MyPoint translation ;
-				value(translation, normal->direction) = value(*prec, normal->direction, ::reverse(normal->sens)) -
-															value(*r, normal->direction, ::reverse(normal->sens)) ;
+				value(translation, normal->direction) = value(*prec, normal->direction, reverse_sens(normal->sens)) -
+															value(*r, normal->direction, reverse_sens(normal->sens)) ;
 				value(translation, next_normal->direction) = value(*prec, next_normal->direction, next_normal->sens) -
-															value(*r, next_normal->direction, ::reverse(next_normal->sens)) ;
+															value(*r, next_normal->direction, reverse_sens(next_normal->sens)) ;
 				translate(*r, translation) ;
 			}
 			else
@@ -110,7 +121,7 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, const vector<vector<MPD
 
 				prec = 0 ;
 				value(translation, normal->direction) = value(*rr, normal->direction, normal->sens) -
-															value(*r, normal->direction, ::reverse(normal->sens)) ;
+															value(*r, normal->direction, reverse_sens(normal->sens)) ;
 				translate(*r, translation) ;
 			}
 
@@ -139,7 +150,7 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, const vector<vector<MPD
 																value(*r, normal_->direction, normal_->sens) ;
 					normal++ ;
 					value(translation, normal->direction) = value(*rr, normal->direction, normal->sens) -
-																value(*r, normal->direction, ::reverse(normal->sens)) ;
+																value(*r, normal->direction, reverse_sens(normal->sens)) ;
 					translate(*r, translation) ;
 
 					int index = index_from_if(rectangles, [&](const MyRect& rec){return rec.i!=r->i && rec.selected && intersect_strict(rec, *r) ;}) ;
@@ -158,10 +169,10 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, const vector<vector<MPD
 						{
 					//there is room for another step
 							MyPoint translation ;
-							value(translation, normal->direction) = value(*prec, normal->direction, ::reverse(normal->sens)) -
-																		value(*r, normal->direction, ::reverse(normal->sens)) ;
+							value(translation, normal->direction) = value(*prec, normal->direction, reverse_sens(normal->sens)) -
+																		value(*r, normal->direction, reverse_sens(normal->sens)) ;
 							value(translation, next_normal->direction) = value(*prec, next_normal->direction, next_normal->sens) -
-															value(*r, next_normal->direction, ::reverse(next_normal->sens)) ;
+															value(*r, next_normal->direction, reverse_sens(next_normal->sens)) ;
 							translate(*r, translation) ;
 						}
 					}
