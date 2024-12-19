@@ -84,7 +84,7 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, const vector<vector<MPD
 		MyRect *rr = pending_stack.top() ;
 		pending_stack.pop() ;
 
-		const NormalDirection *normal = &normal4[0] ;
+		const NormalDirection *normal = normal4 ;
 		MyRect *prec = 0 ;
 		for (MyRect* r : unordered_adjacency_list[rr->i])
 		{
