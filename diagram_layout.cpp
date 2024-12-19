@@ -231,6 +231,7 @@ bool stair_steps_(vector<MyRect> &rectangles, const vector<vector<MPD_Arc> > &ad
 
 		vector<MyRect> rectangles_ = rectangles ;
 
+		const int rect_border=20;
 		rectangles_[i].m_right += 4*rect_border;
 		rectangles_[i].m_bottom += 4*rect_border;
 
