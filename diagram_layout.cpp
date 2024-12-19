@@ -12,6 +12,7 @@
 #include "compact_frame.h"
 #include "binpack.h"
 #include "optimize_rectangle_positions.h"
+#include "index_from.h"
 #include <vector>
 #include <stack>
 #include <iterator>
