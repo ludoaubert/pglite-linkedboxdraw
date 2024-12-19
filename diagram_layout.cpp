@@ -14,11 +14,8 @@
 #include "index_from.h"
 #include <vector>
 #include <stack>
-#include <iterator>
 #include <algorithm>
 #include <ranges>
-#include <numeric>
-#include <fstream>
 #include <assert.h>
 using namespace std ;
 using namespace std::ranges;
