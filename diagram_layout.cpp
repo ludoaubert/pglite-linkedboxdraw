@@ -172,6 +172,7 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, const vector<vector<MPD
 				}
 				else
 				{
+					printf("Line %d. exiting prematurely.\n", __LINE__);
 					return false ;
 				}
 			}//if (index != -1 && prec==0)
