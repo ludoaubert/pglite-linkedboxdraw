@@ -127,10 +127,8 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, const vector<vector<MPD
 				normal++ ;
 				if (std::distance(normal4, normal) >= 4)
 				{
-					normal = normal4;
-					printf("Line %d. setting normal = normal4 instead of breaking.\n", __LINE__);
-				//	printf("Line %d. break because std::distance(normal4, normal) >= 4.\n", __LINE__);
-				//	break ;
+					printf("Line %d. break because std::distance(normal4, normal) >= 4.\n", __LINE__);
+					break ;
 				}
 
 				prec = 0 ;
