@@ -1,7 +1,31 @@
 #include <vector>
+#include <string>
 #include "MPD_Arc.h"
 #include "connected_components.h"
 using namespace std;
+
+string JSON_stringify(const vector<int>& v)
+{
+	char buffer[1000];
+	int pos=0;
+	pos += sprintf(buffer+pos, "[]");
+	pos--;
+	for (const int& i : v)
+		pos += sprintf(buffer+pos, "%d%c", i, &i==&v.back() ? ']' : ','); 
+	return buffer;
+}
+
+string JSON_stringify(const vector<double>& v)
+{
+	char buffer[1000];
+	int pos=0;
+	pos += sprintf(buffer+pos, "[]");
+	pos--;
+	for (const double& i : v)
+		pos += sprintf(buffer+pos, "%f%c", i, &i==&v.back() ? ']' : ','); 
+	return buffer;
+}
+
 
 //must be computed from unoriented graph
 void connected_components(const vector<vector<MPD_Arc> >& adjacency_list,
