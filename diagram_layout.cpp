@@ -12,6 +12,7 @@
 #include "binpack.h"
 #include "optimize_rectangle_positions.h"
 #include "index_from.h"
+#include "minimum_cut.h"
 #include <vector>
 #include <stack>
 #include <algorithm>
@@ -324,6 +325,17 @@ const char* diagram_layout(int rect_border,
 	for (MPD_Arc &edge : edges)
 		adjacency_list[edge._i].push_back(edge);
 
+	vector<vector<MPD_Arc> > unordered_adjacency_list(n);
+	for (const auto& [i, j] : edges)
+	{
+		unordered_adjacency_list[i].push_back(MPD_Arc{i,j});
+		unordered_adjacency_list[j].push_back(MPD_Arc{j,i});
+	}
+	vector<int> connected_component(n);
+	connected_components(unordered_adjacency_list, connected_component);
+	int nr_comp = 1 + ranges::max(connected_component);
+	printf("Line %d. nr_comp=%d\n", __LINE__, nr_comp);
+
 	for (MyRect& r : rectangles)
 	{
 		r.m_right += 2*rect_border;
@@ -395,6 +407,6 @@ Linux command to lookup eigen3 directory:
 
 
 To generate diagram_layout.wasm and diagram_layout.js:
-emcc diagram_layout.cpp binpack.cpp compact_frame.cpp compact_rectangles.cpp MyRect.cpp optimize_rectangle_positions.cpp MPD_Arc.cpp latuile_test_json_output.cpp FunctionTimer.cpp -o diagram_layout.js -Wno-c++11-narrowing -s EXPORTED_FUNCTIONS='["_diagram_layout","_diagram_layout_binpack"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s ALLOW_MEMORY_GROWTH=1  -s EXPORT_ES6=1 -s MODULARIZE=1 -s EXPORT_NAME="createLayoutModule"  -s TOTAL_STACK=32MB  -std=c++20
+emcc diagram_layout.cpp minimum_cut.cpp binpack.cpp compact_frame.cpp compact_rectangles.cpp MyRect.cpp optimize_rectangle_positions.cpp MPD_Arc.cpp latuile_test_json_output.cpp FunctionTimer.cpp -o diagram_layout.js -Wno-c++11-narrowing -s EXPORTED_FUNCTIONS='["_diagram_layout","_diagram_layout_binpack"]' -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' -s ALLOW_MEMORY_GROWTH=1  -s EXPORT_ES6=1 -s MODULARIZE=1 -s EXPORT_NAME="createLayoutModule"  -s TOTAL_STACK=32MB  -std=c++20
 
 */
