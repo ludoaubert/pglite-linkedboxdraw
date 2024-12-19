@@ -204,11 +204,21 @@ bool stair_steps_(vector<MyRect> &rectangles, const vector<vector<MPD_Arc> > &ad
 		bool result = stair_steps(rectangles_, rectangles_[i], adj_list) ;
 
 		if (index_from_if(rectangles_,[](const MyRect& r){return r.selected==false;}) == -1)
+		{
 			solutions.push_back(rectangles_) ;
+		}
+		else
+		{
+			int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
+			printf("Line %d. %d are not selected.\n", __LINE__, nr);
+		}
 	}
 
 	if (solutions.empty())
+	{
+		printf("Line %d. solutions.empty()\n", __LINE__);
 		return false ;
+	}
 
 	rectangles = * ranges::min_element(solutions, {}, [](const vector<MyRect>& rects){
 		return dim_max(compute_frame(rects));
