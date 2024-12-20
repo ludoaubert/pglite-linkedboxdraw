@@ -6,7 +6,7 @@ import {schema} from "./schema.js"
 import {sample_diagdata} from "./diagdata.js"
 
 export {mycontexts, contexts, resetContexts, setContexts, drawDiag, compute_links, ApplyRepartition, enforce_bounding_rectangle};
-export {data2contexts, compute_tr2_link_tags};
+export {data2contexts};
 export {MONOSPACE_FONT_PIXEL_WIDTH, CHAR_RECT_HEIGHT, RECTANGLE_BOTTOM_CAP};
 
 const MONOSPACE_FONT_PIXEL_WIDTH=7;
@@ -158,6 +158,8 @@ async function data2contexts() {
  	`);
 
 	console.log(ret3);
+
+	await compute_tr2_link_tags();
 
 	const ret4 = await db.query(`
  		SELECT DISTINCT context FROM translation ORDER BY context
@@ -865,7 +867,6 @@ window.main = async function main()
 	var sheet = document.createElement('style');
 	sheet.id="dynamic-sheet";
 	document.body.appendChild(sheet);
-	await compute_tr2_link_tags();
 	await data2contexts();
 	await drawDiag();
 	await init();
