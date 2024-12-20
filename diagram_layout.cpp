@@ -240,17 +240,39 @@ bool stair_steps_(int rect_border, vector<MyRect> &rectangles, const vector<vect
 			r.m_bottom += 2*rect_border;
 		}
 
-		MyRect& ri = rectangles_[i];
-		ri.rect_border = 3*rect_border;
-		ri.m_right += 6*rect_border;
-		ri.m_bottom += 6*rect_border;
-
 		bool result = stair_steps(rectangles_, rectangles_[i], adj_list) ;
 
 		solutions.push_back(rectangles_) ;
 
 		int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
 		printf("Line %d. %d are not selected.\n", __LINE__, nr);
+	}
+
+	for (int f=2; f<=4; f++)
+	{
+		printf("f=%d\n", f);
+		fflush(stdout);
+
+		vector<MyRect> rectangles_ = rectangles ;
+	
+		for (MyRect& r : rectangles)
+		{
+			r.rect_border = rect_border;
+			r.m_right += 2*rect_border;
+			r.m_bottom += 2*rect_border;
+		}
+
+		MyRect& ri = rectangles_[ii];
+		ri.rect_border = f*rect_border;
+		ri.m_right += 2*f*rect_border;
+		ri.m_bottom += 2*f*rect_border;
+
+		bool result = stair_steps(rectangles_, rectangles_[i], adj_list) ;
+
+		solutions.push_back(rectangles_) ;
+
+		int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
+		printf("Line %d. %d are not selected.\n", __LINE__
 	}
 
 	rectangles = ranges::min(solutions, {}, [](const vector<MyRect>& rectangles_){
