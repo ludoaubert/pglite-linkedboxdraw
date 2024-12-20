@@ -398,8 +398,8 @@ const char* diagram_layout(int rect_border,
 	string sDistribution = JSON_stringify(distribution);
 	printf("Line %d. distribution=%s\n", __LINE__, sDistribution.c_str());
 
-	(rect_border, rectangles, adjacency_list);
-	printf("exit ();\n");
+	stair_steps_(rect_border, rectangles, adjacency_list);
+	printf("exit stair_steps_();\n");
 	fflush(stdout);
 	compact_frame(rectangles, adjacency_list) ;
 	printf("exit compute_frame();\n");
