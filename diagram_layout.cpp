@@ -218,7 +218,7 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, const vector<vector<MPD
 }
 
 
-bool stair_steps_(vector<MyRect> &rectangles, const vector<vector<MPD_Arc> > &adj_list)
+bool stair_steps_(int rect_border, vector<MyRect> &rectangles, const vector<vector<MPD_Arc> > &adj_list)
 {
 	const int n = rectangles.size() ;
 
@@ -230,10 +230,18 @@ bool stair_steps_(vector<MyRect> &rectangles, const vector<vector<MPD_Arc> > &ad
 		fflush(stdout);
 
 		vector<MyRect> rectangles_ = rectangles ;
+	
+		for (MyRect& r : rectangles)
+		{
+			r.rect_border = rect_border;
+			r.m_right += 2*rect_border;
+			r.m_bottom += 2*rect_border;
+		}
 
-		const int rect_border=20;
-		rectangles_[i].m_right += 6*rect_border;
-		rectangles_[i].m_bottom += 6*rect_border;
+		MyRect& ri = rectangles_[i];
+		ri.rect_border = 3*rect_border;
+		ri.m_right += 6*rect_border;
+		ri.m_bottom += 6*rect_border;
 
 		bool result = stair_steps(rectangles_, rectangles_[i], adj_list) ;
 
@@ -364,14 +372,8 @@ const char* diagram_layout(int rect_border,
 	string sDistribution = JSON_stringify(distribution);
 	printf("Line %d. distribution=%s\n", __LINE__, sDistribution.c_str());
 
-	for (MyRect& r : rectangles)
-	{
-		r.m_right += 2*rect_border;
-		r.m_bottom += 2*rect_border;
-	}
-
-	stair_steps_(rectangles, adjacency_list);
-	printf("exit stair_steps_();\n");
+	(rect_border, rectangles, adjacency_list);
+	printf("exit ();\n");
 	fflush(stdout);
 	compact_frame(rectangles, adjacency_list) ;
 	printf("exit compute_frame();\n");
@@ -385,7 +387,7 @@ const char* diagram_layout(int rect_border,
 
 	for (MyRect &r : rectangles)
 	{
-		expand_by(r, - rect_border) ;
+		expand_by(r, - r.rect_border) ;
 	}
 
 	MyRect frame = compute_frame(rectangles) ;
