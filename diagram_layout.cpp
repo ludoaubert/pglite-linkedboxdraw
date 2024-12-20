@@ -267,7 +267,7 @@ bool stair_steps_(int rect_border, vector<MyRect> &rectangles, const vector<vect
 		ri.m_right += 2*f*rect_border;
 		ri.m_bottom += 2*f*rect_border;
 
-		bool result = stair_steps(rectangles_, rectangles_[i], adj_list) ;
+		bool result = stair_steps(rectangles_, rectangles_[ii], adj_list) ;
 
 		solutions.push_back(rectangles_) ;
 
