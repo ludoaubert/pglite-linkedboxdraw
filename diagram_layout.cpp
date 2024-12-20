@@ -233,7 +233,7 @@ bool stair_steps_(int rect_border, vector<MyRect> &rectangles, const vector<vect
 
 		vector<MyRect> rectangles_ = rectangles ;
 	
-		for (MyRect& r : rectangles)
+		for (MyRect& r : rectangles_)
 		{
 			r.rect_border = rect_border;
 			r.m_right += 2*rect_border;
