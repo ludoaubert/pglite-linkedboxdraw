@@ -62,9 +62,8 @@ async function compute_tr2_link_tags()
 	
 	const ret2 = await db.query(`
  		WITH cte_box AS (
-   			SELECT b.idbox, t.context
-      			FROM box b
-	 		JOIN rectangle r ON r.idbox=b.idbox
+   			SELECT r.idbox, t.context
+      			FROM rectangle r ON r.idbox=b.idbox
     			JOIN translation t ON t.idrectangle=r.idrectangle
 		)
 		INSERT INTO graph(from_table, from_key, to_table, to_key)
