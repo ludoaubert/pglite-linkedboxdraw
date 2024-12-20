@@ -1,7 +1,7 @@
 import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js"
 
 import {mycontexts, contexts, resetContexts, setContexts, drawDiag, compute_links, ApplyRepartition, enforce_bounding_rectangle} from "./diagload.js";
-import {data2contexts, compute_tr2_link_tags} from "./diagload.js";
+import {data2contexts} from "./diagload.js";
 import {MONOSPACE_FONT_PIXEL_WIDTH, CHAR_RECT_HEIGHT, RECTANGLE_BOTTOM_CAP} from "./diagload.js";
 
 import {schema} from "./schema.js"
@@ -162,7 +162,6 @@ async function init() {
  		const diagData = await file.text(); 
 		await db.exec(delete_from_tables);
 		await db.exec(diagData);
-		await compute_tr2_link_tags();
 		await data2contexts();
 	});
 	editTitle.addEventListener("change", updateTitle);
