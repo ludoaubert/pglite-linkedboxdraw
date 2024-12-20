@@ -272,7 +272,7 @@ bool stair_steps_(int rect_border, vector<MyRect> &rectangles, const vector<vect
 		solutions.push_back(rectangles_) ;
 
 		int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
-		printf("Line %d. %d are not selected.\n", __LINE__
+		printf("Line %d. %d are not selected.\n", __LINE__, nr);
 	}
 
 	rectangles = ranges::min(solutions, {}, [](const vector<MyRect>& rectangles_){
