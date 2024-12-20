@@ -61,6 +61,12 @@ async function compute_tr2_link_tags()
 	console.log(ret1);
 	
 	const ret2 = await db.query(`
+ 		WITH cte_box AS (
+   			SELECT b.idbox, t.context
+      			FROM box b
+	 		JOIN rectangle r ON r.idbox=b.idbox
+    			JOIN translation t ON t.idrectangle=r.idrectangle
+		)
 		INSERT INTO graph(from_table, from_key, to_table, to_key)
   		SELECT 'tag', t.idtag, 'link', l.idlink
     		FROM link l
@@ -69,7 +75,12 @@ async function compute_tr2_link_tags()
   			SELECT *
     			FROM link l1
       			JOIN link l2 ON l2.idbox_from = l1.idbox_to
+	 		JOIN cte_box b1 ON l1.idbox_from = b1.idbox
+    			JOIN cte_box b2 ON l1.idbox_to = b2.idbox
+       			JOIN cte_box b3 ON l2.idbox_to = b3.idbox
 	 		WHERE l1.idbox_from = l.idbox_from AND l2.idbox_to = l.idbox_to
+    				AND b1.context=b2.context
+				AND b3.context=b2.context
     		);
  	`);
 
