@@ -222,6 +222,8 @@ bool stair_steps_(int rect_border, vector<MyRect> &rectangles, const vector<vect
 {
 	const int n = rectangles.size() ;
 
+	int ii = ranges::min(views::iota(0,n), {}, [&](int ii){return adj_list[ii].size();});
+
 	vector<vector<MyRect> > solutions ;
 
 	for (int i=0; i < n; i++)
