@@ -190,6 +190,7 @@ struct MyRect
 	int16_t no_sequence=0 ;
 	int16_t i=-1 ;
 	bool selected=false ;
+	int rect_border = 20;
 
 	MySegment operator[](Direction direction) const
 	{
