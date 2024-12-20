@@ -498,8 +498,8 @@ rect. 2 is formed by points (x2, y2) and (x2b, y2b)
 */
 inline float rect_distance(const MyRect& r1, const MyRect& r2)
 {
-	const auto& [x1, x1b, y1, y1b, i1, no_sequence1, selected1] = r1;
-	const auto& [x2, x2b, y2, y2b, i2, no_sequence2, selected2] = r2;
+	const auto& [x1, x1b, y1, y1b, i1, no_sequence1, selected1, rect_border1] = r1;
+	const auto& [x2, x2b, y2, y2b, i2, no_sequence2, selected2, rect_border2] = r2;
 
 	auto dist = [](const MyPoint& p1, const MyPoint& p2){
 		const auto& [x1, y1] = p1;
