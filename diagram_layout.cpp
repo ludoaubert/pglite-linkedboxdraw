@@ -255,7 +255,7 @@ bool stair_steps_(int rect_border, vector<MyRect> &rectangles, const vector<vect
 
 		vector<MyRect> rectangles_ = rectangles ;
 	
-		for (MyRect& r : rectangles)
+		for (MyRect& r : rectangles_)
 		{
 			r.rect_border = rect_border;
 		}
@@ -263,10 +263,10 @@ bool stair_steps_(int rect_border, vector<MyRect> &rectangles, const vector<vect
 		MyRect& ri = rectangles_[ii];
 		ri.rect_border = f*rect_border;
 
-		for (MyRect& r : rectangles)
+		for (MyRect& r : rectangles_)
 		{
-			r.m_right += 2*rect_border;
-			r.m_bottom += 2*rect_border;
+			r.m_right += 2 * r.rect_border;
+			r.m_bottom += 2 * r.rect_border;
 		}
 		
 		bool result = stair_steps(rectangles_, rectangles_[ii], adj_list) ;
