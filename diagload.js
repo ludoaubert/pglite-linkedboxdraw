@@ -5,7 +5,7 @@ import {db, init, displayCurrent} from "./table_edit.js";
 import {schema} from "./schema.js"
 import {sample_diagdata} from "./diagdata.js"
 
-export {mycontexts, contexts, resetContexts, setContexts, drawDiag, compute_links, ApplyRepartition, enforce_bounding_rectangle};
+export {drawDiag, compute_links, ApplyRepartition, enforce_bounding_rectangle};
 export {data2contexts};
 export {MONOSPACE_FONT_PIXEL_WIDTH, CHAR_RECT_HEIGHT, RECTANGLE_BOTTOM_CAP};
 
@@ -17,20 +17,6 @@ var bombixModule;
 var allocationModule;
 var layoutModule;
 
-var mycontexts ;
-
-function setContexts(mycontexts_)
-{
-	mycontexts = mycontexts_;
-	contexts = JSON.stringify(mycontexts);
-}
-
-var contexts=null;
-
-function resetContexts()
-{
-	contexts = null;
-}
 
 var currentX = 0;
 var currentY = 0;
