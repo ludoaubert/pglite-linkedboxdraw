@@ -218,7 +218,7 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, const vector<vector<MPD
 }
 
 
-bool stair_steps_(int rect_border, vector<MyRect> &rectangles, const vector<vector<MPD_Arc> > &adj_list)
+vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, const vector<vector<MPD_Arc> > &adj_list)
 {
 	const int n = rectangles.size() ;
 
@@ -277,16 +277,16 @@ bool stair_steps_(int rect_border, vector<MyRect> &rectangles, const vector<vect
 		printf("Line %d. %d are not selected.\n", __LINE__, nr);
 	}
 
-	rectangles = ranges::min(solutions, {}, [](const vector<MyRect>& rectangles_){
+	vector<MyRect> rectangles_ = ranges::min(solutions, {}, [](const vector<MyRect>& rectangles_){
 		const int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
 		const int dm = dim_max(compute_frame(rectangles_));
 		return make_tuple(nr, dm);
 	}) ;
 
-	MyRect frame = compute_frame(rectangles) ;
-	for (MyRect &r : rectangles)
+	MyRect frame = compute_frame(rectangles_) ;
+	for (MyRect &r : rectangles_)
 		translate(r, {-frame.m_left, -frame.m_top}) ;
-	return true ;
+	return rectangles_ ;
 }
 
 
@@ -398,7 +398,7 @@ const char* diagram_layout(int rect_border,
 	string sDistribution = JSON_stringify(distribution);
 	printf("Line %d. distribution=%s\n", __LINE__, sDistribution.c_str());
 
-	stair_steps_(rect_border, rectangles, adjacency_list);
+	rectangles = stair_steps_(rect_border, rectangles, adjacency_list);
 	printf("exit stair_steps_();\n");
 	fflush(stdout);
 	compact_frame(rectangles, adjacency_list) ;
