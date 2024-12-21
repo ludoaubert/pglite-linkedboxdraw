@@ -65,16 +65,23 @@ async function compute_tr2_link_tags()
    			SELECT r.idbox, t.context
       			FROM rectangle r
     			JOIN translation t ON t.idrectangle=r.idrectangle
+		), cte_link AS (
+  			SELECT *, box_from.context
+     			FROM link l
+			JOIN cte_box box_from ON box_from.idbox = l.idbox_from
+   			JOIN cte_box box_to ON box_to.idbox = l.idbox_to
+			WHERE l.idbox_from != l.idbox_to
+   				AND box_from.context = box_to.context
 		)
 		INSERT INTO graph(from_table, from_key, to_table, to_key)
   		SELECT 'tag', t.idtag, 'link', l.idlink
-    		FROM link l
+    		FROM cte_link l
       		JOIN tag t ON t.type_code='RELATION_CATEGORY' AND t.code='TR2'
 		WHERE EXISTS (
   			SELECT *
-    			FROM link l1
-      			JOIN link l2 ON l2.idbox_from = l1.idbox_to
-	 		JOIN cte_box b1 ON l1.idbox_from = b1.idbox
+    			FROM cte_link l1
+      			JOIN cte_link l2 ON l2.idbox_from = l1.idbox_to
+	 		JOIN cte_box b1 ON l1.idbox_from = b1.idbo
     			JOIN cte_box b2 ON l1.idbox_to = b2.idbox
        			JOIN cte_box b3 ON l2.idbox_to = b3.idbox
 	 		WHERE l1.idbox_from = l.idbox_from AND l2.idbox_to = l.idbox_to
