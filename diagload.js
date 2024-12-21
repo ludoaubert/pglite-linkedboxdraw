@@ -115,13 +115,7 @@ async function data2contexts() {
 		)
  		SELECT STRING_AGG(FORMAT('%1$s%2$s', LPAD(to_hex(l.idbox_from-1),3,'0'), LPAD(to_hex(l.idbox_to-1),3,'0')),'' ORDER BY l.idlink)
    		FROM cte l
-     		WHERE rn=1 /* AND NOT EXISTS (
-     			SELECT *
-			FROM graph g 
-       			JOIN tag t ON t.idtag = g.from_key AND t.type_code='RELATION_CATEGORY' AND t.code='TR2' 
-	  		WHERE g.from_table='tag' AND g.to_table='link' AND g.to_key=l.idlink
-     		);
-*/
+     		WHERE rn=1
  	`);
 
 	const slinks = ret2.rows[0].string_agg;
@@ -208,14 +202,7 @@ async function data2contexts() {
 			)
  			SELECT STRING_AGG(FORMAT('%1$s%2$s', LPAD(to_hex(l.rk_from-1),3,'0'), LPAD(to_hex(l.rk_to-1),3,'0')),'' ORDER BY l.idlink)
    			FROM cte_link l
-/*
-     			WHERE rn=1 AND NOT EXISTS (
-     				SELECT *
-				FROM graph g 
-       				JOIN tag t ON t.idtag = g.from_key AND t.type_code='RELATION_CATEGORY' AND t.code='TR2' 
-	  			WHERE g.from_table='tag' AND g.to_table='link' AND g.to_key=l.idlink
-     			)
-*/
+     			WHERE rn=1
  		`);
 
 		const slinks = ret5.rows[0].string_agg;
