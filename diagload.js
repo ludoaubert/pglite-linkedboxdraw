@@ -52,7 +52,7 @@ async function compute_tr2_link_tags()
       			FROM rectangle r
     			JOIN translation t ON t.idrectangle=r.idrectangle
 		), cte_link AS (
-  			SELECT *, box_from.context
+  			SELECT l.*, box_from.context
      			FROM link l
 			JOIN cte_box box_from ON box_from.idbox = l.idbox_from
    			JOIN cte_box box_to ON box_to.idbox = l.idbox_to
