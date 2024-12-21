@@ -81,12 +81,9 @@ async function compute_tr2_link_tags()
   			SELECT *
     			FROM cte_link l1
       			JOIN cte_link l2 ON l2.idbox_from = l1.idbox_to
-	 		JOIN cte_box b1 ON l1.idbox_from = b1.idbo
-    			JOIN cte_box b2 ON l1.idbox_to = b2.idbox
-       			JOIN cte_box b3 ON l2.idbox_to = b3.idbox
 	 		WHERE l1.idbox_from = l.idbox_from AND l2.idbox_to = l.idbox_to
-    				AND b1.context=b2.context
-				AND b3.context=b2.context
+    				AND l1.context=l.context
+				AND l2.context=l.context
     		);
  	`);
 
