@@ -223,7 +223,7 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 	const int n = rectangles.size() ;
 
 	vector<vector<int> > unordered_adj_list(n) ;
-	for (const auto& [i, j] : adjacency_list | views::join)
+	for (const auto& [i, j] : adj_list | views::join)
 	{
 		if (i == j)
 			continue ;
