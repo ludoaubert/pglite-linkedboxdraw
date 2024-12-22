@@ -2,7 +2,6 @@
 #define _COMPACT_FRAME_
 
 #include "MyRect.h"
-#include "MPD_Arc.h"
 #include <vector>
 
 
@@ -12,7 +11,7 @@ std::vector<MyPoint> compute_compact_frame_transform(const std::vector<MyRect>& 
 
 std::vector<RectTranslation> compute_compact_frame_transform_(const std::vector<MyRect>& rectangles);
 
-void compact_frame(std::vector<MyRect>& rectangles, const std::vector<std::vector<MPD_Arc> > &adjacency_list) ;
+void compact_frame(std::vector<MyRect>& rectangles) ;
 
 void test_compact_frame() ;
 
