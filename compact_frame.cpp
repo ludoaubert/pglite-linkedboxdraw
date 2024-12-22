@@ -402,7 +402,7 @@ vector<MyPoint> compute_compact_frame_transform(const vector<MyRect>& rectangles
 }
 
 
-void compact_frame(vector<MyRect>& rectangles, const vector<vector<MPD_Arc> > &adjacency_list)
+void compact_frame(vector<MyRect>& rectangles)
 {
 	FunctionTimer ft("compact_frame");
 
