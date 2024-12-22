@@ -410,13 +410,13 @@ const char* diagram_layout(int rect_border,
 	rectangles = stair_steps_(rect_border, rectangles, adjacency_list);
 	printf("exit stair_steps_();\n");
 	fflush(stdout);
-	compact_frame(rectangles, adjacency_list) ;
+	compact_frame(rectangles) ;
 	printf("exit compact_frame();\n");
 	fflush(stdout);
 	optimize_rectangle_positions(rectangles, adjacency_list) ;
 	printf("exit optimize_rectangle_positions();\n");
 	fflush(stdout);
-	compact_frame(rectangles, adjacency_list) ;
+	compact_frame(rectangles) ;
 	printf("exit compact_frame();\n");
 	fflush(stdout);
 
