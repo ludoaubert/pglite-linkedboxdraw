@@ -222,7 +222,16 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 {
 	const int n = rectangles.size() ;
 
-	int ii = ranges::min(views::iota(0,n), {}, [&](int ii){return adj_list[ii].size();});
+	vector<vector<int> > unordered_adj_list(n) ;
+	for (const auto& [i, j] : adjacency_list | views::join)
+	{
+		if (i == j)
+			continue ;
+		unordered_adj_list[i].push_back(j) ;
+		unordered_adj_list[j].push_back(i) ;
+	}
+
+	const int ii = ranges::min(views::iota(0,n), {}, [&](int ii){return unordered_adj_list[ii].size();});
 
 	vector<vector<MyRect> > solutions ;
 
