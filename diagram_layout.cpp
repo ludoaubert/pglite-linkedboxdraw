@@ -411,7 +411,7 @@ const char* diagram_layout(int rect_border,
 	printf("exit stair_steps_();\n");
 	fflush(stdout);
 	compact_frame(rectangles, adjacency_list) ;
-	printf("exit compute_frame();\n");
+	printf("exit compact_frame();\n");
 	fflush(stdout);
 	optimize_rectangle_positions(rectangles, adjacency_list) ;
 	printf("exit optimize_rectangle_positions();\n");
