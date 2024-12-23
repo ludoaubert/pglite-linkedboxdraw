@@ -286,7 +286,7 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 		int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
 		printf("Line %d. %d are not selected.\n", __LINE__, nr);
 
-		(nr == n ? M : m) = f*rect_border ;
+		(nr == 0 ? M : m) = f*rect_border ;
 		printf("Line %d. m=%d, M=%d.\n", __LINE__, m, M);
 	}
 
@@ -317,7 +317,7 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 		int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
 		printf("Line %d. %d are not selected.\n", __LINE__, nr);
 
-		(nr == n ? M : m) = ( m + M ) / 2 ;
+		(nr == 0 ? M : m) = ( m + M ) / 2 ;
 		printf("Line %d. m=%d, M=%d.\n", __LINE__, m, M);
 	}
 
