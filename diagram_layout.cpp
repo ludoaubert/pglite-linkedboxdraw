@@ -257,10 +257,11 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 		printf("Line %d. %d are not selected.\n", __LINE__, nr);
 	}
 
-	for (int f=2; f<=6; f++)
+	int m=-1,M=-1;
+
+	for (int f=1; f<=6; f++)
 	{
 		printf("f=%d\n", f);
-		fflush(stdout);
 
 		vector<MyRect> rectangles_ = rectangles ;
 	
@@ -284,6 +285,40 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 
 		int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
 		printf("Line %d. %d are not selected.\n", __LINE__, nr);
+
+		(nr == n ? M : m) = f*rect_border ;
+		printf("Line %d. m=%d, M=%d.\n", __LINE__, m, M);
+	}
+
+	while (m != 1 && M != -1 && M - m > 1)
+	{
+		printf("m=%d, M=%d\n", m, M);
+
+		vector<MyRect> rectangles_ = rectangles ;
+	
+		for (MyRect& r : rectangles_)
+		{
+			r.rect_border = rect_border;
+		}
+
+		MyRect& ri = rectangles_[ii];
+		ri.rect_border = ( m + M ) / 2 ;
+
+		for (MyRect& r : rectangles_)
+		{
+			r.m_right += 2 * r.rect_border;
+			r.m_bottom += 2 * r.rect_border;
+		}
+		
+		bool result = stair_steps(rectangles_, rectangles_[ii], adj_list) ;
+
+		solutions.push_back(rectangles_) ;
+
+		int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
+		printf("Line %d. %d are not selected.\n", __LINE__, nr);
+
+		(nr == n ? M : m) = ( m + M ) / 2 ;
+		printf("Line %d. m=%d, M=%d.\n", __LINE__, m, M);
 	}
 
 	vector<MyRect> rectangles_ = ranges::min(solutions, {}, [](const vector<MyRect>& rectangles_){
