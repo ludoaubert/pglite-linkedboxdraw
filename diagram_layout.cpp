@@ -237,9 +237,6 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 
 	for (int i=0; i < n; i++)
 	{
-		printf("i=%d\n", i);
-		fflush(stdout);
-
 		vector<MyRect> rectangles_ = rectangles ;
 	
 		for (MyRect& r : rectangles_)
@@ -250,19 +247,16 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 		}
 
 		bool result = stair_steps(rectangles_, rectangles_[i], adj_list) ;
-
-		solutions.push_back(rectangles_) ;
-
 		int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
-		printf("Line %d. %d are not selected.\n", __LINE__, nr);
+		printf("Line %d. i=%d. %d are not selected. solutions[%zu]\n", __LINE__, i, nr, solution.size());
+		
+		solutions.push_back(rectangles_) ;
 	}
 
 	int m=-1,M=-1;
 
 	for (int f=1; f<=6; f++)
 	{
-		printf("f=%d\n", f);
-
 		vector<MyRect> rectangles_ = rectangles ;
 	
 		for (MyRect& r : rectangles_)
@@ -280,12 +274,11 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 		}
 		
 		bool result = stair_steps(rectangles_, rectangles_[ii], adj_list) ;
-
-		solutions.push_back(rectangles_) ;
-
 		int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
-		printf("Line %d. %d are not selected.\n", __LINE__, nr);
-
+		printf("Line %d. f=%d. %d are not selected. solutions[%zu]\n", __LINE__, f, nr, solutions.size());
+		
+		solutions.push_back(rectangles_) ;
+		
 		(nr == 0 ? M : m) = f*rect_border ;
 		printf("Line %d. m=%d, M=%d.\n", __LINE__, m, M);
 	}
@@ -311,22 +304,24 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 		}
 		
 		bool result = stair_steps(rectangles_, rectangles_[ii], adj_list) ;
+		int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
+		printf("Line %d. %d are not selected. dichotomy. solutions[%zu]\n", __LINE__, nr, solutions.size());
 
 		solutions.push_back(rectangles_) ;
-
-		int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
-		printf("Line %d. %d are not selected.\n", __LINE__, nr);
 
 		(nr == 0 ? M : m) = ( m + M ) / 2 ;
 		printf("Line %d. m=%d, M=%d.\n", __LINE__, m, M);
 	}
 
-	vector<MyRect> rectangles_ = ranges::min(solutions, {}, [](const vector<MyRect>& rectangles_){
-		const int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
+	int jj = ranges::min(views::iota(0, solutions.size()), {}, [](int jj){
+		const vector<MyRect>& rectangles_ = solutions[jj];
+		const int nr = std::count_if(rectangles_[jj].begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
 		const int dm = dim_max(compute_frame(rectangles_));
 		return make_tuple(nr, dm);
 	}) ;
 
+	vector<MyRect> rectangles_ = solutions[jj];
+	
 	MyRect frame = compute_frame(rectangles_) ;
 	for (MyRect &r : rectangles_)
 		translate(r, {-frame.m_left, -frame.m_top}) ;
