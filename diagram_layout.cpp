@@ -320,6 +320,8 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 		return make_tuple(nr, dm);
 	}) ;
 
+	printf("Line %d. jj=%d.\n", __LINE__, jj);
+
 	vector<MyRect> rectangles_ = solutions[jj];
 	
 	MyRect frame = compute_frame(rectangles_) ;
