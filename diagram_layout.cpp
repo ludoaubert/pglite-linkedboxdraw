@@ -315,7 +315,7 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 
 	int jj = ranges::min(views::iota(0, solutions.size()), {}, [](int jj){
 		const vector<MyRect>& rectangles_ = solutions[jj];
-		const int nr = std::count_if(rectangles_[jj].begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
+		const int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
 		const int dm = dim_max(compute_frame(rectangles_));
 		return make_tuple(nr, dm);
 	}) ;
