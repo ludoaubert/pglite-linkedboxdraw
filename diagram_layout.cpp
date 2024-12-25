@@ -255,7 +255,7 @@ vector<MyRect> stair_steps_(int context, int rect_border, const vector<MyRect> &
 
 	int m=-1,M=-1;
 
-	for (int f=1; f<=6; f++)
+	for (int f=1; f<=10; f++)
 	{
 		vector<MyRect> rectangles_ = rectangles ;
 	
