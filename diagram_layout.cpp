@@ -285,8 +285,6 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 
 	while (m != 1 && M != -1 && M - m > 1)
 	{
-		printf("m=%d, M=%d\n", m, M);
-
 		vector<MyRect> rectangles_ = rectangles ;
 	
 		for (MyRect& r : rectangles_)
@@ -305,12 +303,12 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 		
 		bool result = stair_steps(rectangles_, rectangles_[ii], adj_list) ;
 		int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
-		printf("Line %d. %d are not selected. dichotomy. solutions[%zu]\n", __LINE__, nr, solutions.size());
+		printf("Line %d. dichotomy [m, M] = [%d, %d], ( m + M ) / 2 = %d. %d are not selected. solutions[%zu]\n", __LINE__, m, M, ( m + M ) / 2, nr, solutions.size());
 
 		solutions.push_back(rectangles_) ;
 
 		(nr == 0 ? M : m) = ( m + M ) / 2 ;
-		printf("Line %d. m=%d, M=%d.\n", __LINE__, m, M);
+		printf("Line %d. m=%d, M=%d, ( m + M ) / 2 = %d\n", __LINE__, m, M, ( m + M ) / 2);
 	}
 
 	int jj = ranges::min(views::iota(0, solutions.size()), {}, [](int jj){
@@ -320,7 +318,7 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 		return make_tuple(nr, dm);
 	}) ;
 
-	printf("Line %d. jj=%d.\n", __LINE__, jj);
+	printf("Line %d. select solutions[%d].\n", __LINE__, jj);
 
 	vector<MyRect> rectangles_ = solutions[jj];
 	
