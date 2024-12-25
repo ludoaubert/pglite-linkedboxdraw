@@ -218,7 +218,7 @@ bool stair_steps(vector<MyRect> &rectangles, MyRect& rr, const vector<vector<MPD
 }
 
 
-vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, const vector<vector<MPD_Arc> > &adj_list)
+vector<MyRect> stair_steps_(int context, int rect_border, const vector<MyRect> &rectangles, const vector<vector<MPD_Arc> > &adj_list)
 {
 	const int n = rectangles.size() ;
 
@@ -248,7 +248,7 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 
 		bool result = stair_steps(rectangles_, rectangles_[i], adj_list) ;
 		int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
-		printf("Line %d. i=%d. %d are not selected. solutions[%zu]\n", __LINE__, i, nr, solutions.size());
+		printf("Line %d. context=%d. i=%d. %d are not selected. solutions[%zu]\n", __LINE__, context, i, nr, solutions.size());
 		
 		solutions.push_back(rectangles_) ;
 	}
@@ -275,12 +275,12 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 		
 		bool result = stair_steps(rectangles_, rectangles_[ii], adj_list) ;
 		int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
-		printf("Line %d. f=%d. %d are not selected. solutions[%zu]\n", __LINE__, f, nr, solutions.size());
+		printf("Line %d. context=%d. f=%d. %d are not selected. solutions[%zu]\n", __LINE__, context, f, nr, solutions.size());
 		
 		solutions.push_back(rectangles_) ;
 		
 		(nr == 0 ? M : m) = f*rect_border ;
-		printf("Line %d. m=%d, M=%d.\n", __LINE__, m, M);
+		printf("Line %d. context=%d. m=%d, M=%d.\n", __LINE__, context, m, M);
 	}
 
 	while (m != 1 && M != -1 && M - m > 1)
@@ -303,12 +303,12 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 		
 		bool result = stair_steps(rectangles_, rectangles_[ii], adj_list) ;
 		int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
-		printf("Line %d. dichotomy [m, M] = [%d, %d], ( m + M ) / 2 = %d. %d are not selected. solutions[%zu]\n", __LINE__, m, M, ( m + M ) / 2, nr, solutions.size());
+		printf("Line %d. context=%d. dichotomy [m, M] = [%d, %d], ( m + M ) / 2 = %d. %d are not selected. solutions[%zu]\n", __LINE__, context, m, M, ( m + M ) / 2, nr, solutions.size());
 
 		solutions.push_back(rectangles_) ;
 
 		(nr == 0 ? M : m) = ( m + M ) / 2 ;
-		printf("Line %d. m=%d, M=%d, ( m + M ) / 2 = %d\n", __LINE__, m, M, ( m + M ) / 2);
+		printf("Line %d. context=%d. m=%d, M=%d, ( m + M ) / 2 = %d\n", __LINE__, context, m, M, ( m + M ) / 2);
 	}
 
 	int jj = ranges::min(views::iota(0, (int)solutions.size()), {}, [&](int jj){
@@ -318,7 +318,7 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 		return make_tuple(nr, dm);
 	}) ;
 
-	printf("Line %d. select solutions[%d].\n", __LINE__, jj);
+	printf("Line %d. context=%d. select solutions[%d].\n", __LINE__, context, jj);
 
 	vector<MyRect> rectangles_ = solutions[jj];
 	
@@ -333,7 +333,7 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 //interface for emscripten wasm
 extern "C" {
 
-const char* diagram_layout_binpack(int rect_border, const char* srects)
+const char* diagram_layout_binpack(int context, int rect_border, const char* srects)
 {
 	vector<MyRect> rectangles;
 	int pos, nn;
@@ -385,7 +385,8 @@ const char* diagram_layout_binpack(int rect_border, const char* srects)
 	return buffer;
 }
 
-const char* diagram_layout(int rect_border,
+const char* diagram_layout(int context,
+			int rect_border,
 			const char* srects,
 			const char* sedges)
 {
@@ -437,7 +438,7 @@ const char* diagram_layout(int rect_border,
 	string sDistribution = JSON_stringify(distribution);
 	printf("Line %d. distribution=%s\n", __LINE__, sDistribution.c_str());
 
-	rectangles = stair_steps_(rect_border, rectangles, adjacency_list);
+	rectangles = stair_steps_(context, rect_border, rectangles, adjacency_list);
 	printf("exit stair_steps_();\n");
 	fflush(stdout);
 	compact_frame(rectangles) ;
