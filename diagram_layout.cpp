@@ -311,7 +311,7 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 		printf("Line %d. m=%d, M=%d, ( m + M ) / 2 = %d\n", __LINE__, m, M, ( m + M ) / 2);
 	}
 
-	int jj = ranges::min(views::iota(0, solutions.size()), {}, [&](int jj){
+	int jj = ranges::min(views::iota(0, (int)solutions.size()), {}, [&](int jj){
 		const vector<MyRect>& rectangles_ = solutions[jj];
 		const int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
 		const int dm = dim_max(compute_frame(rectangles_));
