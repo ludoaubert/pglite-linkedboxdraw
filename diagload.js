@@ -113,8 +113,8 @@ async function data2contexts() {
 
 	const bombix = bombixModule.cwrap("bombix","string",["string","string","string","string"]);
 	const diagram_allocation = allocationModule.cwrap("diagram_allocation","string",["integer","integer","string"]);
-	const diagram_layout = layoutModule.cwrap("diagram_layout","string",["integer","string","string"]);
-	const diagram_layout_binpack = layoutModule.cwrap("diagram_layout_binpack","string",["integer","string"]);
+	const diagram_layout = layoutModule.cwrap("diagram_layout","string",["integer","integer","string","string"]);
+	const diagram_layout_binpack = layoutModule.cwrap("diagram_layout_binpack","string",["integer","integer","string"]);
 	
 	const n = rectdim.length / 6; //nb boxes
         const max_nb_boxes_per_diagram = 20;
@@ -198,7 +198,8 @@ async function data2contexts() {
 		const slinks = ret5.rows[0].string_agg;
 		console.log(slinks);
 
-		const jsonTranslations = slinks===null ? diagram_layout_binpack(RECT_BORDER, rectdim) : diagram_layout(RECT_BORDER, rectdim, slinks);
+		const jsonTranslations = slinks===null ? diagram_layout_binpack(selectedContextIndex, RECT_BORDER, rectdim) :
+			diagram_layout(selectedContextIndex, RECT_BORDER, rectdim, slinks);
 		console.log(jsonTranslations);
 
 		const ret6 = await db.query(`
