@@ -248,7 +248,7 @@ vector<MyRect> stair_steps_(int rect_border, const vector<MyRect> &rectangles, c
 
 		bool result = stair_steps(rectangles_, rectangles_[i], adj_list) ;
 		int nr = std::count_if(rectangles_.begin(), rectangles_.end(), [](const MyRect& r){return r.selected==false;});
-		printf("Line %d. i=%d. %d are not selected. solutions[%zu]\n", __LINE__, i, nr, solution.size());
+		printf("Line %d. i=%d. %d are not selected. solutions[%zu]\n", __LINE__, i, nr, solutions.size());
 		
 		solutions.push_back(rectangles_) ;
 	}
