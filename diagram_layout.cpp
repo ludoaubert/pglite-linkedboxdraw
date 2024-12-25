@@ -481,11 +481,12 @@ const char* diagram_layout(int context,
 
 int main(int argc, char* argv[])
 {
+	const int context = 1;
 	const int rect_border = 20;
 
 	const char* rectdim = "0770830770830b703d07f07105b07107109407009405407106907108507108507104003d08c0830940710b70710d30710be03d0cc03d0b6071";
 	const char* links = "00000400100600200300300400400600500600700600800600900600a00600b00600c00d00d00c00e00c00e00600f00c010004011012012006";
-	const char* jsonLayout = diagram_layout(rect_border, rectdim, links);
+	const char* jsonLayout = diagram_layout(context, rect_border, rectdim, links);
 	printf("%s", jsonLayout);
 /*
 	const char* rectdim = "07f02b0b003d04007106a08307f03d11204e04709404e04e0cc04e07006007107106208304003d03804e09a06006203d07003d07004e03203d0b6083";
