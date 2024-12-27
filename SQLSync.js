@@ -62,9 +62,3 @@ WITH cte(table_name, json_table) AS (
 	SELECT 'polyline', json_agg(row_to_json(polyline)::text) FROM polyline
 ) SELECT * FROM cte;
 
-WITH cte AS (
-	SELECT table_name, FORMAT('SELECT json_agg(row_to_json(%1$s)::text) FROM %1$s', table_name) AS query
-	FROM information_schema.tables
-	WHERE table_schema = 'public'
-)
-
