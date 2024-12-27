@@ -60,5 +60,7 @@ WITH cte(table_name, json_table) AS (
 	SELECT 'translation', json_agg(row_to_json(translation)::text) FROM translation
 	UNION ALL
 	SELECT 'polyline', json_agg(row_to_json(polyline)::text) FROM polyline
-) SELECT * FROM cte;
+)
+SELECT json_agg(json_build_object('table_name',table_name,'json_table',json_table)::text)
+FROM cte;
 
