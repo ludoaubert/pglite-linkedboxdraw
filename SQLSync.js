@@ -39,28 +39,28 @@ ORDER BY niveau;
 
 
 WITH cte(table_name, json_table) AS (
-	SELECT 'diagram', json_agg(row_to_json(diagram)::text) FROM diagram
+	SELECT 'diagram', json_agg(row_to_json(diagram))::json FROM diagram
 	UNION ALL
-	SELECT 'box', json_agg(row_to_json(box)::text) FROM box
+	SELECT 'box', json_agg(row_to_json(box))::json FROM box
 	UNION ALL
-	SELECT 'field', json_agg(row_to_json(field)::text) FROM field
+	SELECT 'field', json_agg(row_to_json(field))::json FROM field
 	UNION ALL
-	SELECT 'value', json_agg(row_to_json(value)::text) FROM value
+	SELECT 'value', json_agg(row_to_json(value))::json FROM value
 	UNION ALL
-	SELECT 'link', json_agg(row_to_json(link)::text) FROM link
+	SELECT 'link', json_agg(row_to_json(link))::json FROM link
 	UNION ALL
-	SELECT 'tag', json_agg(row_to_json(tag)::text) FROM tag
+	SELECT 'tag', json_agg(row_to_json(tag))::json FROM tag
+  	UNION ALL
+	SELECT 'message_tag', json_agg(row_to_json(message_tag))::json FROM message_tag
 	UNION ALL
-	SELECT 'message_tag', json_agg(row_to_json(message_tag)::text) FROM message_tag
+	SELECT 'graph', json_agg(row_to_json(graph))::json FROM graph
 	UNION ALL
-	SELECT 'graph', json_agg(row_to_json(graph)::text) FROM graph
+	SELECT 'rectangle', json_agg(row_to_json(rectangle))::json FROM rectangle
 	UNION ALL
-	SELECT 'rectangle', json_agg(row_to_json(rectangle)::text) FROM rectangle
+	SELECT 'translation', json_agg(row_to_json(translation))::json FROM translation
 	UNION ALL
-	SELECT 'translation', json_agg(row_to_json(translation)::text) FROM translation
-	UNION ALL
-	SELECT 'polyline', json_agg(row_to_json(polyline)::text) FROM polyline
+	SELECT 'polyline', json_agg(row_to_json(polyline))::json FROM polyline
 )
-SELECT json_agg(json_build_object('table_name',table_name,'json_table',json_table)::text)
+SELECT json_agg(json_build_object('table_name',table_name,'json_table',COALESCE(json_table,'[]'::json))::text)
 FROM cte;
 
