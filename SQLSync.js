@@ -37,7 +37,7 @@ SELECT table_name, ROW_NUMBER() OVER()
 FROM cte3
 ORDER BY niveau;
 
-diagram, box, field, value, link, tag, message_tag, graph, rectangle, translation, polyline
+
 WITH cte(table_name, json_table) AS (
 	SELECT 'diagram', json_agg(row_to_json(diagram)::text) FROM diagram
 	UNION ALL
