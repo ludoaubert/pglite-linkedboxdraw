@@ -1,64 +1,77 @@
+CREATE TABLE IF NOT EXISTS utilisateur(
+  iduser SERIAL PRIMARY KEY,
+  login VARCHAR(128),
+  password VARCHAR(128),
+  UNIQUE(login)
+);
+
 CREATE TABLE IF NOT EXISTS diagram(
-  iddiagram SERIAL PRIMARY KEY,
+  iduser INTEGER,
+  iddiagram INTEGER,
+  PRIMARY KEY (iduser, iddiagram),
   title VARCHAR(128),
-  UNIQUE(title)
+  UNIQUE(iduser, title)
 );
 
 CREATE TABLE IF NOT EXISTS box(
-  idbox SERIAL PRIMARY KEY,
+  iduser INTEGER,
+  idbox INTEGER,
+  PRIMARY KEY (iduser, idbox),
   title VARCHAR(128),
   iddiagram INTEGER,
-  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
-  UNIQUE(iddiagram, title)
+  FOREIGN KEY (iduser, iddiagram) REFERENCES diagram(iduser, iddiagram),
+  UNIQUE(iduser, iddiagram, title)
 );
 
 CREATE TABLE IF NOT EXISTS field(
-  idfield SERIAL PRIMARY KEY,
+  iduser INTEGER,
+  idfield INTEGER,
+  PRIMARY KEY (iduser, idfield),
   name VARCHAR(128),
   idbox INTEGER,
-  FOREIGN KEY (idbox) REFERENCES box(idbox),
-  UNIQUE(idbox, name),
-  UNIQUE(idbox, idfield)
+  FOREIGN KEY (iduser, idbox) REFERENCES box(iduser, idbox),
+  UNIQUE(iduser, idbox, name),
+  UNIQUE(iduser, idbox, idfield)
 );
 
 CREATE TABLE IF NOT EXISTS value(
-  idvalue SERIAL PRIMARY KEY,
+  iduser INTEGER,
+  idvalue INTEGER,
+  PRIMARY KEY (iduser, idvalue),
   data VARCHAR(128),
   idfield INTEGER,
-  FOREIGN KEY (idfield) REFERENCES field(idfield),
-  UNIQUE(idfield, data)
+  FOREIGN KEY (iduser, idfield) REFERENCES field(iduser, idfield),
+  UNIQUE(iduser, idfield, data)
 );
 
 CREATE TABLE IF NOT EXISTS link(
-  idlink SERIAL PRIMARY KEY,
+  iduser INTEGER,
+  idlink INTEGER,
+  PRIMARY KEY (iduser, idlink),
   idbox_from INTEGER,
   idfield_from INTEGER,
   idbox_to INTEGER,
   idfield_to INTEGER,
-  FOREIGN KEY (idbox_from) REFERENCES box(idbox),
-  FOREIGN KEY (idbox_from, idfield_from) REFERENCES field(idbox, idfield),
-  FOREIGN KEY (idbox_to) REFERENCES box(idbox),
-  FOREIGN KEY (idbox_to, idfield_to) REFERENCES field(idbox, idfield),
-  UNIQUE(idbox_from, idbox_to)
+  FOREIGN KEY (iduser, idbox_from) REFERENCES box(iduser, idbox),
+  FOREIGN KEY (iduser, idbox_from, idfield_from) REFERENCES field(iduser, idbox, idfield),
+  FOREIGN KEY (iduser, idbox_to) REFERENCES box(iduser, idbox),
+  FOREIGN KEY (iduser, idbox_to, idfield_to) REFERENCES field(iduser, idbox, idfield),
+  UNIQUE(iduser, idbox_from, idfield_from, idbox_to, idfield_to)
 );
 
 CREATE TABLE IF NOT EXISTS tag(
-  idtag SERIAL PRIMARY KEY,
+  iduser INTEGER,
+  idtag INTEGER,
+  PRIMARY KEY (iduser, idtag),
   type_code VARCHAR(128),
   code VARCHAR(128),
-  UNIQUE(type_code,code)
+  UNIQUE(iduser, type_code, code)
 );
 
-INSERT INTO tag(type_code, code) VALUES
-('KEY','PRIMARY_KEY'),('KEY','FOREIGN_KEY'),
-('CONSTRAINT','UNIQUE'),
-('COLOR','yellow'),('COLOR','pink'),('COLOR','hotpink'),('COLOR','palegreen'),('COLOR','red'),('COLOR','orange'),('COLOR','skyblue'),('COLOR','olive'),('COLOR','grey'),('COLOR','darkviolet'),
-('LINK_COLOR','lime'),('LINK_COLOR','fuchsia'),('LINK_COLOR','teal'),('LINK_COLOR','aqua'),('LINK_COLOR','aquamarine'),('LINK_COLOR','coral'),('LINK_COLOR','cornflowerblue'),('LINK_COLOR','darkgray'),('LINK_COLOR','darkkhaki'),
-('RELATION_CATEGORY','TR2'),
-('RELATION_CARDINALITY', '1,1'),('RELATION_CARDINALITY', '1,n'),('RELATION_CARDINALITY', 'n,n');
-
 CREATE TABLE IF NOT EXISTS message_tag(
-  idmessage SERIAL PRIMARY KEY,
+  iduser INTEGER,
+  idmessage INTEGER,
+  PRIMARY KEY (iduser, idmessage),
   message TEXT
 );
 
@@ -79,12 +92,14 @@ CREATE TYPE source_table AS ENUM ('tag', 'message_tag');
 CREATE TYPE target_table AS ENUM ('box', 'field', 'value', 'link');
   
 CREATE TABLE IF NOT EXISTS graph(
-  idgraph SERIAL PRIMARY KEY,
+  iduser INTEGER,
+  idgraph INTEGER,
+  PRIMARY KEY (iduser, idgraph),
   from_table source_table,
   from_key INTEGER,
   to_table target_table,
   to_key INTEGER,
-  UNIQUE(from_table, from_key, to_table, to_key)--,
+  UNIQUE(iduser, from_table, from_key, to_table, to_key)--,
 /*
   CHECK(is_table_primary_key(from_table::text, from_key)),
   CHECK(is_table_primary_key(to_table::text, to_key))
@@ -95,35 +110,41 @@ CREATE TABLE IF NOT EXISTS graph(
 -- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('tag',1,'field',1);
 
 CREATE TABLE IF NOT EXISTS rectangle(
-  idrectangle SERIAL PRIMARY KEY,
+  iduser INTEGER,
+  idrectangle INTEGER,
+  PRIMARY KEY (iduser, idrectangle),
   width INTEGER,
   height INTEGER,
   idbox INTEGER,
-  UNIQUE(idbox),
-  FOREIGN KEY (idbox) REFERENCES box(idbox)
+  UNIQUE(iduser, idbox),
+  FOREIGN KEY (iduser, idbox) REFERENCES box(iduser, idbox)
 );
 
 CREATE TABLE IF NOT EXISTS translation(
-  idtranslation SERIAL PRIMARY KEY,
+  iduser INTEGER,
+  idtranslation INTEGER,
+  PRIMARY KEY (iduser, idtranslation),
   context INTEGER DEFAULT 1,
   idrectangle INTEGER,
-  UNIQUE(idrectangle),
-  UNIQUE(idtranslation, context),
+  UNIQUE(iduser, idrectangle),
+  UNIQUE(iduser, idtranslation, context),
   x INTEGER,
   y INTEGER,
-  FOREIGN KEY (idrectangle) REFERENCES rectangle(idrectangle)
+  FOREIGN KEY (iduser, idrectangle) REFERENCES rectangle(iduser, idrectangle)
 );
 
 CREATE TABLE IF NOT EXISTS polyline(
-  idpolyline SERIAL PRIMARY KEY,
+  iduser INTEGER,
+  idpolyline INTEGER,
+  PRIMARY KEY (iduser, idpolyline),
   context INTEGER DEFAULT 1,
   idlink INTEGER,
   idtranslation_from INTEGER,
   idtranslation_to INTEGER,
   points JSON,
-  FOREIGN KEY (idlink) REFERENCES link(idlink),
-  UNIQUE(idlink),
-  FOREIGN KEY (idtranslation_from, context) REFERENCES translation(idtranslation, context),
-  FOREIGN KEY (idtranslation_to, context) REFERENCES translation(idtranslation, context),
-  UNIQUE(idtranslation_from, idtranslation_to)
+  FOREIGN KEY (iduser, idlink) REFERENCES link(iduser, idlink),
+  UNIQUE(iduser, idlink),
+  FOREIGN KEY (iduser, idtranslation_from, context) REFERENCES translation(iduser, idtranslation, context),
+  FOREIGN KEY (iduser, idtranslation_to, context) REFERENCES translation(iduser, idtranslation, context),
+  UNIQUE(iduser, idtranslation_from, idtranslation_to)
 );
