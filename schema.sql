@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS diagram(
 CREATE TABLE IF NOT EXISTS box(
   iduser INTEGER,
   idbox INTEGER,
-  PRIMARY KEY (iduser, idbox),
+  PRIMARY KEY (iduser, iddiagram, idbox),
   title VARCHAR(128),
   iddiagram INTEGER,
   FOREIGN KEY (iduser, iddiagram) REFERENCES diagram(iduser, iddiagram),
