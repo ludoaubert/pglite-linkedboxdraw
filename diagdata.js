@@ -3,65 +3,106 @@ export {sample_diagdata}
 const sample_diagdata = `
 INSERT INTO diagram(iddiagram, title) VALUES (1, 'Jacket Gafa BlemePro');
 
-INSERT INTO box(idbox, title, iddiagram) VALUES (1, 'ChanmeBlemeproPec', 1);
-INSERT INTO field(name, idbox) VALUES ('teillebouRap', 1);
+INSERT INTO box(title) VALUES
+		('ChanmeBlemeproPec'),
+  		('PouilledePotecaCaillerag'),
+    		('Blemepro'),
+      		('TassepeTcheubi'),
+		('GuedraTeucheTipeu'),
+  		('TejeTiepeTigenToncarInsseGueusGuedinUc'),
+    		('Lassedege'),
+      		('fechnoueuf'),
+		('ZetiNoichNeuthuZincMeucaYoce'),
+  		('zomblou'),
+    		('lassedegLeurdit'),
+      		('youvoi'),
+		('lacelles'),
+  		('mefu'),
+    		('euf'),
+      		('zedouZicmus'),
+		('vessause'),
+  		('KeneVeugra'),
+    		('keusse'),
+      		('usage');
 
-INSERT INTO box(idbox, title, iddiagram) VALUES (2, 'PouilledePotecaCaillerag', 1);
-INSERT INTO field(name, idbox) VALUES ('cesu', 2), ('reusta', 2);
+WITH cte(box_title, field_name) AS (
+	SELECT 'ChanmeBlemeproPec', 'teillebouRap' UNION ALL
+	SELECT 'PouilledePotecaCaillerag', 'cesu' UNION ALL
+ 	SELECT 'PouilledePotecaCaillerag', 'reusta' UNION ALL
+	SELECT 'Blemepro', 'cesu' UNION ALL
+ 	SELECT 'Blemepro', 'Peuclo' UNION ALL
+  	SELECT 'Blemepro', 'name' UNION ALL
+   	SELECT 'Blemepro', 'phoneTel' UNION ALL
+    	SELECT 'Blemepro', 'donbi' UNION ALL
+	SELECT 'TassepeTcheubi', 'telmor' UNION ALL
+ 	SELECT 'TassepeTcheubi', 'meuf' UNION ALL
+  	SELECT 'TassepeTcheubi', 'guedinTeub' UNION ALL
+   	SELECT 'TassepeTcheubi', 'teillebouRap' UNION ALL
+    	SELECT 'TassepeTcheubi', 'guezmere' UNION ALL
+     	SELECT 'TassepeTcheubi', 'donbi' UNION ALL
+	SELECT 'GuedraTeucheTipeu', 'tepo' UNION ALL
+ 	SELECT 'GuedraTeucheTipeu', 'teillebouRap' UNION ALL
+	SELECT 'TejeTiepeTigenToncarInsseGueusGuedinUc', 'cesu' UNION ALL
+ 	SELECT 'TejeTiepeTigenToncarInsseGueusGuedinUc', 'yeuf' UNION ALL
+  	SELECT 'TejeTiepeTigenToncarInsseGueusGuedinUc', 'KeneVeugra' UNION ALL
+	SELECT 'Lassedege', 'cesu' UNION ALL
+ 	SELECT 'Lassedege', 'al' UNION ALL
+  	SELECT 'Lassedege', 'zessegon' UNION ALL
+   	SELECT 'Lassedege', 'Peuclo' UNION ALL
+    	SELECT 'Lassedege', 'yepe' UNION ALL
+     	SELECT 'Lassedege', 'zeto' UNION ALL
+      	SELECT 'Lassedege', 'phoneTel' UNION ALL
+	SELECT 'fechnoueuf', 'cesu' UNION ALL
+ 	SELECT 'fechnoueuf', 'gova' UNION ALL
+  	SELECT 'fechnoueuf', 'vessause' UNION ALL
+	SELECT 'ZetiNoichNeuthuZincMeucaYoce', '[lassedeg]' UNION ALL
+ 	SELECT 'ZetiNoichNeuthuZincMeucaYoce', '[yecous]' UNION ALL
+  	SELECT 'ZetiNoichNeuthuZincMeucaYoce', 'zebe' UNION ALL
+	SELECT 'zomblou', '[zedouZicmus]' UNION ALL
+ 	SELECT 'zomblou', '[mifaOideOiteOe]' UNION ALL
+  	SELECT 'zomblou', '[zessegonNeuthu]' UNION ALL
+   	SELECT 'zomblou', 'yeuf' UNION ALL
+	SELECT 'lassedegLeurdit', '[zomblou]{2}' UNION ALL
+ 	SELECT 'lassedegLeurdit', 'zenZincs' UNION ALL
+  	SELECT 'lassedegLeurdit', 'vessause' UNION ALL
+   	SELECT 'lassedegLeurdit', 'yeuf' UNION ALL
+    	SELECT 'lassedegLeurdit', 'oinje' UNION ALL
+	SELECT 'youvoi', '[yeufi]{2}' UNION ALL
+ 	SELECT 'youvoi', 'zyva' UNION ALL
+  	SELECT 'youvoi', 'yepe' UNION ALL
+   	SELECT 'youvoi', 'zetyenchesZeyo' UNION ALL
+    	SELECT 'youvoi', 'nemobitKps' UNION ALL
+     	SELECT 'youvoi', 'keuf' UNION ALL
+	SELECT 'lacelles', 'keblo' UNION ALL
+ 	SELECT 'lacelles', 'euf' UNION ALL
+	SELECT 'mefu', 'cesu' UNION ALL
+ 	SELECT 'mefu', 'zeberyep' UNION ALL
+  	SELECT 'mefu', 'youvoiUc' UNION ALL
+	SELECT 'euf', 'lassedeg' UNION ALL
+ 	SELECT 'euf', 'id' UNION ALL
+  	SELECT 'euf', 'fichateraToDeuspidrepo' UNION ALL
+   	SELECT 'euf', 'yecous' UNION ALL
+	SELECT 'zedouZicmus', '[updatesKecos]' UNION ALL
+ 	SELECT 'zedouZicmus, 'yeufiyechKeco' UNION ALL
+	SELECT 'vessause', 'lassedeg' UNION ALL
+ 	SELECT 'vessause, 'persistenceYeche' UNION ALL
+	SELECT 'KeneVeugra', 'name' UNION ALL
+ 	SELECT 'KeneVeugra', '[symbolsIndices]' UNION ALL
+  	SELECT 'KeneVeugra', 'kisdeAggregator' UNION ALL
+	SELECT 'keusse', 'al' UNION ALL
+ 	SELECT 'keusse, 'zeto' UNION ALL
+	SELECT 'usage', '[zomblouLeurdits]' UNION ALL
+ 	SELECT 'usage', '{youvois}' UNION ALL
+  	SELECT 'usage', 'fechnoueuf' UNION ALL
+   	SELECT 'usage', 'lancebaVeucheYeuveZarbiZeu' UNION ALL
+    	SELECT 'usage', 'Zeyos' UNION ALL
+     	SELECT 'usage', 'euf'
+)
+INSERT INTO field(idbox, name)
+SELECT b.idbox, cte.field_name
+FROM cte
+JOIN box b ON b.title=cte.box_title;
 
-INSERT INTO box(idbox, title, iddiagram) VALUES(3, 'Blemepro', 1);
-INSERT INTO field(name, idbox) VALUES ('cesu', 3), ('Peuclo', 3), ('name', 3), ('phoneTel', 3), ('donbi', 3);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(4, 'TassepeTcheubi', 1);
-INSERT INTO field(name, idbox) VALUES ('telmor', 4), ('meuf', 4), ('guedinTeub', 4), ('teillebouRap', 4), ('guezmere', 4), ('donbi', 4);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(5, 'GuedraTeucheTipeu', 1);
-INSERT INTO field(name, idbox) VALUES ('tepo', 5), ('teillebouRap', 5);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(6, 'TejeTiepeTigenToncarInsseGueusGuedinUc', 1);
-INSERT INTO field(name, idbox) VALUES ('cesu', 6), ('yeuf', 6), ('KeneVeugra', 6);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(7, 'Lassedege', 1);
-INSERT INTO field(name, idbox) VALUES ('cesu', 7), ('al', 7), ('zessegon', 7), ('Peuclo', 7), ('yepe', 7), ('zeto', 7), ('phoneTel', 7);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(8, 'fechnoueuf', 1);
-INSERT INTO field(name, idbox) VALUES ('cesu', 8), ('gova', 8), ('vessause', 8);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(9, 'ZetiNoichNeuthuZincMeucaYoce', 1);
-INSERT INTO field(name, idbox) VALUES ('[lassedeg]', 9), ('[yecous]', 9), ('zebe', 9);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(10, 'zomblou', 1);
-INSERT INTO field(name, idbox) VALUES ('[zedouZicmus]', 10), ('[mifaOideOiteOe]', 10), ('[zessegonNeuthu]', 10), ('yeuf', 10);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(11, 'lassedegLeurdit', 1);
-INSERT INTO field(name, idbox) VALUES ('[zomblou]{2}', 11), ('zenZincs', 11), ('vessause', 11), ('yeuf', 11), ('oinje', 11);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(12, 'youvoi', 1);
-INSERT INTO field(name, idbox) VALUES ('[yeufi]{2}', 12), ('zyva', 12), ('yepe', 12), ('zetyenchesZeyo', 12), ('nemobitKps', 12), ('keuf', 12);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(13, 'lacelles', 1);
-INSERT INTO field(name, idbox) VALUES ('keblo', 13), ('euf', 13);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(14, 'mefu', 1);
-INSERT INTO field(name, idbox) VALUES ('cesu', 14), ('zeberyep', 14), ('youvoiUc', 14);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(15, 'euf', 1);
-INSERT INTO field(name, idbox) VALUES ('lassedeg', 15), ('id', 15), ('fichateraToDeuspidrepo', 15), ('yecous', 15);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(16, 'zedouZicmus', 1);
-INSERT INTO field(name, idbox) VALUES ('[updatesKecos]', 16), ('yeufiyechKeco', 16);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(17, 'vessause', 1);
-INSERT INTO field(name, idbox) VALUES ('lassedeg', 17), ('persistenceYeche', 17);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(18, 'KeneVeugra', 1);
-INSERT INTO field(name, idbox) VALUES ('name', 18), ('[symbolsIndices]', 18), ('kisdeAggregator', 18);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(19, 'keusse', 1);
-INSERT INTO field(name, idbox) VALUES ('al', 19), ('zeto', 19);
-
-INSERT INTO box(idbox, title, iddiagram) VALUES(20, 'usage', 1);
-INSERT INTO field(name, idbox) VALUES ('[zomblouLeurdits]', 20), ('{youvois}', 20), ('fechnoueuf', 20), ('lancebaVeucheYeuveZarbiZeu', 20), ('Zeyos', 20), ('euf', 20);
 
 INSERT INTO link(idbox_from, idbox_to) VALUES
 (2+1, 14+1),
