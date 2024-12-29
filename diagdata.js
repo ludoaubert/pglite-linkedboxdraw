@@ -82,6 +82,7 @@ WITH cte(box_title, field_name) AS (
  	SELECT 'ZetiNoichNeuthuZincMeucaYoce', '[yecous]' UNION ALL
   	SELECT 'ZetiNoichNeuthuZincMeucaYoce', 'zebe' UNION ALL
    	SELECT 'zomblou', 'idz' UNION ALL
+    	SELECT 'zomblou', 'idzz' UNION ALL
 	SELECT 'zomblou', '[zedouZicmus]' UNION ALL
  	SELECT 'zomblou', '[mifaOideOiteOe]' UNION ALL
   	SELECT 'zomblou', '[zessegonNeuthu]' UNION ALL
