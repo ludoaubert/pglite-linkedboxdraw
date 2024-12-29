@@ -72,6 +72,7 @@ WITH cte(box_title, field_name) AS (
       	SELECT 'Lassedege', 'phoneTel' UNION ALL
        	SELECT 'fechnoueuf', 'idf' UNION ALL
 	SELECT 'fechnoueuf', 'idv' UNION ALL
+ 	SELECT 'fechnoueuf', 'idcbp' UNION ALL
 	SELECT 'fechnoueuf', 'cesu' UNION ALL
  	SELECT 'fechnoueuf', 'gova' UNION ALL
   	SELECT 'fechnoueuf', 'vessause' UNION ALL
