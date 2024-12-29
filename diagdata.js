@@ -102,8 +102,8 @@ WITH cte(box_title, field_name) AS (
     	SELECT 'usage', 'Zeyos' UNION ALL
      	SELECT 'usage', 'euf'
 )
-INSERT INTO field(idbox, name)
-SELECT b.idbox, cte.field_name
+INSERT INTO field(idbox, name, uuid_field)
+SELECT b.idbox, cte.field_name, gen_random_uuid ()
 FROM cte
 JOIN box b ON b.title=cte.box_title;
 
