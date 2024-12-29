@@ -4,26 +4,26 @@ const sample_diagdata = `
 INSERT INTO diagram(iddiagram, uuid_diagram, title) VALUES (1, gen_random_uuid(), 'Jacket Gafa BlemePro');
 
 WITH cte(box_title) AS (
-	SELECT 'ChanmeBlemeproPec' UNION ALL --1
-  	SELECT 'PouilledePotecaCaillerag' UNION ALL --2
-    	SELECT 'Blemepro' UNION ALL --3
-      	SELECT 'TassepeTcheubi' UNION ALL --4
-	SELECT 'GuedraTeucheTipeu' UNION ALL --5
-  	SELECT 'TejeTiepeTigenToncarInsseGueusGuedinUc' UNION ALL --6
-    	SELECT 'Lassedege' UNION ALL --7
-      	SELECT 'fechnoueuf' UNION ALL --8
-	SELECT 'ZetiNoichNeuthuZincMeucaYoce' UNION ALL --9
-  	SELECT 'zomblou' UNION ALL --10
-    	SELECT 'lassedegLeurdit' UNION ALL --11
-      	SELECT 'youvoi' UNION ALL --12
-	SELECT 'lacelles' UNION ALL --13
-  	SELECT 'mefu' UNION ALL --14
-    	SELECT 'euf' UNION ALL --15
-      	SELECT 'zedouZicmus' UNION ALL --16
-	SELECT 'vessause' UNION ALL --17
-  	SELECT 'KeneVeugra' UNION ALL --18
-    	SELECT 'keusse' UNION ALL --19
-      	SELECT 'usage' --20
+	SELECT 'ChanmeBlemeproPec' UNION ALL
+  	SELECT 'PouilledePotecaCaillerag' UNION ALL
+    	SELECT 'Blemepro' UNION ALL
+      	SELECT 'TassepeTcheubi' UNION ALL
+	SELECT 'GuedraTeucheTipeu' UNION ALL
+  	SELECT 'TejeTiepeTigenToncarInsseGueusGuedinUc' UNION ALL
+    	SELECT 'Lassedege' UNION ALL
+      	SELECT 'fechnoueuf' UNION ALL
+	SELECT 'ZetiNoichNeuthuZincMeucaYoce' UNION ALL
+  	SELECT 'zomblou' UNION ALL
+    	SELECT 'lassedegLeurdit' UNION ALL
+      	SELECT 'youvoi' UNION ALL
+	SELECT 'lacelles' UNION ALL
+  	SELECT 'mefu' UNION ALL
+    	SELECT 'euf' UNION ALL
+      	SELECT 'zedouZicmus' UNION ALL
+	SELECT 'vessause' UNION ALL
+  	SELECT 'KeneVeugra' UNION ALL
+    	SELECT 'keusse' UNION ALL
+      	SELECT 'usage'
 )
 INSERT INTO box(uuid_box, title)
 SELECT gen_random_uuid (), box_title
