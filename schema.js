@@ -4,6 +4,7 @@ const schema=`
 
 CREATE TABLE IF NOT EXISTS diagram(
   iddiagram SERIAL PRIMARY KEY,
+  uuid_diagram UUID,
   title VARCHAR(128),
   UNIQUE(title)
 );
@@ -19,6 +20,7 @@ CREATE TABLE IF NOT EXISTS box(
 
 CREATE TABLE IF NOT EXISTS field(
   idfield SERIAL PRIMARY KEY,
+  uuid_field UUID,
   name VARCHAR(128),
   idbox INTEGER,
   FOREIGN KEY (idbox) REFERENCES box(idbox),
@@ -28,6 +30,7 @@ CREATE TABLE IF NOT EXISTS field(
 
 CREATE TABLE IF NOT EXISTS value(
   idvalue SERIAL PRIMARY KEY,
+  uuid_value UUID,
   data VARCHAR(128),
   idfield INTEGER,
   FOREIGN KEY (idfield) REFERENCES field(idfield),
@@ -36,6 +39,7 @@ CREATE TABLE IF NOT EXISTS value(
 
 CREATE TABLE IF NOT EXISTS link(
   idlink SERIAL PRIMARY KEY,
+  uuid_link UUID,
   idbox_from INTEGER,
   idfield_from INTEGER,
   idbox_to INTEGER,
@@ -49,6 +53,7 @@ CREATE TABLE IF NOT EXISTS link(
 
 CREATE TABLE IF NOT EXISTS tag(
   idtag SERIAL PRIMARY KEY,
+  uuid_tag UUID,
   type_code VARCHAR(128),
   code VARCHAR(128),
   UNIQUE(type_code,code)
@@ -66,6 +71,7 @@ INSERT INTO tag(type_code, code) VALUES
 
 CREATE TABLE IF NOT EXISTS message_tag(
   idmessage SERIAL PRIMARY KEY,
+  uuid_message UUID,
   message TEXT
 );
 
@@ -87,6 +93,7 @@ CREATE TYPE target_table AS ENUM ('box', 'field', 'value', 'link');
   
 CREATE TABLE IF NOT EXISTS graph(
   idgraph SERIAL PRIMARY KEY,
+  uuid_graph UUID,
   from_table source_table,
   from_key INTEGER,
   to_table target_table,
@@ -103,6 +110,7 @@ CREATE TABLE IF NOT EXISTS graph(
 
 CREATE TABLE IF NOT EXISTS rectangle(
   idrectangle SERIAL PRIMARY KEY,
+  uuid_rectangle UUID,
   width INTEGER,
   height INTEGER,
   idbox INTEGER,
@@ -112,6 +120,7 @@ CREATE TABLE IF NOT EXISTS rectangle(
 
 CREATE TABLE IF NOT EXISTS translation(
   idtranslation SERIAL PRIMARY KEY,
+  uuid_translation UUID,
   context INTEGER DEFAULT 1,
   idrectangle INTEGER,
   UNIQUE(idrectangle),
@@ -123,6 +132,7 @@ CREATE TABLE IF NOT EXISTS translation(
 
 CREATE TABLE IF NOT EXISTS polyline(
   idpolyline SERIAL PRIMARY KEY,
+  uuid_polyline UUID,
   context INTEGER DEFAULT 1,
   idlink INTEGER,
   idtranslation_from INTEGER,
