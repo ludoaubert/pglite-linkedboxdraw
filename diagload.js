@@ -59,8 +59,8 @@ async function compute_tr2_link_tags()
 			WHERE l.idbox_from != l.idbox_to
    				AND box_from.context = box_to.context
 		)
-		INSERT INTO graph(from_table, from_key, to_table, to_key)
-  		SELECT 'tag', t.idtag, 'link', l.idlink
+		INSERT INTO graph(uuid_graph, from_table, from_key, to_table, to_key)
+  		SELECT gen_random_uuid(), 'tag', t.idtag, 'link', l.idlink
     		FROM cte_link l
       		JOIN tag t ON t.type_code='RELATION_CATEGORY' AND t.code='TR2'
 		WHERE EXISTS (
@@ -85,8 +85,8 @@ async function data2contexts() {
     			UNION ALL
        			SELECT idbox, LENGTH(name) * ${MONOSPACE_FONT_PIXEL_WIDTH}, ${CHAR_RECT_HEIGHT}  FROM field
 		), cte2 AS (
-  			INSERT INTO rectangle(idbox, width, height)
-  			SELECT idbox, MAX(width) AS width, LEAST(SUM(height), ${RECTANGLE_BOTTOM_CAP}) AS height
+  			INSERT INTO rectangle(uuid_rectangle, idbox, width, height)
+  			SELECT gen_random_uuid(), idbox, MAX(width) AS width, LEAST(SUM(height), ${RECTANGLE_BOTTOM_CAP}) AS height
     			FROM cte
       			GROUP BY idbox
 	 		ORDER BY idbox
@@ -147,8 +147,8 @@ async function data2contexts() {
        			SELECT idrectangle, chemin, DENSE_RANK() OVER (ORDER BY chemin) AS context
 	 		FROM cte3
     		)
-      		INSERT INTO translation(idrectangle, context, x, y)
-     		SELECT idrectangle, context, NULL AS x, NULL AS y
+      		INSERT INTO translation(uuid_translation, idrectangle, context, x, y)
+     		SELECT gen_random_uuid(), idrectangle, context, NULL AS x, NULL AS y
        		FROM cte4
  	`);
 
@@ -784,8 +784,8 @@ async function updateContextPolylines(selectedContextIndex)
 	await db.exec(`
   		DELETE FROM polyline;
 
-		INSERT INTO polyline(idlink, points, idtranslation_from, idtranslation_to)
-		SELECT l.idlink, polyline_.points, t_from.idtranslation, t_to.idtranslation
+		INSERT INTO polyline(uuid_polyline, idlink, points, idtranslation_from, idtranslation_to)
+		SELECT gen_random_uuid(), l.idlink, polyline_.points, t_from.idtranslation, t_to.idtranslation
   		FROM json_to_recordset('${slinks}) AS polyline_("from" int, "to" int, points json)
      		JOIN link l ON l.idbox_from=polyline_.from AND l.idbox_to=polyline_.to
 		JOIN rectangle r_from ON r_from.idbox=l.idbox_from
@@ -908,8 +908,8 @@ async function updateColorLinks(){
   			SELECT DISTINCT from_key, to_key
      			FROM cte
 		)
-  		INSERT INTO graph(from_table, from_key, to_table, to_key)
-    		SELECT 'tag', from_key, 'field', to_key
+  		INSERT INTO graph(uuid_graph, from_table, from_key, to_table, to_key)
+    		SELECT gen_random_uuid(), 'tag', from_key, 'field', to_key
       		FROM cte2
 /*
 	available in PostgreSQL 17
