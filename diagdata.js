@@ -83,14 +83,14 @@ WITH cte(box_title, field_name) AS (
   	SELECT 'euf', 'fichateraToDeuspidrepo' UNION ALL
    	SELECT 'euf', 'yecous' UNION ALL
 	SELECT 'zedouZicmus', '[updatesKecos]' UNION ALL
- 	SELECT 'zedouZicmus, 'yeufiyechKeco' UNION ALL
+ 	SELECT 'zedouZicmus', 'yeufiyechKeco' UNION ALL
 	SELECT 'vessause', 'lassedeg' UNION ALL
  	SELECT 'vessause, 'persistenceYeche' UNION ALL
 	SELECT 'KeneVeugra', 'name' UNION ALL
  	SELECT 'KeneVeugra', '[symbolsIndices]' UNION ALL
   	SELECT 'KeneVeugra', 'kisdeAggregator' UNION ALL
 	SELECT 'keusse', 'al' UNION ALL
- 	SELECT 'keusse, 'zeto' UNION ALL
+ 	SELECT 'keusse', 'zeto' UNION ALL
 	SELECT 'usage', '[zomblouLeurdits]' UNION ALL
  	SELECT 'usage', '{youvois}' UNION ALL
   	SELECT 'usage', 'fechnoueuf' UNION ALL
