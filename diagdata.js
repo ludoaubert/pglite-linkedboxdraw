@@ -1,7 +1,7 @@
 export {sample_diagdata}
 
 const sample_diagdata = `
-INSERT INTO diagram(iddiagram, title) VALUES (1, 'Jacket Gafa BlemePro');
+INSERT INTO diagram(iddiagram, uuid_diagram, title) VALUES (1, gen_random_uuid(), 'Jacket Gafa BlemePro');
 
 WITH cte(box_title) AS (
 	SELECT 'ChanmeBlemeproPec' UNION ALL
@@ -30,25 +30,32 @@ SELECT gen_random_uuid (), box_title
 FROM cte
 
 WITH cte(box_title, field_name) AS (
+	SELECT 'ChanmeBlemeproPec', 'idcbp' UNION ALL
 	SELECT 'ChanmeBlemeproPec', 'teillebouRap' UNION ALL
+ 	SELECT 'PouilledePotecaCaillerag', 'idppc' UNION ALL
 	SELECT 'PouilledePotecaCaillerag', 'cesu' UNION ALL
  	SELECT 'PouilledePotecaCaillerag', 'reusta' UNION ALL
+  	SELECT 'Blemepro', 'idb' UNION ALL
 	SELECT 'Blemepro', 'cesu' UNION ALL
  	SELECT 'Blemepro', 'Peuclo' UNION ALL
   	SELECT 'Blemepro', 'name' UNION ALL
    	SELECT 'Blemepro', 'phoneTel' UNION ALL
     	SELECT 'Blemepro', 'donbi' UNION ALL
+     	SELECT 'TassepeTcheubi', 'idtt' UNION ALL
 	SELECT 'TassepeTcheubi', 'telmor' UNION ALL
  	SELECT 'TassepeTcheubi', 'meuf' UNION ALL
   	SELECT 'TassepeTcheubi', 'guedinTeub' UNION ALL
    	SELECT 'TassepeTcheubi', 'teillebouRap' UNION ALL
     	SELECT 'TassepeTcheubi', 'guezmere' UNION ALL
      	SELECT 'TassepeTcheubi', 'donbi' UNION ALL
+      	SELECT 'GuedraTeucheTipeu', 'idgtt' UNION ALL
 	SELECT 'GuedraTeucheTipeu', 'tepo' UNION ALL
  	SELECT 'GuedraTeucheTipeu', 'teillebouRap' UNION ALL
+  	SELECT 'TejeTiepeTigenToncarInsseGueusGuedinUc', 'idttttiggu' UNION ALL
 	SELECT 'TejeTiepeTigenToncarInsseGueusGuedinUc', 'cesu' UNION ALL
  	SELECT 'TejeTiepeTigenToncarInsseGueusGuedinUc', 'yeuf' UNION ALL
   	SELECT 'TejeTiepeTigenToncarInsseGueusGuedinUc', 'KeneVeugra' UNION ALL
+   	SELECT 'Lassedege', 'idl' UNION ALL
 	SELECT 'Lassedege', 'cesu' UNION ALL
  	SELECT 'Lassedege', 'al' UNION ALL
   	SELECT 'Lassedege', 'zessegon' UNION ALL
@@ -56,45 +63,58 @@ WITH cte(box_title, field_name) AS (
     	SELECT 'Lassedege', 'yepe' UNION ALL
      	SELECT 'Lassedege', 'zeto' UNION ALL
       	SELECT 'Lassedege', 'phoneTel' UNION ALL
+       	SELECT 'fechnoueuf', 'idf' UNION ALL
 	SELECT 'fechnoueuf', 'cesu' UNION ALL
  	SELECT 'fechnoueuf', 'gova' UNION ALL
   	SELECT 'fechnoueuf', 'vessause' UNION ALL
+   	SELECT 'ZetiNoichNeuthuZincMeucaYoce', 'idznnzmy' UNION ALL
 	SELECT 'ZetiNoichNeuthuZincMeucaYoce', '[lassedeg]' UNION ALL
  	SELECT 'ZetiNoichNeuthuZincMeucaYoce', '[yecous]' UNION ALL
   	SELECT 'ZetiNoichNeuthuZincMeucaYoce', 'zebe' UNION ALL
+   	SELECT 'zomblou', 'idz' UNION ALL
 	SELECT 'zomblou', '[zedouZicmus]' UNION ALL
  	SELECT 'zomblou', '[mifaOideOiteOe]' UNION ALL
   	SELECT 'zomblou', '[zessegonNeuthu]' UNION ALL
    	SELECT 'zomblou', 'yeuf' UNION ALL
+    	SELECT 'lassedegLeurdit', 'idll' UNION ALL
 	SELECT 'lassedegLeurdit', '[zomblou]{2}' UNION ALL
  	SELECT 'lassedegLeurdit', 'zenZincs' UNION ALL
   	SELECT 'lassedegLeurdit', 'vessause' UNION ALL
    	SELECT 'lassedegLeurdit', 'yeuf' UNION ALL
     	SELECT 'lassedegLeurdit', 'oinje' UNION ALL
+     	SELECT 'youvoi', 'idy' UNION ALL
 	SELECT 'youvoi', '[yeufi]{2}' UNION ALL
  	SELECT 'youvoi', 'zyva' UNION ALL
   	SELECT 'youvoi', 'yepe' UNION ALL
    	SELECT 'youvoi', 'zetyenchesZeyo' UNION ALL
     	SELECT 'youvoi', 'nemobitKps' UNION ALL
      	SELECT 'youvoi', 'keuf' UNION ALL
+      	SELECT 'lacelles', 'idls' UNION ALL
 	SELECT 'lacelles', 'keblo' UNION ALL
  	SELECT 'lacelles', 'euf' UNION ALL
+  	SELECT 'mefu', 'idm' UNION ALL
 	SELECT 'mefu', 'cesu' UNION ALL
  	SELECT 'mefu', 'zeberyep' UNION ALL
   	SELECT 'mefu', 'youvoiUc' UNION ALL
+   	SELECT 'euf', 'ide' UNION ALL
 	SELECT 'euf', 'lassedeg' UNION ALL
  	SELECT 'euf', 'id' UNION ALL
   	SELECT 'euf', 'fichateraToDeuspidrepo' UNION ALL
    	SELECT 'euf', 'yecous' UNION ALL
+    	SELECT 'zedouZicmus', 'idzz' UNION ALL
 	SELECT 'zedouZicmus', '[updatesKecos]' UNION ALL
  	SELECT 'zedouZicmus', 'yeufiyechKeco' UNION ALL
+  	SELECT 'vessause', idv' UNION ALL
 	SELECT 'vessause', 'lassedeg' UNION ALL
  	SELECT 'vessause', 'persistenceYeche' UNION ALL
+  	SELECT 'KeneVeugra', 'idkv' UNION ALL
 	SELECT 'KeneVeugra', 'name' UNION ALL
  	SELECT 'KeneVeugra', '[symbolsIndices]' UNION ALL
   	SELECT 'KeneVeugra', 'kisdeAggregator' UNION ALL
+   	SELECT 'keusse', idk' UNION ALL
 	SELECT 'keusse', 'al' UNION ALL
  	SELECT 'keusse', 'zeto' UNION ALL
+  	SELECT 'usage', 'idu' UNION ALL
 	SELECT 'usage', '[zomblouLeurdits]' UNION ALL
  	SELECT 'usage', '{youvois}' UNION ALL
   	SELECT 'usage', 'fechnoueuf' UNION ALL
@@ -102,8 +122,8 @@ WITH cte(box_title, field_name) AS (
     	SELECT 'usage', 'Zeyos' UNION ALL
      	SELECT 'usage', 'euf'
 )
-INSERT INTO field(idbox, name, uuid_field)
-SELECT b.idbox, cte.field_name, gen_random_uuid ()
+INSERT INTO field(idbox, uuid_field, name)
+SELECT b.idbox, gen_random_uuid(), cte.field_name
 FROM cte
 JOIN box b ON b.title=cte.box_title;
 
