@@ -128,7 +128,7 @@ WITH cte(box_title, field_name) AS (
 	SELECT 'KeneVeugra', 'name' UNION ALL
  	SELECT 'KeneVeugra', '[symbolsIndices]' UNION ALL
   	SELECT 'KeneVeugra', 'kisdeAggregator' UNION ALL
-   	SELECT 'keusse', idk' UNION ALL
+   	SELECT 'keusse', 'idk' UNION ALL
 	SELECT 'keusse', 'al' UNION ALL
  	SELECT 'keusse', 'zeto' UNION ALL
   	SELECT 'usage', 'idu' UNION ALL
