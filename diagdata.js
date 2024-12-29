@@ -3,27 +3,31 @@ export {sample_diagdata}
 const sample_diagdata = `
 INSERT INTO diagram(iddiagram, title) VALUES (1, 'Jacket Gafa BlemePro');
 
-INSERT INTO box(title) VALUES
-		('ChanmeBlemeproPec'),
-  		('PouilledePotecaCaillerag'),
-    		('Blemepro'),
-      		('TassepeTcheubi'),
-		('GuedraTeucheTipeu'),
-  		('TejeTiepeTigenToncarInsseGueusGuedinUc'),
-    		('Lassedege'),
-      		('fechnoueuf'),
-		('ZetiNoichNeuthuZincMeucaYoce'),
-  		('zomblou'),
-    		('lassedegLeurdit'),
-      		('youvoi'),
-		('lacelles'),
-  		('mefu'),
-    		('euf'),
-      		('zedouZicmus'),
-		('vessause'),
-  		('KeneVeugra'),
-    		('keusse'),
-      		('usage');
+WITH cte(box_title) AS (
+	SELECT 'ChanmeBlemeproPec' UNION ALL
+  	SELECT 'PouilledePotecaCaillerag' UNION ALL
+    	SELECT 'Blemepro' UNION ALL
+      	SELECT 'TassepeTcheubi' UNION ALL
+	SELECT 'GuedraTeucheTipeu' UNION ALL
+  	SELECT 'TejeTiepeTigenToncarInsseGueusGuedinUc' UNION ALL
+    	SELECT 'Lassedege' UNION ALL
+      	SELECT 'fechnoueuf' UNION ALL
+	SELECT 'ZetiNoichNeuthuZincMeucaYoce' UNION ALL
+  	SELECT 'zomblou' UNION ALL
+    	SELECT 'lassedegLeurdit' UNION ALL
+      	SELECT 'youvoi' UNION ALL
+	SELECT 'lacelles' UNION ALL
+  	SELECT 'mefu' UNION ALL
+    	SELECT 'euf' UNION ALL
+      	SELECT 'zedouZicmus' UNION ALL
+	SELECT 'vessause' UNION ALL
+  	SELECT 'KeneVeugra' UNION ALL
+    	SELECT 'keusse' UNION ALL
+      	SELECT 'usage'
+)
+INSERT INTO box(uuid_box, title)
+SELECT gen_random_uuid (), box_title
+FROM cte
 
 WITH cte(box_title, field_name) AS (
 	SELECT 'ChanmeBlemeproPec', 'teillebouRap' UNION ALL
