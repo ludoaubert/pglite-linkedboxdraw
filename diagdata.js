@@ -85,7 +85,7 @@ WITH cte(box_title, field_name) AS (
 	SELECT 'zedouZicmus', '[updatesKecos]' UNION ALL
  	SELECT 'zedouZicmus', 'yeufiyechKeco' UNION ALL
 	SELECT 'vessause', 'lassedeg' UNION ALL
- 	SELECT 'vessause, 'persistenceYeche' UNION ALL
+ 	SELECT 'vessause', 'persistenceYeche' UNION ALL
 	SELECT 'KeneVeugra', 'name' UNION ALL
  	SELECT 'KeneVeugra', '[symbolsIndices]' UNION ALL
   	SELECT 'KeneVeugra', 'kisdeAggregator' UNION ALL
