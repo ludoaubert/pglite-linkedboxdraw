@@ -27,7 +27,7 @@ WITH cte(box_title) AS (
 )
 INSERT INTO box(uuid_box, title)
 SELECT gen_random_uuid (), box_title
-FROM cte
+FROM cte;
 
 WITH cte(box_title, field_name) AS (
 	SELECT 'ChanmeBlemeproPec', 'idcbp' UNION ALL
