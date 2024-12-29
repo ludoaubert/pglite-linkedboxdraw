@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS diagram(
 
 CREATE TABLE IF NOT EXISTS box(
   idbox SERIAL PRIMARY KEY,
+  uuidbox UUID,
   title VARCHAR(128),
   iddiagram INTEGER,
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
