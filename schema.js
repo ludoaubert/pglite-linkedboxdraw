@@ -69,6 +69,8 @@ INSERT INTO tag(type_code, code) VALUES
 ('RELATION_CATEGORY','TR2'),
 ('RELATION_CARDINALITY', '1,1'),('RELATION_CARDINALITY', '1,n'),('RELATION_CARDINALITY', 'n,n');
 
+UPDATE tag SET uuid_tag = gen_random_uuid();
+
 CREATE TABLE IF NOT EXISTS message_tag(
   idmessage SERIAL PRIMARY KEY,
   uuid_message UUID,
