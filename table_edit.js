@@ -195,12 +195,15 @@ async function init() {
 			FROM cte;
    		`);
 		const doc = ret.rows[0].json_agg;
-		const response = await fetch("https://www.diskloud.fr:3000/linkedboxdraw/post", {
-			method: "POST",
-			mode: "no-cors",
-			body: JSON.stringify(doc),
-			headers: {"Content-Type": "application/json"}
-		});
+		const response = await fetch(
+			//"https://www.diskloud.fr:3000/linkedboxdraw/post",
+			"https://192.168.0.21:3000/linkedboxdraw/post",
+			{
+				method: "POST",
+				body: JSON.stringify(doc),
+				headers: {"Content-Type": "application/json"}
+			}
+		);
 		console.log(response.status);
 	});
 	editTitle.addEventListener("change", updateTitle);
