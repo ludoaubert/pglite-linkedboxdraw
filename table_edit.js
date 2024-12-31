@@ -185,6 +185,7 @@ async function init() {
 
 		const doc = ret.rows[0].json_build_object;
 		const json_doc = JSON.stringify(doc);
+		console.log(json_doc);
 		const response = await fetch(
 			//"https://www.diskloud.fr:3000/linkedboxdraw/post",
 			"https://192.168.0.21:8443/linkedboxdraw/post",
