@@ -166,7 +166,7 @@ async function init() {
 		await db.exec(diagData);
 		await data2contexts();
 	});
-	upload.addEventListener("change", async (evt)=>{
+	upload.addEventListener("click", async (evt)=>{
 		const ret = await db.query(`
   			WITH cte(table_name, json_table) AS (
 				SELECT 'diagram', json_agg(row_to_json(diagram))::json FROM diagram
