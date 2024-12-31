@@ -195,7 +195,7 @@ async function init() {
 			FROM cte;
    		`);
 		const doc = ret.rows[0].json_agg;
-		const response = await fetch("https://example.org/post", {
+		const response = await fetch("https://diskloud.fr/linkedboxdraw/post", {
 			method: "POST",
 			body: JSON.stringify(doc),
 			headers: {"Content-Type": "application/json"}
