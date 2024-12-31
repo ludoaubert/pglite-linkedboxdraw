@@ -195,7 +195,7 @@ async function init() {
 			FROM cte;
    		`);
 		const doc = ret.rows[0].json_agg;
-		const json_doc = JSON.stringify(doc);
+		const json_doc = '[' + doc.join(',') + ']';
 		const response = await fetch(
 			//"https://www.diskloud.fr:3000/linkedboxdraw/post",
 			"https://192.168.0.21:8443/linkedboxdraw/post",
