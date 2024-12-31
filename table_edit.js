@@ -197,6 +197,7 @@ async function init() {
 		const doc = ret.rows[0].json_agg;
 		const response = await fetch("https://www.diskloud.fr:3000/linkedboxdraw/post", {
 			method: "POST",
+			mode: "no-cors",
 			body: JSON.stringify(doc),
 			headers: {"Content-Type": "application/json"}
 		});
