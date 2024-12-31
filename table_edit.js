@@ -24,7 +24,7 @@ var currentColorBoxIndex = -1;
 var currentColorFieldIndex = -1;
 
 var input ;
-var upload;
+var upload ;
 var editTitle ;
 var newDiagramButton ;
 var boxCombo ;
@@ -195,7 +195,12 @@ async function init() {
 			FROM cte;
    		`);
 		const doc = ret.rows[0].json_agg;
-		
+		const request = new Request("https://example.org/post", {
+			method: "POST",
+			body: JSON.stringify(doc),
+		});
+		const response = await fetch(request);
+		console.log(response.status);
 	});
 	editTitle.addEventListener("change", updateTitle);
 	newDiagramButton.addEventListener("click", async () => {await newDiagram(); await displayCurrent(); await drawDiag();});
