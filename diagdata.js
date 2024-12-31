@@ -1,7 +1,7 @@
 export {sample_diagdata}
 
 const sample_diagdata = `
-INSERT INTO diagram(iddiagram, uuid_diagram, title) VALUES (1, gen_random_uuid(), 'Jacket Gafa BlemePro');
+INSERT INTO diagram(iddiagram, title) VALUES (1, 'Jacket Gafa BlemePro');
 
 WITH cte(box_title) AS (
 	SELECT 'ChanmeBlemeproPec' UNION ALL
@@ -25,8 +25,8 @@ WITH cte(box_title) AS (
     	SELECT 'keusse' UNION ALL
       	SELECT 'usage'
 )
-INSERT INTO box(uuid_box, title)
-SELECT gen_random_uuid (), box_title
+INSERT INTO box(title)
+SELECT box_title
 FROM cte;
 
 WITH cte(box_title, field_name) AS (
@@ -145,8 +145,8 @@ WITH cte(box_title, field_name) AS (
     	SELECT 'usage', 'Zeyos' UNION ALL
      	SELECT 'usage', 'euf'
 )
-INSERT INTO field(idbox, uuid_field, name)
-SELECT b.idbox, gen_random_uuid(), cte.field_name
+INSERT INTO field(idbox, name)
+SELECT b.idbox, cte.field_name
 FROM cte
 JOIN box b ON b.title=cte.box_title;
 
@@ -176,8 +176,8 @@ WITH cte(fromBoxTitle, fromFieldName, toBoxTitle, toFieldName) AS (
 	SELECT 'youvoi', 'idm', 'mefu', 'idm' UNION ALL
 	SELECT 'zomblou', 'idzz', 'zedouZicmus', 'idzz'
 )
-INSERT INTO link(uuid_link, idbox_from, idfield_from, idbox_to, idfield_to)
-SELECT gen_random_uuid(), from_box.idbox, from_field.idfield, to_box.idbox, to_field.idfield
+INSERT INTO link(idbox_from, idfield_from, idbox_to, idfield_to)
+SELECT from_box.idbox, from_field.idfield, to_box.idbox, to_field.idfield
 FROM cte
 JOIN box from_box ON from_box.title = fromBoxTitle
 JOIN field from_field ON from_field.idbox = from_box.idbox AND from_field.name=fromFieldName
@@ -190,8 +190,8 @@ WITH cte(box_title, field_name, color) AS (
 	SELECT 'euf','lassedeg','yellow' UNION ALL
 	SELECT 'mefu','zeberyep','hotpink'
 )
-INSERT INTO graph(uuid_graph, from_table, from_key, to_table, to_key)
-SELECT gen_random_uuid(), 'tag', t.idtag, 'field', f.idfield
+INSERT INTO graph(from_table, from_key, to_table, to_key)
+SELECT 'tag', t.idtag, 'field', f.idfield
 FROM cte
 JOIN tag t ON t.type_code='COLOR' AND t.code=cte.color
 JOIN box b ON b.title = cte.box_title
