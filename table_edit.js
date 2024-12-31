@@ -168,6 +168,22 @@ async function init() {
 	});
 	upload.addEventListener("click", async (evt)=>{
 		const ret = await db.query(`
+  			SELECT json_build_object(
+				'diagram', (SELECT json_agg(row_to_json(diagram))::json FROM diagram),
+				'box', (SELECT json_agg(row_to_json(box))::json FROM box),
+				'field', (SELECT json_agg(row_to_json(field))::json FROM field),
+				'value', (SELECT json_agg(row_to_json(value))::json FROM value),
+				'link', (SELECT json_agg(row_to_json(link))::json FROM link),
+				'tag', (SELECT json_agg(row_to_json(tag))::json FROM tag),
+				'message_tag', (SELECT json_agg(row_to_json(message_tag))::json FROM message_tag),
+				'graph', (SELECT json_agg(row_to_json(graph))::json FROM graph),
+				'rectangle', (SELECT json_agg(row_to_json(rectangle))::json FROM rectangle),
+				'translation', (SELECT json_agg(row_to_json(translation))::json FROM translation),
+				'polyline', (SELECT json_agg(row_to_json(polyline))::json FROM polyline)
+			);
+   		`);
+/*		
+		const ret = await db.query(`
   			WITH cte(table_name, json_table) AS (
 				SELECT 'diagram', json_agg(row_to_json(diagram))::json FROM diagram
 				UNION ALL
@@ -194,7 +210,8 @@ async function init() {
 			SELECT json_agg(json_build_object('table_name',table_name,'json_table',COALESCE(json_table,'[]'::json))::text)
 			FROM cte;
    		`);
-		const doc = ret.rows[0].json_agg;
+*/
+		const doc = ret.rows[0].json_build_object;
 		const json_doc = '[' + doc.join(',') + ']';
 		const response = await fetch(
 			//"https://www.diskloud.fr:3000/linkedboxdraw/post",
