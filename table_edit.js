@@ -198,6 +198,7 @@ async function init() {
 		const request = new Request("https://example.org/post", {
 			method: "POST",
 			body: JSON.stringify(doc),
+			headers: {"Content-Type": "application/json"}
 		});
 		const response = await fetch(request);
 		console.log(response.status);
