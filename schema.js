@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS box(
   idbox SERIAL PRIMARY KEY,
   uuid_box UUID,
   title VARCHAR(128),
-  iddiagram INTEGER,
+  iddiagram INTEGER DEFAULT 1,
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
   UNIQUE(iddiagram, title)
 );
