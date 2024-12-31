@@ -195,12 +195,11 @@ async function init() {
 			FROM cte;
    		`);
 		const doc = ret.rows[0].json_agg;
-		const request = new Request("https://example.org/post", {
+		const response = await fetch("https://example.org/post", {
 			method: "POST",
 			body: JSON.stringify(doc),
 			headers: {"Content-Type": "application/json"}
 		});
-		const response = await fetch(request);
 		console.log(response.status);
 	});
 	editTitle.addEventListener("change", updateTitle);
