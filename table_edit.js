@@ -197,7 +197,7 @@ async function init() {
 		const doc = ret.rows[0].json_agg;
 		const response = await fetch(
 			//"https://www.diskloud.fr:3000/linkedboxdraw/post",
-			"https://192.168.0.21:3000/linkedboxdraw/post",
+			"http://192.168.0.21:3000/linkedboxdraw/post",
 			{
 				method: "POST",
 				body: JSON.stringify(doc),
