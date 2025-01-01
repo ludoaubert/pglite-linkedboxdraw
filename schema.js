@@ -95,7 +95,7 @@ CREATE TYPE target_table AS ENUM ('box', 'field', 'value', 'link');
   
 CREATE TABLE IF NOT EXISTS graph(
   idgraph SERIAL PRIMARY KEY,
-  iddiagram INTEGER,
+  iddiagram INTEGER DEFAULT 1,
   uuid_graph UUID DEFAULT gen_random_uuid(),
   from_table source_table,
   from_key INTEGER,
