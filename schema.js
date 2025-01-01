@@ -53,10 +53,12 @@ CREATE TABLE IF NOT EXISTS link(
 
 CREATE TABLE IF NOT EXISTS tag(
   idtag SERIAL PRIMARY KEY,
+  iddiagram INTEGER DEFAULT 1,
   uuid_tag UUID DEFAULT gen_random_uuid(),
   type_code VARCHAR(128),
   code VARCHAR(128),
-  UNIQUE(type_code,code)
+  UNIQUE(type_code,code),
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram)
 );
 
 INSERT INTO tag(type_code, code) VALUES
@@ -68,8 +70,6 @@ INSERT INTO tag(type_code, code) VALUES
 ('LINK_COLOR','lightblue'),('LINK_COLOR','lightcoral'),('LINK_COLOR','greenyellow'),('LINK_COLOR','lightgoldenrodyellow'),('LINK_COLOR','lightgray'),('LINK_COLOR','lightgreen'),('LINK_COLOR','lightgrey'),('LINK_COLOR','lightpink'),('LINK_COLOR','lightsalmon'),('LINK_COLOR','lightseagreen'),('LINK_COLOR','lightskyblue'),('LINK_COLOR','lightslategray'),
 ('RELATION_CATEGORY','TR2'),
 ('RELATION_CARDINALITY', '1,1'),('RELATION_CARDINALITY', '1,n'),('RELATION_CARDINALITY', 'n,n');
-
-UPDATE tag SET uuid_tag = gen_random_uuid();
 
 CREATE TABLE IF NOT EXISTS message_tag(
   idmessage SERIAL PRIMARY KEY,
