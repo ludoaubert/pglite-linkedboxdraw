@@ -3,6 +3,16 @@ export {sample_diagdata}
 const sample_diagdata = `
 INSERT INTO diagram(iddiagram, title) VALUES (1, 'Jacket Gafa BlemePro');
 
+INSERT INTO tag(type_code, code) VALUES
+('KEY','PRIMARY_KEY'),('KEY','FOREIGN_KEY'),
+('CONSTRAINT','UNIQUE'),
+('COLOR','yellow'),('COLOR','pink'),('COLOR','hotpink'),('COLOR','palegreen'),('COLOR','red'),('COLOR','orange'),('COLOR','skyblue'),('COLOR','olive'),('COLOR','grey'),('COLOR','darkviolet'),
+('LINK_COLOR','lime'),('LINK_COLOR','fuchsia'),('LINK_COLOR','teal'),('LINK_COLOR','aqua'),('LINK_COLOR','aquamarine'),('LINK_COLOR','coral'),('LINK_COLOR','cornflowerblue'),('LINK_COLOR','darkgray'),('LINK_COLOR','darkkhaki'),
+('LINK_COLOR','indianred'),('LINK_COLOR','indigo'),('LINK_COLOR','ivory'),('LINK_COLOR','khaki'),('LINK_COLOR','mediumorchid'),('LINK_COLOR','mediumpurple'),('LINK_COLOR','lawngreen'),('LINK_COLOR','lemonchiffon'),
+('LINK_COLOR','lightblue'),('LINK_COLOR','lightcoral'),('LINK_COLOR','greenyellow'),('LINK_COLOR','lightgoldenrodyellow'),('LINK_COLOR','lightgray'),('LINK_COLOR','lightgreen'),('LINK_COLOR','lightgrey'),('LINK_COLOR','lightpink'),('LINK_COLOR','lightsalmon'),('LINK_COLOR','lightseagreen'),('LINK_COLOR','lightskyblue'),('LINK_COLOR','lightslategray'),
+('RELATION_CATEGORY','TR2'),
+('RELATION_CARDINALITY', '1,1'),('RELATION_CARDINALITY', '1,n'),('RELATION_CARDINALITY', 'n,n');
+
 WITH cte(box_title) AS (
 	SELECT 'ChanmeBlemeproPec' UNION ALL
   	SELECT 'PouilledePotecaCaillerag' UNION ALL
