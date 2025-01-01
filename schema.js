@@ -95,11 +95,13 @@ CREATE TYPE target_table AS ENUM ('box', 'field', 'value', 'link');
   
 CREATE TABLE IF NOT EXISTS graph(
   idgraph SERIAL PRIMARY KEY,
+  iddiagram INTEGER,
   uuid_graph UUID DEFAULT gen_random_uuid(),
   from_table source_table,
   from_key INTEGER,
   to_table target_table,
   to_key INTEGER,
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
   UNIQUE(from_table, from_key, to_table, to_key)--,
 /*
   CHECK(is_table_primary_key(from_table::text, from_key)),
