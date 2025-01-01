@@ -73,8 +73,10 @@ UPDATE tag SET uuid_tag = gen_random_uuid();
 
 CREATE TABLE IF NOT EXISTS message_tag(
   idmessage SERIAL PRIMARY KEY,
+  iddiagram INTEGER DEFAULT 1,
   uuid_message UUID DEFAULT gen_random_uuid(),
-  message TEXT
+  message TEXT,
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram)
 );
 
 /*
