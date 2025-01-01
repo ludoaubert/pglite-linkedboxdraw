@@ -96,22 +96,18 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 
 		MERGE INTO field f
 		USING (
-			SELECT rf.uuid_field, rf.name, b.idbox
+			SELECT d.iddiagram, rf.uuid_field, rf.name, b.idbox
 			FROM json_to_recordset('${json_field}') AS rf("idfield" int, "uuid_field" uuid, "name" text, "idbox" int)
 			JOIN json_to_recordset('${json_box}') AS rb("idbox" int, "uuid_box" uuid, "title" text, "iddiagram" int) ON rf.idbox=rb.idbox
 			JOIN box b ON b.uuid_box=rb.uuid_box
+			JOIN diagram d ON d.uuid_diagram='${uuid_diagram}'
 		) rf
 		ON f.uuid_field = rf.uuid_field
 		WHEN NOT MATCHED BY TARGET THEN
-			INSERT (uuid_field, name, idbox) VALUES(rf.uuid_field, rf.name, rf.idbox)
+			INSERT (iddiagram, uuid_field, name, idbox) VALUES(rf.iddiagram, rf.uuid_field, rf.name, rf.idbox)
 		WHEN MATCHED AND f.name != rf.name THEN
 			UPDATE SET name = rf.name
-		WHEN NOT MATCHED BY SOURCE AND EXISTS(
-                                SELECT *
-                                FROM box b
-                                JOIN diagram d ON b.iddiagram=d.iddiagram
-                                WHERE b.idbox=f.idbox AND d.uuid_diagram='${uuid_diagram}'
-                        )
+		WHEN NOT MATCHED BY SOURCE AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=f.iddiagram AND d.uuid_diagram='${uuid_diagram}')
 			THEN DELETE;
         `);
         console.log("MERGE INTO field done...");
@@ -122,26 +118,21 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 
 		MERGE INTO value v
 		USING (
-			SELECT rv.uuid_value, rv.data, f.idfield
+			SELECT d.iddiagram, rv.uuid_value, rv.data, f.idfield
 			FROM json_to_recordset('${json_value}') AS rv("idvalue" int, "uuid_value" uuid, "data" text, "idfield" int)
 			JOIN json_to_recordset('${json_field}') AS rf("idfield" int, "uuid_field" uuid, "name" text, "idbox" int) ON rv.idfield=rf.idfield
 			JOIN field f ON f.uuid_field = rf.uuid_field
+			JOIN diagram d ON d.uuid_diagram='${uuid_diagram}'
 		) rv
                 ON v.uuid_value = rv.uuid_value
                 WHEN NOT MATCHED BY TARGET THEN
-                        INSERT (uuid_value, data, idfield) VALUES(rv.uuid_value, rv.data, rv.idfield)
+                        INSERT (iddiagram, uuid_value, data, idfield) VALUES(rv.iddiagram, rv.uuid_value, rv.data, rv.idfield)
 		WHEN MATCHED AND v.data != rv.data THEN
 			UPDATE SET data = rv.data
 		WHEN MATCHED AND v.idfield != rv.idfield THEN
 			UPDATE SET idfield = rv.idfield
-                WHEN NOT MATCHED BY SOURCE AND EXISTS(
-                                SELECT *
-				FROM field f
-                                JOIN box b ON f.idbox = b.idbox
-                                JOIN diagram d ON b.iddiagram=d.iddiagram
-                                WHERE v.idfield=f.idfield AND d.uuid_diagram='${uuid_diagram}'
-                        )
-		THEN DELETE;
+                WHEN NOT MATCHED BY SOURCE AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=v.iddiagram AND d.uuid_diagram='${uuid_diagram}')
+			THEN DELETE;
         `);
         console.log("MERGE INTO value done...");
 
@@ -151,7 +142,7 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 
 		MERGE INTO link l
 		USING (
-			SELECT rl.uuid_link, b_from.idbox AS idbox_from, f_from.idfield AS idfield_from, b_to.idbox AS idbox_to, f_to.idfield AS idfield_to
+			SELECT d.iddiagram, rl.uuid_link, b_from.idbox AS idbox_from, f_from.idfield AS idfield_from, b_to.idbox AS idbox_to, f_to.idfield AS idfield_to
 			FROM json_to_recordset('${json_link}') AS rl("idlink" int, "uuid_link" uuid, "idbox_from" int, "idfield_from" int, "idbox_to" int, "idfield_to" int)
              		JOIN json_to_recordset('${json_box}') AS rb_from("idbox" int, "uuid_box" uuid, "title" text, "iddiagram" int) ON rl.idbox_from=rb_from.idbox
                         JOIN json_to_recordset('${json_box}') AS rb_to("idbox" int, "uuid_box" uuid, "title" text, "iddiagram" int) ON rl.idbox_to=rb_to.idbox
@@ -161,14 +152,14 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 			JOIN box b_to ON b_to.uuid_box=rb_to.uuid_box
 			JOIN field f_from ON f_from.uuid_field=rf_from.uuid_field
 			JOIN field f_to ON f_to.uuid_field=rf_to.uuid_field
+			JOIN diagram d ON d.uuid_diagram = '${uuid_diagram}'
 		) rl
 		ON l.uuid_link = rl.uuid_link
 		WHEN NOT MATCHED BY TARGET THEN
-			INSERT (uuid_link, idbox_from, idfield_from, idbox_to, idfield_to)
-			VALUES(rl.uuid_link, rl.idbox_from, rl.idfield_from, rl.idbox_to, rl.idfield_to)
+			INSERT (iddiagram, uuid_link, idbox_from, idfield_from, idbox_to, idfield_to)
+			VALUES(rl.iddiagram, rl.uuid_link, rl.idbox_from, rl.idfield_from, rl.idbox_to, rl.idfield_to)
 		WHEN NOT MATCHED BY SOURCE
-			AND EXISTS(SELECT * FROM box b JOIN diagram d ON d.iddiagram=b.iddiagram WHERE d.uuid_diagram='${uuid_diagram}' AND b.idbox=l.idbox_from)
-			AND EXISTS(SELECT * FROM box b JOIN diagram d ON d.iddiagram=b.iddiagram WHERE d.uuid_diagram='${uuid_diagram}' AND b.idbox=l.idbox_to)
+			AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=l.iddiagram AND d.uuid_diagram='${uuid_diagram}')
 			THEN DELETE;
         `);
         console.log("MERGE INTO link done...");
@@ -178,10 +169,21 @@ app.post('/linkedboxdraw/post', async (req, res) => {
         const result6 = await client.query(`
 
 		MERGE INTO tag t
-		USING json_to_recordset('${json_tag}') AS rt("idtag" int, "uuid_tag" uuid, "type_code" text, "code" text)
+		USING (
+			SELECT d.iddiagram, rt.uuid_tag, rt.type_code, rt.code
+			FROM json_to_recordset('${json_tag}') AS rt("idtag" int, "uuid_tag" uuid, "type_code" text, "code" text)
+			JOIN diagram d ON d.uuid_diagram = '${uuid_diagram}'
+		) rt
 		ON t.uuid_tag = rt.uuid_tag
 		WHEN NOT MATCHED BY TARGET THEN
-			INSERT (uuid_tag, type_code, code) VALUES(rt.uuid_tag, rt.type_code, rt.code);
+			INSERT (iddiagram, uuid_tag, type_code, code) VALUES(rt.iddiagram, rt.uuid_tag, rt.type_code, rt.code)
+		WHEN MATCHED AND t.type_code != rt.type_code THEN
+                        UPDATE SET type_code = rt.type_code
+                WHEN MATCHED AND t.code != rt.code THEN
+                        UPDATE SET code = rt.code
+                WHEN NOT MATCHED BY SOURCE
+			AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram = t.iddiagram AND d.uuid_diagram='${uuid_diagram}')
+			THEN DELETE;
         `);
         console.log("MERGE INTO tag done...");
 
@@ -200,12 +202,9 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 			INSERT (uuid_message, message, iddiagram) VALUES(rm.uuid_message, rm.message, rm.iddiagram)
 		WHEN MATCHED AND m.message != rm.message THEN
                         UPDATE SET message = rm.message
-		WHEN NOT MATCHED BY SOURCE AND EXISTS(
-			SELECT *
-			FROM diagram d
-			WHERE d.iddiagram = m.iddiagram AND d.uuid_diagram='${uuid_diagram}'
-		)
-		THEN DELETE;
+		WHEN NOT MATCHED BY SOURCE
+			AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram = m.iddiagram AND d.uuid_diagram='${uuid_diagram}')
+			THEN DELETE;
         `);
         console.log("MERGE INTO message_tag done...");
 
@@ -257,9 +256,7 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 		WHEN MATCHED AND g.iddiagram != rg.iddiagram THEN
 			UPDATE SET iddiagram = rg.iddiagram
 		WHEN NOT MATCHED BY SOURCE AND EXISTS(
-			SELECT *
-			FROM diagram d
-			WHERE g.iddiagram=d.iddiagram AND d.uuid_diagram='${uuid_diagram}'
+			SELECT * FROM diagram d WHERE g.iddiagram=d.iddiagram AND d.uuid_diagram='${uuid_diagram}'
 		)
 		THEN DELETE;
         `);
@@ -271,25 +268,22 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 
 		MERGE INTO rectangle r
 		USING (
-			SELECT rr.uuid_rectangle, rr.width, rr.height, b.idbox
+			SELECT d.iddiagram, rr.uuid_rectangle, rr.width, rr.height, b.idbox
 			FROM json_to_recordset('${json_rectangle}') AS rr("idrectangle" int, "uuid_rectangle" uuid, "width" int, "height" int, "idbox" int)
 			JOIN json_to_recordset('${json_box}') AS rb("idbox" int, "uuid_box" uuid, "title" text, "iddiagram" int) ON rr.idbox=rb.idbox
 			JOIN box b ON b.uuid_box=rb.uuid_box
+			JOIN diagram d ON d.uuid_diagram='${uuid_diagram}'
 		) rr
 		ON r.uuid_rectangle = rr.uuid_rectangle
 		WHEN NOT MATCHED BY TARGET THEN
-			INSERT (uuid_rectangle, width, height, idbox) VALUES(rr.uuid_rectangle, rr.width, rr.height, rr.idbox)
+			INSERT (iddiagram, uuid_rectangle, width, height, idbox)
+			VALUES(rr.iddiagram, rr.uuid_rectangle, rr.width, rr.height, rr.idbox)
 		WHEN MATCHED AND r.width != rr.width THEN
 			UPDATE SET width = rr.width
 		WHEN MATCHED AND r.height != rr.height THEN
 			UPDATE SET height = rr.height
 		WHEN NOT MATCHED BY SOURCE
-                       AND EXISTS(
-                                SELECT *
-                                FROM box b
-                                JOIN diagram d ON b.iddiagram=d.iddiagram
-                                WHERE r.idbox=b.idbox AND d.uuid_diagram='${uuid_diagram}'
-                        )
+                       AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=r.iddiagram AND d.uuid_diagram='${uuid_diagram}')
 			THEN DELETE;
         `);
         console.log("MERGE INTO rectangle done...");
@@ -300,14 +294,16 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 
 		MERGE INTO translation t
 		USING (
-			SELECT rt.uuid_translation, rt.context, r.idrectangle, rt.x, rt.y
+			SELECT d.iddiagram, rt.uuid_translation, rt.context, r.idrectangle, rt.x, rt.y
 			FROM json_to_recordset('${json_translation}') AS rt("idtranslation" int, "uuid_translation" uuid, "context" int, "idrectangle" int, "x" int, "y" int)
 			JOIN json_to_recordset('${json_rectangle}') AS rr("idrectangle" int, "uuid_rectangle" uuid, "width" int, "height" int, "idbox" int) ON rt.idrectangle=rr.idrectangle
 			JOIN rectangle r ON r.uuid_rectangle=rr.uuid_rectangle
+			JOIN diagram d ON d.uuid_diagram='${uuid_diagram}'
 		) rt
 		ON t.uuid_translation = rt.uuid_translation
 		WHEN NOT MATCHED BY TARGET THEN
-			INSERT (uuid_translation, context, idrectangle, x, y) VALUES(rt.uuid_translation, rt.context, rt.idrectangle, rt.x, rt.y)
+			INSERT (iddiagram, uuid_translation, context, idrectangle, x, y)
+			VALUES(rt.iddiagram, rt.uuid_translation, rt.context, rt.idrectangle, rt.x, rt.y)
 		WHEN MATCHED AND t.context != rt.context THEN
 			UPDATE SET context = rt.context
 		WHEN MATCHED AND t.x != rt.x THEN
@@ -315,13 +311,7 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 		WHEN MATCHED AND t.y != rt.y THEN
 			UPDATE SET y = rt.y
 		WHEN NOT MATCHED BY SOURCE
-                       AND EXISTS(
-                                SELECT *
-                                FROM rectangle r
-                                JOIN box b ON r.idbox=b.idbox
-                                JOIN diagram d ON b.iddiagram=d.iddiagram
-                                WHERE r.idrectangle=t.idrectangle AND d.uuid_diagram='${uuid_diagram}'
-                        )
+                       AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=t.iddiagram AND d.uuid_diagram='${uuid_diagram}')
 			THEN DELETE;
         `);
         console.log("MERGE INTO translation done...");
@@ -339,8 +329,9 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 			UPDATE SET context = rp.context
 		WHEN MATCHED AND p.points != rp.points THEN
 			UPDATE SET points = rp.points
-		WHEN NOT MATCHED BY SOURCE THEN
-			DELETE;
+		WHEN NOT MATCHED BY SOURCE
+			AND EXISTS (SELECT * FROM diagram d WHERE d.iddiagram=p.iddiagram AND d.uuid_diagram='${uuid_diagram}')
+			THEN DELETE;
 	`);
       console.log("MERGE INTO polyline done...");
 */
