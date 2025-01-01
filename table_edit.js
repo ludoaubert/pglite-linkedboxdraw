@@ -172,14 +172,14 @@ async function init() {
 				'diagram', (SELECT json_agg(row_to_json(diagram))::json FROM diagram),
 				'box', (SELECT json_agg(row_to_json(box))::json FROM box),
 				'field', (SELECT json_agg(row_to_json(field))::json FROM field),
-				'value', (SELECT json_agg(row_to_json(value))::json FROM value),
+				'value', (SELECT coalesce(json_agg(row_to_json(value))::json, '[]'::json) FROM value),
 				'link', (SELECT json_agg(row_to_json(link))::json FROM link),
 				'tag', (SELECT json_agg(row_to_json(tag))::json FROM tag),
-				'message_tag', (SELECT json_agg(row_to_json(message_tag))::json FROM message_tag),
+				'message_tag', (SELECT coalesce(json_agg(row_to_json(message_tag))::json, '[]'::json) FROM message_tag),
 				'graph', (SELECT json_agg(row_to_json(graph))::json FROM graph),
 				'rectangle', (SELECT json_agg(row_to_json(rectangle))::json FROM rectangle),
 				'translation', (SELECT json_agg(row_to_json(translation))::json FROM translation),
-				'polyline', (SELECT json_agg(row_to_json(polyline))::json FROM polyline)
+				'polyline', (SELECT coalesce(json_agg(row_to_json(polyline))::json, '[]'::json) FROM polyline)
 			);
    		`);
 
