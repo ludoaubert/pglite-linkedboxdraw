@@ -39,11 +39,13 @@ CREATE TABLE IF NOT EXISTS value(
 
 CREATE TABLE IF NOT EXISTS link(
   idlink SERIAL PRIMARY KEY,
+  iddiagram INTEGER DEFAULT 1,
   uuid_link UUID DEFAULT gen_random_uuid(),
   idbox_from INTEGER,
   idfield_from INTEGER,
   idbox_to INTEGER,
   idfield_to INTEGER,
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
   FOREIGN KEY (idbox_from) REFERENCES box(idbox),
   FOREIGN KEY (idbox_from, idfield_from) REFERENCES field(idbox, idfield),
   FOREIGN KEY (idbox_to) REFERENCES box(idbox),
