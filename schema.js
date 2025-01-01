@@ -20,9 +20,11 @@ CREATE TABLE IF NOT EXISTS box(
 
 CREATE TABLE IF NOT EXISTS field(
   idfield SERIAL PRIMARY KEY,
+  iddiagram INTEGER DEFAULT 1,
   uuid_field UUID DEFAULT gen_random_uuid(),
   name VARCHAR(128),
   idbox INTEGER,
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
   FOREIGN KEY (idbox) REFERENCES box(idbox),
   UNIQUE(idbox, name),
   UNIQUE(idbox, idfield)
@@ -30,9 +32,11 @@ CREATE TABLE IF NOT EXISTS field(
 
 CREATE TABLE IF NOT EXISTS value(
   idvalue SERIAL PRIMARY KEY,
+  iddiagram INTEGER DEFAULT 1,
   uuid_value UUID DEFAULT gen_random_uuid(),
   data VARCHAR(128),
   idfield INTEGER,
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
   FOREIGN KEY (idfield) REFERENCES field(idfield),
   UNIQUE(idfield, data)
 );
@@ -118,16 +122,19 @@ CREATE TABLE IF NOT EXISTS graph(
 
 CREATE TABLE IF NOT EXISTS rectangle(
   idrectangle SERIAL PRIMARY KEY,
+  iddiagram INTEGER DEFAULT 1,
   uuid_rectangle UUID DEFAULT gen_random_uuid(),
   width INTEGER,
   height INTEGER,
   idbox INTEGER,
   UNIQUE(idbox),
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
   FOREIGN KEY (idbox) REFERENCES box(idbox)
 );
 
 CREATE TABLE IF NOT EXISTS translation(
   idtranslation SERIAL PRIMARY KEY,
+  iddiagram INTEGER DEFAULT 1,
   uuid_translation UUID DEFAULT gen_random_uuid(),
   context INTEGER DEFAULT 1,
   idrectangle INTEGER,
@@ -135,11 +142,13 @@ CREATE TABLE IF NOT EXISTS translation(
   UNIQUE(idtranslation, context),
   x INTEGER,
   y INTEGER,
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
   FOREIGN KEY (idrectangle) REFERENCES rectangle(idrectangle)
 );
 
 CREATE TABLE IF NOT EXISTS polyline(
   idpolyline SERIAL PRIMARY KEY,
+  iddiagram INTEGER DEFAULT 1,
   uuid_polyline UUID DEFAULT gen_random_uuid(),
   context INTEGER DEFAULT 1,
   idlink INTEGER,
@@ -148,6 +157,7 @@ CREATE TABLE IF NOT EXISTS polyline(
   points JSON,
   FOREIGN KEY (idlink) REFERENCES link(idlink),
   UNIQUE(idlink),
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
   FOREIGN KEY (idtranslation_from, context) REFERENCES translation(idtranslation, context),
   FOREIGN KEY (idtranslation_to, context) REFERENCES translation(idtranslation, context),
   UNIQUE(idtranslation_from, idtranslation_to)
