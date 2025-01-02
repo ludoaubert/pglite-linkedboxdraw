@@ -27,6 +27,7 @@ var input ;
 var upload ;
 var download ;
 var downloadDiagramListButton ;
+var onlineDocumentCombo ;
 var editTitle ;
 var newDiagramButton ;
 var boxCombo ;
@@ -98,6 +99,7 @@ async function init() {
 	input = document.getElementById("fi");
 	upload = document.getElementById("upload_online_doc");
 	download = document.getElementById("download_online_doc");
+	onlineDocumentCombo = document.getElementById("online_docs");
 	downloadDiagramListButton = document.getElementById("download_diagram_list"); 
 	editTitle = document.getElementById("title");
 	newDiagramButton = document.getElementById("new diagram");
@@ -159,6 +161,14 @@ async function init() {
 		await db.exec(delete_from_tables);
 		await db.exec(diagData);
 		await data2contexts();
+	});
+	downloadDiagramListButton.addEventListener("click", async (evt)=>{
+		const response = await fetch(
+			//"https://www.diskloud.fr:3000/linkedboxdraw/list",
+			"https://192.168.0.21:8443/linkedboxdraw/list"
+		);
+		console.log(response.status);
+		//onlineDocumentCombo.innerHtml=...
 	});
 	upload.addEventListener("click", async (evt)=>{
 		const ret = await db.query(`
