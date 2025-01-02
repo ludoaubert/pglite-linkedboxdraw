@@ -178,17 +178,43 @@ async function init() {
 			//"https://www.diskloud.fr:3000/linkedboxdraw/list",
 			"https://192.168.0.21:8443/linkedboxdraw/list"
 		);
-		const json = await response.json();
-		console.log(json);
+		const sjson = await response.json();
+		console.log(sjson);
+		const json = JSON.parse(sjson);
 		const {uuid_diagram, title} = json[onlineDocumentCombo.selectedIndex];
 
 		const response2 = await fetch(
 			//"https://www.diskloud.fr:3000/linkedboxdraw/get",
 			`https://192.168.0.21:8443/linkedboxdraw/get?uuid_diagram=${uuid_diagram}`
 		);
-		const json2 = await response2.json();
+		const sjson2 = await response2.json();
+		const json_doc = JSON.parse(sjson2);
 		await db.exec(delete_from_tables);
-		
+
+		const ret1 = await db.query(`
+  			WITH cte (table_name, columns) AS (
+				SELECT table_name, STRING_AGG(FORMAT('%s %s', column_name, data_type),', ' ORDER BY ordinal_position)
+				FROM INFORMATION_SCHEMA.COLUMNS
+				WHERE table_schema='public'
+				GROUP BY table_name
+			)
+			SELECT json_object_agg(table_name, columns)
+			FROM cte
+  		`);
+		const column_list = ret1.rows[0].json_object_agg;
+		const ret2 = await db.query(`
+  			INSERT INTO diagram SELECT * FROM json_to_recordset('${json_doc.diagram}') AS rd(${column_list.diagram});
+  			INSERT INTO box SELECT * FROM json_to_recordset('${json_doc.box}') AS rd(${column_list.box});
+  			INSERT INTO field SELECT * FROM json_to_recordset('${json_doc.field}') AS rd(${column_list.field});
+  			INSERT INTO value SELECT * FROM json_to_recordset('${json_doc.value}') AS rd(${column_list.value});
+  			INSERT INTO link SELECT * FROM json_to_recordset('${json_doc.link}') AS rd(${column_list.link});
+  			INSERT INTO tag SELECT * FROM json_to_recordset('${json_doc.tag}') AS rd(${column_list.tag});
+  			INSERT INTO message_tag SELECT * FROM json_to_recordset('${json_doc.message_tag}') AS rd(${column_list.message_tag});
+  			INSERT INTO graph SELECT * FROM json_to_recordset('${json_doc.graph}') AS rd(${column_list.graph});
+  			INSERT INTO rectangle SELECT * FROM json_to_recordset('${json_doc.rectangle}') AS rd(${column_list.rectangle});
+  			INSERT INTO translation SELECT * FROM json_to_recordset('${json_doc.translation}') AS rd(${column_list.translation});
+  			INSERT INTO polyline SELECT * FROM json_to_recordset('${json_doc.polyline}') AS rd(${column_list.polyline});
+  		`);
 	});
 	upload.addEventListener("click", async (evt)=>{
 		const ret = await db.query(`
