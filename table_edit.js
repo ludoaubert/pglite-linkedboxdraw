@@ -188,10 +188,7 @@ async function init() {
 			`https://192.168.0.21:8443/linkedboxdraw/get?uuid_diagram=${uuid_diagram}`
 		);
 		const sjson2 = await response2.json();
-		const json_doc_deep = JSON.parse(sjson2);
-		const json_doc = Map(Object.entries(json_doc_deep)
-					.map([key, value] => [key, JSON.stringify(value)])
-				    );
+		const json_doc = JSON.parse(sjson2);
 		
 		await db.exec(delete_from_tables);
 
