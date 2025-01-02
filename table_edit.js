@@ -25,6 +25,8 @@ var currentColorFieldIndex = -1;
 
 var input ;
 var upload ;
+var download ;
+var downloadDiagramList
 var editTitle ;
 var newDiagramButton ;
 var boxCombo ;
@@ -68,16 +70,6 @@ var addColorButton;
 var updateColorButton;
 var applyRepartitionButton;
 
-function download(filename, jsonData) {
-  var element = document.createElement('a');
-  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + jsonData);
-  element.setAttribute('download', filename);
-  element.style.display = 'none';
-  document.body.appendChild(element);
-  element.click();
-  document.body.removeChild(element);
-}
-
 function newDiagram() {
 
 	mydata={documentTitle:"", boxes:[], values:[], boxComments:[], fieldComments:[], links:[], fieldColors:[]};
@@ -105,6 +97,8 @@ async function init() {
 
 	input = document.getElementById("fi");
 	upload = document.getElementById("upload_online_doc");
+	download = document.getElementById("download_online_doc");
+	downloadDiagramListButton = document.getElementById("download_diagram_list"); 
 	editTitle = document.getElementById("title");
 	newDiagramButton = document.getElementById("new diagram");
 	boxCombo = document.getElementById("boxes");
