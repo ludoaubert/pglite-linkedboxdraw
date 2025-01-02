@@ -169,7 +169,8 @@ async function init() {
 		);
 		const json = await response.json();
 		console.log(json);
-		onlineDocumentCombo.innerHTML = json.map(({uuid_diagram, title})=>`<option>${title}</option>`).join('');
+		const innerHTML = json.map(({uuid_diagram, title})=>`<option>${title}</option>`).join('');
+		onlineDocumentCombo.innerHTML = innerHTML;
 	});
 	upload.addEventListener("click", async (evt)=>{
 		const ret = await db.query(`
