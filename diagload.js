@@ -5,7 +5,7 @@ import {db, init, displayCurrent} from "./table_edit.js";
 import {schema} from "./schema.js"
 import {sample_diagdata} from "./diagdata.js"
 
-export {drawDiag, compute_links, ApplyRepartition, enforce_bounding_rectangle};
+export {drawDiag, updateColorLinks, compute_links, ApplyRepartition, enforce_bounding_rectangle};
 export {data2contexts};
 export {MONOSPACE_FONT_PIXEL_WIDTH, CHAR_RECT_HEIGHT, RECTANGLE_BOTTOM_CAP};
 
@@ -733,7 +733,6 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 
 async function drawDiag()
 {
-	await updateColorLinks();
 	const css = await drawDiagramStyle();
 	console.log(css);
 	document.getElementById("repartition").innerHTML = await drawRepartition();
@@ -859,6 +858,7 @@ window.main = async function main()
 	sheet.id="dynamic-sheet";
 	document.body.appendChild(sheet);
 	await data2contexts();
+	await updateColorLinks();
 	await drawDiag();
 	await init();
 }
