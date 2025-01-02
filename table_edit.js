@@ -202,7 +202,7 @@ async function init() {
 			FROM cte
   		`);
 		const column_list = ret1.rows[0].json_object_agg;
-		const ret2 = await db.query(`
+		const query = `
   			INSERT INTO diagram SELECT * FROM json_to_recordset('${json_doc.diagram}') AS rd(${column_list.diagram});
   			INSERT INTO box SELECT * FROM json_to_recordset('${json_doc.box}') AS rd(${column_list.box});
   			INSERT INTO field SELECT * FROM json_to_recordset('${json_doc.field}') AS rd(${column_list.field});
@@ -215,6 +215,9 @@ async function init() {
   			INSERT INTO translation SELECT * FROM json_to_recordset('${json_doc.translation}') AS rd(${column_list.translation});
   			INSERT INTO polyline SELECT * FROM json_to_recordset('${json_doc.polyline}') AS rd(${column_list.polyline});
   		`);
+
+		console.log(query);
+		const ret2 = await db.query(query);
 	});
 	upload.addEventListener("click", async (evt)=>{
 		const ret = await db.query(`
