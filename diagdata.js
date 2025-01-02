@@ -194,17 +194,4 @@ JOIN field from_field ON from_field.idbox = from_box.idbox AND from_field.name=f
 JOIN box to_box ON to_box.title = toBoxTitle
 JOIN field to_field ON to_field.idbox = to_box.idbox AND to_field.name=toFieldName;
 
-
-
-WITH cte(box_title, field_name, color) AS (
-	SELECT 'euf','lassedeg','yellow' UNION ALL
-	SELECT 'mefu','zeberyep','hotpink'
-)
-INSERT INTO graph(from_table, from_key, to_table, to_key)
-SELECT 'tag', t.idtag, 'field', f.idfield
-FROM cte
-JOIN tag t ON t.type_code='COLOR' AND t.code=cte.color
-JOIN box b ON b.title = cte.box_title
-JOIN field f ON f.idbox = b.idbox AND f.name = cte.field_name;
-
 `
