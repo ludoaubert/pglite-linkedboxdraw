@@ -185,7 +185,9 @@ async function init() {
 			//"https://www.diskloud.fr:3000/linkedboxdraw/get",
 			`https://192.168.0.21:8443/linkedboxdraw/get?uuid_diagram=${uuid_diagram}`
 		);
-		const json2 = await response2.json();	
+		const json2 = await response2.json();
+		await db.exec(delete_from_tables);
+		
 	});
 	upload.addEventListener("click", async (evt)=>{
 		const ret = await db.query(`
