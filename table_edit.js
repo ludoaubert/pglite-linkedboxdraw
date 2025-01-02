@@ -211,12 +211,12 @@ async function init() {
   			INSERT INTO link SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.link)}') AS rd(${column_list.link});
   			INSERT INTO tag SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.tag)}') AS rd(${column_list.tag});
   			INSERT INTO message_tag SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.message_tag)}') AS rd(${column_list.message_tag});
-  			INSERT INTO graph SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.graph)}') AS rd(${column_list.graph});
+  			INSERT INTO graph SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.graph)}') AS rd(idgraph integer, iddiagram integer, uuid_graph uuid, from_table source_table, from_key integer, to_table target_table, to_key integer);
   			INSERT INTO rectangle SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.rectangle)}') AS rd(${column_list.rectangle});
   			INSERT INTO translation SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.translation)}') AS rd(${column_list.translation});
   			INSERT INTO polyline SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.polyline)}') AS rd(${column_list.polyline});
   		`;
-
+//graph table's columns are listed in a verbose way because the INFORMATION_SCHEMA.COLUMN table does not track user defines types.
 		console.log(query);
 		await db.exec(query);
 		await data2contexts();
