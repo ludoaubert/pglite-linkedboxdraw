@@ -26,7 +26,7 @@ var currentColorFieldIndex = -1;
 var input ;
 var upload ;
 var download ;
-var downloadDiagramList
+var downloadDiagramListButton ;
 var editTitle ;
 var newDiagramButton ;
 var boxCombo ;
