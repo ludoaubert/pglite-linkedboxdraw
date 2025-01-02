@@ -46,18 +46,19 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 	const data = req.body;
 	console.log(JSON.stringify(data));
 	console.log(data.diagram);
-	const client = new Client({
-		host:'localhost',
-		port:5433,
-		user:'postgres',
-		password:'7472',
-		database:'linkedboxdraw'
-	});
-	await client.connect();
 
 	const uuid_diagram = data.diagram[0].uuid_diagram;
 	console.log(uuid_diagram);
 	const json_diagram = JSON.stringify(data.diagram);
+
+	const client = new Client({
+        	host:'localhost',
+        	port:5433,
+        	user:'postgres',
+        	password:'7472',
+        	database:'linkedboxdraw'
+	});
+	await client.connect();
 
 	const result1 = await client.query(`
 		MERGE INTO diagram d
@@ -336,3 +337,41 @@ app.post('/linkedboxdraw/post', async (req, res) => {
       console.log("MERGE INTO polyline done...");
 */
 })
+
+
+app.get('/linkedboxdraw/get', async (req, res) => {
+        console.log(req.query);
+	const uuid_diagram = req.query.uuid_diagram;
+	console.log(uuid_diagram);
+
+       const client = new Client({
+                host:'localhost',
+                port:5433,
+                user:'postgres',
+                password:'7472',
+                database:'linkedboxdraw'
+        });
+        await client.connect();
+
+ 	const result = await client.query(`
+  	SELECT json_build_object(
+		'diagram', (SELECT json_agg(row_to_json(d))::json FROM diagram d WHERE d.uuid_diagram='${uuid_diagram}'),
+		'box', (SELECT json_agg(row_to_json(b))::json FROM box b JOIN diagram d ON d.iddiagram=b.iddiagram AND d.uuid_diagram='${uuid_diagram}'),
+		'field', (SELECT json_agg(row_to_json(f))::json FROM field f JOIN diagram d ON d.iddiagram=f.iddiagram AND d.uuid_diagram='${uuid_diagram}'),
+		'value', (SELECT coalesce(json_agg(row_to_json(v))::json, '[]'::json) FROM value v JOIN diagram d ON d.iddiagram=v.iddiagram AND d.uuid_diagram='${uuid_diagram}'),
+		'link', (SELECT json_agg(row_to_json(l))::json FROM link l JOIN diagram d ON d.iddiagram=l.iddiagram AND d.uuid_diagram='${uuid_diagram}'),
+		'tag', (SELECT json_agg(row_to_json(t))::json FROM tag t JOIN diagram d ON d.iddiagram=t.iddiagram AND d.uuid_diagram='${uuid_diagram}'),
+		'message_tag', (SELECT coalesce(json_agg(row_to_json(m))::json, '[]'::json) FROM message_tag m JOIN diagram d ON d.iddiagram=m.iddiagram AND d.uuid_diagram='${uuid_diagram}'),
+		'graph', (SELECT json_agg(row_to_json(g))::json FROM graph g JOIN diagram d ON d.iddiagram=g.iddiagram AND d.uuid_diagram='${uuid_diagram}'),
+		'rectangle', (SELECT json_agg(row_to_json(r))::json FROM rectangle r JOIN diagram d ON d.iddiagram=r.iddiagram AND d.uuid_diagram='${uuid_diagram}'),
+		'translation', (SELECT json_agg(row_to_json(t))::json FROM translation t JOIN diagram d ON d.iddiagram=t.iddiagram AND d.uuid_diagram='${uuid_diagram}'),
+		'polyline', (SELECT coalesce(json_agg(row_to_json(p))::json, '[]'::json) FROM polyline p JOIN diagram d ON d.iddiagram=p.iddiagram AND d.uuid_diagram='${uuid_diagram}')
+	)
+	`);
+
+	const doc = result.rows[0].json_build_object;
+	const json_doc = JSON.stringify(doc);
+	console.log(json_doc);
+	res.json(json_doc);
+})
+
