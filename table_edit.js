@@ -167,8 +167,9 @@ async function init() {
 			//"https://www.diskloud.fr:3000/linkedboxdraw/list",
 			"https://192.168.0.21:8443/linkedboxdraw/list"
 		);
-		console.log(response.status);
-		//onlineDocumentCombo.innerHtml=...
+		const json = await response.json();
+		console.log(json);
+		onlineDocumentCombo.innerHTML = json.map(({uuid_diagram, title})=>`<option>${title}</option>`).join('');
 	});
 	upload.addEventListener("click", async (evt)=>{
 		const ret = await db.query(`
