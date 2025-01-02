@@ -183,9 +183,9 @@ async function init() {
 
 		const response2 = await fetch(
 			//"https://www.diskloud.fr:3000/linkedboxdraw/get",
-			"https://192.168.0.21:8443/linkedboxdraw/get"
+			`https://192.168.0.21:8443/linkedboxdraw/get?uuid_diagram=${uuid_diagram}`
 		);
-		const json2 = await response2.json();		
+		const json2 = await response2.json();	
 	});
 	upload.addEventListener("click", async (evt)=>{
 		const ret = await db.query(`
