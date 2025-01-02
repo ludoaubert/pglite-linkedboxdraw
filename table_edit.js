@@ -188,7 +188,11 @@ async function init() {
 			`https://192.168.0.21:8443/linkedboxdraw/get?uuid_diagram=${uuid_diagram}`
 		);
 		const sjson2 = await response2.json();
-		const json_doc = JSON.parse(sjson2);
+		const json_doc_deep = JSON.parse(sjson2);
+		const json_doc = Map(Object.entries(json_doc_deep)
+					.map([key, value] => [key, JSON.stringify(value)])
+				    );
+		
 		await db.exec(delete_from_tables);
 
 		const ret1 = await db.query(`
@@ -203,17 +207,17 @@ async function init() {
   		`);
 		const column_list = ret1.rows[0].json_object_agg;
 		const query = `
-  			INSERT INTO diagram SELECT * FROM json_to_recordset('${json_doc.diagram}') AS rd(${column_list.diagram});
-  			INSERT INTO box SELECT * FROM json_to_recordset('${json_doc.box}') AS rd(${column_list.box});
-  			INSERT INTO field SELECT * FROM json_to_recordset('${json_doc.field}') AS rd(${column_list.field});
-  			INSERT INTO value SELECT * FROM json_to_recordset('${json_doc.value}') AS rd(${column_list.value});
-  			INSERT INTO link SELECT * FROM json_to_recordset('${json_doc.link}') AS rd(${column_list.link});
-  			INSERT INTO tag SELECT * FROM json_to_recordset('${json_doc.tag}') AS rd(${column_list.tag});
-  			INSERT INTO message_tag SELECT * FROM json_to_recordset('${json_doc.message_tag}') AS rd(${column_list.message_tag});
-  			INSERT INTO graph SELECT * FROM json_to_recordset('${json_doc.graph}') AS rd(${column_list.graph});
-  			INSERT INTO rectangle SELECT * FROM json_to_recordset('${json_doc.rectangle}') AS rd(${column_list.rectangle});
-  			INSERT INTO translation SELECT * FROM json_to_recordset('${json_doc.translation}') AS rd(${column_list.translation});
-  			INSERT INTO polyline SELECT * FROM json_to_recordset('${json_doc.polyline}') AS rd(${column_list.polyline});
+  			INSERT INTO diagram SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.diagram)}') AS rd(${column_list.diagram});
+  			INSERT INTO box SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.box)}') AS rd(${column_list.box});
+  			INSERT INTO field SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.field)}') AS rd(${column_list.field});
+  			INSERT INTO value SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.value)}') AS rd(${column_list.value});
+  			INSERT INTO link SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.link)}') AS rd(${column_list.link});
+  			INSERT INTO tag SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.tag)}') AS rd(${column_list.tag});
+  			INSERT INTO message_tag SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.message_tag)}') AS rd(${column_list.message_tag});
+  			INSERT INTO graph SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.graph)}') AS rd(${column_list.graph});
+  			INSERT INTO rectangle SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.rectangle)}') AS rd(${column_list.rectangle});
+  			INSERT INTO translation SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.translation)}') AS rd(${column_list.translation});
+  			INSERT INTO polyline SELECT * FROM json_to_recordset('${JSON.stringify(json_doc.polyline)}') AS rd(${column_list.polyline});
   		`;
 
 		console.log(query);
