@@ -189,8 +189,6 @@ async function init() {
 		);
 		const sjson2 = await response2.json();
 		const json_doc = JSON.parse(sjson2);
-		
-		await db.exec(delete_from_tables);
 
 		const ret1 = await db.query(`
   			WITH cte (table_name, columns) AS (
@@ -218,8 +216,9 @@ async function init() {
   		`;
 //graph table's columns are listed in a verbose way because the INFORMATION_SCHEMA.COLUMN table does not track user defines types.
 		console.log(query);
+		await db.exec(delete_from_tables);
 		await db.exec(query);
-		await data2contexts();
+		await drawDiag();
 	});
 	upload.addEventListener("click", async (evt)=>{
 		const ret = await db.query(`
