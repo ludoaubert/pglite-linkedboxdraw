@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS tag(
   uuid_tag UUID DEFAULT gen_random_uuid(),
   type_code VARCHAR(128),
   code VARCHAR(128),
-  UNIQUE(type_code,code),
+  UNIQUE(iddiagram, type_code,code),
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram)
 );
 
