@@ -219,6 +219,7 @@ async function data2contexts() {
 		console.log(ret6);
 	}
 
+	await updateColorLinks();
 	await drawDiag();
 }
 
