@@ -214,7 +214,7 @@ async function init() {
   			INSERT INTO rectangle SELECT * FROM json_to_recordset('${json_doc.rectangle}') AS rd(${column_list.rectangle});
   			INSERT INTO translation SELECT * FROM json_to_recordset('${json_doc.translation}') AS rd(${column_list.translation});
   			INSERT INTO polyline SELECT * FROM json_to_recordset('${json_doc.polyline}') AS rd(${column_list.polyline});
-  		`);
+  		`;
 
 		console.log(query);
 		const ret2 = await db.query(query);
