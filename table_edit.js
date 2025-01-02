@@ -172,6 +172,21 @@ async function init() {
 		const innerHTML = json.map(({uuid_diagram, title})=>`<option>${title}</option>`).join('');
 		onlineDocumentCombo.innerHTML = innerHTML;
 	});
+	download.addEventListener("click", async (evt)=>{
+		const response = await fetch(
+			//"https://www.diskloud.fr:3000/linkedboxdraw/list",
+			"https://192.168.0.21:8443/linkedboxdraw/list"
+		);
+		const json = await response.json();
+		console.log(json);
+		const {uuid_diagram, title} = json[onlineDocumentCombo.selectedIndex];
+
+		const response2 = await fetch(
+			//"https://www.diskloud.fr:3000/linkedboxdraw/get",
+			"https://192.168.0.21:8443/linkedboxdraw/get"
+		);
+		const json2 = await response2.json();		
+	});
 	upload.addEventListener("click", async (evt)=>{
 		const ret = await db.query(`
   			SELECT json_build_object(
