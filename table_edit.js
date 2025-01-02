@@ -218,7 +218,8 @@ async function init() {
   		`;
 
 		console.log(query);
-		const ret2 = await db.query(query);
+		await db.exec(query);
+		await data2contexts();
 	});
 	upload.addEventListener("click", async (evt)=>{
 		const ret = await db.query(`
