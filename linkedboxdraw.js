@@ -27,8 +27,8 @@ httpsServer.listen(8443, () => {
 app.use(cors())
 app.options('*', cors());
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.json({ limit: '10mb' }))
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
 
 // CORS middleware
 const allowCrossDomain = (req, res, next) => {
@@ -337,6 +337,30 @@ app.post('/linkedboxdraw/post', async (req, res) => {
       console.log("MERGE INTO polyline done...");
 */
 })
+
+
+app.get('/linkedboxdraw/list', async (req, res) => {
+
+      const client = new Client({
+                host:'localhost',
+                port:5433,
+                user:'postgres',
+                password:'7472',
+                database:'linkedboxdraw'
+        });
+        await client.connect();
+
+	const result = await client.query(`
+		SELECT json_agg(json_build_object('uuid_diagram', uuid_diagram, 'title', title) ORDER BY title)
+		FROM diagram
+	`);
+
+	const doc = result.rows[0].json_agg;
+        const json_doc = JSON.stringify(doc);
+        console.log(json_doc);
+        res.json(json_doc);
+
+});
 
 
 app.get('/linkedboxdraw/get', async (req, res) => {
