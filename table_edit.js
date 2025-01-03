@@ -219,6 +219,7 @@ async function init() {
 		await db.exec(delete_from_tables);
 		await db.exec(query);
 		await drawDiag();
+		await init();
 	});
 	upload.addEventListener("click", async (evt)=>{
 		const ret = await db.query(`
@@ -309,7 +310,7 @@ async function init() {
 
 async function displayCurrent()
 {
-	const ret = await db.query(`SELECT title FROM diagram WHERE iddiagram=1`);
+	const ret = await db.query(`SELECT title FROM diagram`);
 	const documentTitle = ret.rows[0].title ;
 	if (editTitle.value != documentTitle)
 		editTitle.value = documentTitle;
