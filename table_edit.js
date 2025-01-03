@@ -219,7 +219,7 @@ async function init() {
 		await db.exec(delete_from_tables);
 		await db.exec(query);
 		await drawDiag();
-		await init();
+		await displayCurrent();
 	});
 	upload.addEventListener("click", async (evt)=>{
 		const ret = await db.query(`
