@@ -49,7 +49,6 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 
 	const uuid_diagram = data.diagram[0].uuid_diagram;
 	console.log(uuid_diagram);
-	const json_diagram = JSON.stringify(data.diagram);
 
 	const client = new Client({
         	host:'localhost',
@@ -60,9 +59,21 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 	});
 	await client.connect();
 
+	const ret1 = await db.query(`
+  		WITH cte (table_name, columns) AS (
+			SELECT table_name, STRING_AGG(FORMAT('%s %s', column_name, data_type),', ' ORDER BY ordinal_position)
+			FROM INFORMATION_SCHEMA.COLUMNS
+			WHERE table_schema='public'
+			GROUP BY table_name
+		)
+		SELECT json_object_agg(table_name, columns)
+		FROM cte
+  	`);
+	const column_list = ret1.rows[0].json_object_agg;
+
 	const result1 = await client.query(`
 		MERGE INTO diagram d
-		USING json_to_recordset('${json_diagram}') AS rd("iddiagram" int, "uuid_diagram" uuid, "title" text)
+		USING json_to_recordset('${JSON.stringify(data.diagram)}') AS rd("iddiagram" int, "uuid_diagram" uuid, "title" text)
 		ON d.uuid_diagram=rd.uuid_diagram
 		WHEN NOT MATCHED BY TARGET THEN
 			INSERT (uuid_diagram, title) VALUES(rd.uuid_diagram, rd.title)
@@ -71,13 +82,11 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 	`);
 	console.log("MERGE INTO diagram done...");
 
-	const json_box = JSON.stringify(data.box);
-
 	const result2 = await client.query(`
 		MERGE INTO box b
 		USING (
 			SELECT rb.uuid_box, rb.title, d.iddiagram
-			FROM json_to_recordset('${json_box}') AS rb("idbox" int, "uuid_box" uuid, "title" text, "iddiagram" int)
+			FROM json_to_recordset('${JSON.stringify(data.box)}') AS rb(${column_list.box})
 			JOIN diagram d ON d.uuid_diagram='${uuid_diagram}'
 		) rb
 		ON b.uuid_box=rb.uuid_box
@@ -91,15 +100,13 @@ app.post('/linkedboxdraw/post', async (req, res) => {
         `);
         console.log("MERGE INTO box done...");
 
-	const json_field = JSON.stringify(data.field);
-
         const result3 = await client.query(`
 
 		MERGE INTO field f
 		USING (
 			SELECT d.iddiagram, rf.uuid_field, rf.name, b.idbox
-			FROM json_to_recordset('${json_field}') AS rf("idfield" int, "uuid_field" uuid, "name" text, "idbox" int)
-			JOIN json_to_recordset('${json_box}') AS rb("idbox" int, "uuid_box" uuid, "title" text, "iddiagram" int) ON rf.idbox=rb.idbox
+			FROM json_to_recordset('${JSON.stringify(data.field)}') AS rf(${column_list.field})
+			JOIN json_to_recordset('${JSON.stringify(data.box)}') AS rb(${colmun_list.box}) ON rf.idbox=rb.idbox
 			JOIN box b ON b.uuid_box=rb.uuid_box
 			JOIN diagram d ON d.uuid_diagram='${uuid_diagram}'
 		) rf
@@ -113,15 +120,13 @@ app.post('/linkedboxdraw/post', async (req, res) => {
         `);
         console.log("MERGE INTO field done...");
 
-	const json_value = JSON.stringify(data.value);
-
         const result4 = await client.query(`
 
 		MERGE INTO value v
 		USING (
 			SELECT d.iddiagram, rv.uuid_value, rv.data, f.idfield
-			FROM json_to_recordset('${json_value}') AS rv("idvalue" int, "uuid_value" uuid, "data" text, "idfield" int)
-			JOIN json_to_recordset('${json_field}') AS rf("idfield" int, "uuid_field" uuid, "name" text, "idbox" int) ON rv.idfield=rf.idfield
+			FROM json_to_recordset('${JSON.stringify(data.value)}') AS rv(${column_list.value})
+			JOIN json_to_recordset('${JSON.stringify(data.field)}') AS rf(${column_list.field}) ON rv.idfield=rf.idfield
 			JOIN field f ON f.uuid_field = rf.uuid_field
 			JOIN diagram d ON d.uuid_diagram='${uuid_diagram}'
 		) rv
@@ -137,18 +142,16 @@ app.post('/linkedboxdraw/post', async (req, res) => {
         `);
         console.log("MERGE INTO value done...");
 
-	const json_link = JSON.stringify(data.link);
-
         const result5 = await client.query(`
 
 		MERGE INTO link l
 		USING (
 			SELECT d.iddiagram, rl.uuid_link, b_from.idbox AS idbox_from, f_from.idfield AS idfield_from, b_to.idbox AS idbox_to, f_to.idfield AS idfield_to
-			FROM json_to_recordset('${json_link}') AS rl("idlink" int, "uuid_link" uuid, "idbox_from" int, "idfield_from" int, "idbox_to" int, "idfield_to" int)
-             		JOIN json_to_recordset('${json_box}') AS rb_from("idbox" int, "uuid_box" uuid, "title" text, "iddiagram" int) ON rl.idbox_from=rb_from.idbox
-                        JOIN json_to_recordset('${json_box}') AS rb_to("idbox" int, "uuid_box" uuid, "title" text, "iddiagram" int) ON rl.idbox_to=rb_to.idbox
-               		JOIN json_to_recordset('${json_field}') AS rf_from("idfield" int, "uuid_field" uuid, "name" text, "idbox" int) ON rl.idfield_from=rf_from.idfield
-                        JOIN json_to_recordset('${json_field}') AS rf_to("idfield" int, "uuid_field" uuid, "name" text, "idbox" int) ON rl.idfield_to=rf_to.idfield
+			FROM json_to_recordset('${JSON.stringify(data.link)}') AS rl(${column_list.link})
+             		JOIN json_to_recordset('${JSON.stringify(data.box)}') AS rb_from(${column_list.box}) ON rl.idbox_from=rb_from.idbox
+                        JOIN json_to_recordset('${JSON.stringify(data.box)}') AS rb_to(${column_list.box}) ON rl.idbox_to=rb_to.idbox
+               		JOIN json_to_recordset('${JSON.stringify(data.field)}') AS rf_from(${column_list.field}) ON rl.idfield_from=rf_from.idfield
+                        JOIN json_to_recordset('${JSON.stringify(data.field)}') AS rf_to(${column_list.field}) ON rl.idfield_to=rf_to.idfield
 			JOIN box b_from ON b_from.uuid_box=rb_from.uuid_box
 			JOIN box b_to ON b_to.uuid_box=rb_to.uuid_box
 			JOIN field f_from ON f_from.uuid_field=rf_from.uuid_field
@@ -165,14 +168,12 @@ app.post('/linkedboxdraw/post', async (req, res) => {
         `);
         console.log("MERGE INTO link done...");
 
-	const json_tag = JSON.stringify(data.tag);
-
         const result6 = await client.query(`
 
 		MERGE INTO tag t
 		USING (
 			SELECT d.iddiagram, rt.uuid_tag, rt.type_code, rt.code
-			FROM json_to_recordset('${json_tag}') AS rt("idtag" int, "uuid_tag" uuid, "type_code" text, "code" text)
+			FROM json_to_recordset('${JSON.stringify(data.tag)}') AS rt(${column_list.tag})
 			JOIN diagram d ON d.uuid_diagram = '${uuid_diagram}'
 		) rt
 		ON t.uuid_tag = rt.uuid_tag
@@ -188,14 +189,12 @@ app.post('/linkedboxdraw/post', async (req, res) => {
         `);
         console.log("MERGE INTO tag done...");
 
-	const json_message_tag = JSON.stringify(data.message_tag);
-
         const result7 = await client.query(`
 
 		MERGE INTO message_tag m
 		USING (
 			SELECT rm.uuid_message, rm.message, d.iddiagram
-			FROM json_to_recordset('${json_message_tag}') AS rm("idmessage" int, "uuid_message" uuid, "message" text)
+			FROM json_to_recordset('${JSON.stringify(data.message_tag)}') AS rm(${column_list.message_tag})
 			JOIN diagram d ON d.uuid_diagram = '${uuid_diagram}'
 		) rm
 		ON m.uuid_message = rm.uuid_message
@@ -208,8 +207,6 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 			THEN DELETE;
         `);
         console.log("MERGE INTO message_tag done...");
-
-	const json_graph = JSON.stringify(data.graph);
 
         const result8 = await client.query(`
 		MERGE INTO graph g
@@ -227,18 +224,18 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 					WHEN 'link' THEN l.idlink
 				END AS to_key,
 				d.iddiagram
-			FROM json_to_recordset('${json_graph}') AS rg("idgraph" int, "uuid_graph" uuid, "from_table" source_table, "from_key" int, "to_table" target_table, "to_key" int)
-			LEFT JOIN json_to_recordset('${json_tag}') AS rt("idtag" int, "uuid_tag" uuid, "type_code" text, "code" text) ON rt.idtag=rg.from_key
+			FROM json_to_recordset('${JSON.stringify(data.graph)}') AS rg("idgraph" int, "uuid_graph" uuid, "from_table" source_table, "from_key" int, "to_table" target_table, "to_key" int)
+			LEFT JOIN json_to_recordset('${JSON.stringify(data.tag)}') AS rt(${column_list.tag}) ON rt.idtag=rg.from_key
 			LEFT JOIN tag t ON t.uuid_tag = rt.uuid_tag
-			LEFT JOIN json_to_recordset('${json_message_tag}') AS rm("idmessage" int, "uuid_message" uuid, message text) ON rm.idmessage=rg.from_key
+			LEFT JOIN json_to_recordset('${JSON.stringify(data.message_tag)}') AS rm(${column_list.message_tag}) ON rm.idmessage=rg.from_key
 			LEFT JOIN message_tag m ON m.uuid_message = rm.uuid_message
-			LEFT JOIN json_to_recordset('${json_box}') AS rb("idbox" int, "uuid_box" uuid, "title" text, "iddiagram" int) ON rb.idbox=rg.to_key
+			LEFT JOIN json_to_recordset('${JSON.stringify(data.box)}') AS rb(${column_list.box}) ON rb.idbox=rg.to_key
 			LEFT JOIN box b ON b.uuid_box = rb.uuid_box
-                        LEFT JOIN json_to_recordset('${json_field}') AS rf("idfield" int, "uuid_field" uuid, "name" text, "idbox" int) ON rf.idfield=rg.to_key
+                        LEFT JOIN json_to_recordset('${JSON.stringify(data.field)}') AS rf(${column_list.field}) ON rf.idfield=rg.to_key
 			LEFT JOIN field f ON f.uuid_field = rf.uuid_field
- 			LEFT JOIN json_to_recordset('${json_value}') AS rv("idvalue" int, "uuid_value" uuid, "data" text, "idfield" int) ON rv.idvalue=rg.to_key
+ 			LEFT JOIN json_to_recordset('${JSON.stringify(data.value)}') AS rv(${column_list.value}) ON rv.idvalue=rg.to_key
 			LEFT JOIN value v ON v.uuid_value = rv.uuid_value
-			LEFT JOIN json_to_recordset('${json_link}') AS rl("idlink" int, "uuid_link" uuid, "idbox_from" int, "idfield_from" int, "idbox_to" int, "idfield_to" int) ON rl.idlink=rg.to_key
+			LEFT JOIN json_to_recordset('${JSON.stringify(data.link)}') AS rl(${column_list.link}) ON rl.idlink=rg.to_key
 			LEFT JOIN link l ON rl.uuid_link=l.uuid_link
 			JOIN diagram d ON d.uuid_diagram = '${uuid_diagram}'
 		) rg
@@ -263,15 +260,13 @@ app.post('/linkedboxdraw/post', async (req, res) => {
         `);
         console.log("MERGE INTO graph done...");
 
-	const json_rectangle = JSON.stringify(data.rectangle);
-
         const result9 = await client.query(`
 
 		MERGE INTO rectangle r
 		USING (
 			SELECT d.iddiagram, rr.uuid_rectangle, rr.width, rr.height, b.idbox
-			FROM json_to_recordset('${json_rectangle}') AS rr("idrectangle" int, "uuid_rectangle" uuid, "width" int, "height" int, "idbox" int)
-			JOIN json_to_recordset('${json_box}') AS rb("idbox" int, "uuid_box" uuid, "title" text, "iddiagram" int) ON rr.idbox=rb.idbox
+			FROM json_to_recordset('${JSON.stringify(data.rectangle)}') AS rr(${column_list.rectangle})
+			JOIN json_to_recordset('${JSON.stringify(data.box)}') AS rb(${column_list.box}) ON rr.idbox=rb.idbox
 			JOIN box b ON b.uuid_box=rb.uuid_box
 			JOIN diagram d ON d.uuid_diagram='${uuid_diagram}'
 		) rr
@@ -289,15 +284,13 @@ app.post('/linkedboxdraw/post', async (req, res) => {
         `);
         console.log("MERGE INTO rectangle done...");
 
-	const json_translation = JSON.stringify(data.translation);
-
         const result10 = await client.query(`
 
 		MERGE INTO translation t
 		USING (
 			SELECT d.iddiagram, rt.uuid_translation, rt.context, r.idrectangle, rt.x, rt.y
-			FROM json_to_recordset('${json_translation}') AS rt("idtranslation" int, "uuid_translation" uuid, "context" int, "idrectangle" int, "x" int, "y" int)
-			JOIN json_to_recordset('${json_rectangle}') AS rr("idrectangle" int, "uuid_rectangle" uuid, "width" int, "height" int, "idbox" int) ON rt.idrectangle=rr.idrectangle
+			FROM json_to_recordset('${JSON.stringify(data.translation)}') AS rt(${column_list.translation})
+			JOIN json_to_recordset('${JSON.stringify(data.rectangle)}') AS rr(${column_list.rectangle}) ON rt.idrectangle=rr.idrectangle
 			JOIN rectangle r ON r.uuid_rectangle=rr.uuid_rectangle
 			JOIN diagram d ON d.uuid_diagram='${uuid_diagram}'
 		) rt
@@ -317,12 +310,10 @@ app.post('/linkedboxdraw/post', async (req, res) => {
         `);
         console.log("MERGE INTO translation done...");
 /*
-	const json_polyline = JSON.stringify(data.polyline);
-
         const result11 = await client.query(`
 
 		MERGE INTO polyline p
-		USING json_to_recordset('${json_polyline}') AS rp("idpolyline" int, "uuid_polyline" uuid, "context" int, "idlink" int, "idtranslation_from" int, "idtranslation_to" int, "points" json)
+		USING json_to_recordset('${JSON.stringify(data.polyline)}') AS rp(${column_list.polyline})
 		ON p.uuid_polyline = rp.uuid_polyline
 		WHEN NOT MATCHED BY TARGET THEN
 			INSERT (uuid_polyline, context, points) VALUES(rp.uuid_polyline, rp.context, rp.points)
