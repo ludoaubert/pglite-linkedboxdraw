@@ -59,7 +59,7 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 	});
 	await client.connect();
 
-	const ret1 = await db.query(`
+	const ret1 = await client.query(`
   		WITH cte (table_name, columns) AS (
 			SELECT table_name, STRING_AGG(FORMAT('%s %s', column_name, data_type),', ' ORDER BY ordinal_position)
 			FROM INFORMATION_SCHEMA.COLUMNS
@@ -106,7 +106,7 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 		USING (
 			SELECT d.iddiagram, rf.uuid_field, rf.name, b.idbox
 			FROM json_to_recordset('${JSON.stringify(data.field)}') AS rf(${column_list.field})
-			JOIN json_to_recordset('${JSON.stringify(data.box)}') AS rb(${colmun_list.box}) ON rf.idbox=rb.idbox
+			JOIN json_to_recordset('${JSON.stringify(data.box)}') AS rb(${column_list.box}) ON rf.idbox=rb.idbox
 			JOIN box b ON b.uuid_box=rb.uuid_box
 			JOIN diagram d ON d.uuid_diagram='${uuid_diagram}'
 		) rf
