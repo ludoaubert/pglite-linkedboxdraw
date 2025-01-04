@@ -73,7 +73,7 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 
 	const result1 = await client.query(`
 		MERGE INTO diagram d
-		USING json_to_recordset('${JSON.stringify(data.diagram)}') AS rd("iddiagram" int, "uuid_diagram" uuid, "title" text)
+		USING json_to_recordset('${JSON.stringify(data.diagram)}') AS rd(${column_list.diagram})
 		ON d.uuid_diagram=rd.uuid_diagram
 		WHEN NOT MATCHED BY TARGET THEN
 			INSERT (uuid_diagram, title) VALUES(rd.uuid_diagram, rd.title)
