@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS diagram(
   iddiagram SERIAL PRIMARY KEY,
   uuid_diagram UUID DEFAULT gen_random_uuid(),
   title VARCHAR(128),
-  UNIQUE(title)
+  UNIQUE(title),
+  UNIQUE(uuid_diagram)
 );
 
 CREATE TABLE IF NOT EXISTS box(
@@ -15,7 +16,8 @@ CREATE TABLE IF NOT EXISTS box(
   title VARCHAR(128),
   iddiagram INTEGER DEFAULT 1,
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
-  UNIQUE(iddiagram, title)
+  UNIQUE(iddiagram, title),
+  UNIQUE(uuid_box)
 );
 
 CREATE TABLE IF NOT EXISTS field(
@@ -27,7 +29,8 @@ CREATE TABLE IF NOT EXISTS field(
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
   FOREIGN KEY (idbox) REFERENCES box(idbox),
   UNIQUE(idbox, name),
-  UNIQUE(idbox, idfield)
+  UNIQUE(idbox, idfield),
+  UNIQUE(uuid_field)
 );
 
 CREATE TABLE IF NOT EXISTS value(
@@ -38,7 +41,8 @@ CREATE TABLE IF NOT EXISTS value(
   idfield INTEGER,
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
   FOREIGN KEY (idfield) REFERENCES field(idfield),
-  UNIQUE(idfield, data)
+  UNIQUE(idfield, data),
+  UNIQUE(uuid_value)
 );
 
 CREATE TABLE IF NOT EXISTS link(
@@ -54,7 +58,8 @@ CREATE TABLE IF NOT EXISTS link(
   FOREIGN KEY (idbox_from, idfield_from) REFERENCES field(idbox, idfield),
   FOREIGN KEY (idbox_to) REFERENCES box(idbox),
   FOREIGN KEY (idbox_to, idfield_to) REFERENCES field(idbox, idfield),
-  UNIQUE(idbox_from, idfield_from, idbox_to, idfield_to)
+  UNIQUE(idbox_from, idfield_from, idbox_to, idfield_to),
+  UNIQUE(uuid_link)
 );
 
 CREATE TABLE IF NOT EXISTS tag(
@@ -64,7 +69,8 @@ CREATE TABLE IF NOT EXISTS tag(
   type_code VARCHAR(128),
   code VARCHAR(128),
   UNIQUE(iddiagram, type_code,code),
-  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram)
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
+  UNIQUE(uuid_tag)
 );
 
 CREATE TABLE IF NOT EXISTS message_tag(
@@ -72,7 +78,8 @@ CREATE TABLE IF NOT EXISTS message_tag(
   iddiagram INTEGER DEFAULT 1,
   uuid_message UUID DEFAULT gen_random_uuid(),
   message TEXT,
-  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram)
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
+  UNIQUE(uuid_message)
 );
 
 /*
@@ -100,7 +107,8 @@ CREATE TABLE IF NOT EXISTS graph(
   to_table target_table,
   to_key INTEGER,
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
-  UNIQUE(from_table, from_key, to_table, to_key)--,
+  UNIQUE(from_table, from_key, to_table, to_key),
+  UNIQUE(uuid_graph)
 /*
   CHECK(is_table_primary_key(from_table::text, from_key)),
   CHECK(is_table_primary_key(to_table::text, to_key))
@@ -118,6 +126,7 @@ CREATE TABLE IF NOT EXISTS rectangle(
   height INTEGER,
   idbox INTEGER,
   UNIQUE(idbox),
+  UNIQUE(uuid_rectangle),
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
   FOREIGN KEY (idbox) REFERENCES box(idbox)
 );
@@ -130,6 +139,7 @@ CREATE TABLE IF NOT EXISTS translation(
   idrectangle INTEGER,
   UNIQUE(idrectangle),
   UNIQUE(idtranslation, context),
+  UNIQUE(uuid_translation),
   x INTEGER,
   y INTEGER,
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
@@ -147,6 +157,7 @@ CREATE TABLE IF NOT EXISTS polyline(
   points JSON,
   FOREIGN KEY (idlink) REFERENCES link(idlink),
   UNIQUE(idlink),
+  UNIQUE(uuid_polyline);
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
   FOREIGN KEY (idtranslation_from, context) REFERENCES translation(idtranslation, context),
   FOREIGN KEY (idtranslation_to, context) REFERENCES translation(idtranslation, context),
