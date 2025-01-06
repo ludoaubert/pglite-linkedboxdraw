@@ -464,6 +464,7 @@ async function dropBox()
 {
 	await db.exec(`DELETE FROM box WHERE title='${boxCombo.value}'`);
 
+	boxCombo.value = "";
 	currentBoxIndex = -1;
 
 	await displayCurrent();
@@ -544,6 +545,7 @@ async function dropFieldFromBox()
     		WHERE to_table='field' AND to_key IN (SELECT idfield FROM cte)
  	`);
 
+	fieldCombo.value = "";
 	currentFieldIndex = -1;
 
 	await displayCurrent();
