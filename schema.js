@@ -127,10 +127,6 @@ CREATE TABLE IF NOT EXISTS graph(
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
   UNIQUE(from_table, from_key, to_table, to_key),
   UNIQUE(uuid_graph)
-/*
-  CHECK(is_table_primary_key(from_table::text, from_key)),
-  CHECK(is_table_primary_key(to_table::text, to_key))
-*/
 );
 
 -- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('message_tag',1,'box',1);
