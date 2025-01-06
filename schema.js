@@ -129,6 +129,9 @@ CREATE TABLE IF NOT EXISTS graph(
   UNIQUE(uuid_graph)
 );
 
+CREATE INDEX graph_source_idx ON graph (from_table, from_key);
+CREATE INDEX graph_target_idx ON graph (to_table, to_key);
+
 -- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('message_tag',1,'box',1);
 -- INSERT INTO graph(from_table, from_key, to_table, to_key) VALUES('tag',1,'field',1);
 
