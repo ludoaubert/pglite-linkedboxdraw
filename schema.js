@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS polyline(
   points JSON,
   FOREIGN KEY (idlink) REFERENCES link(idlink),
   UNIQUE(idlink),
-  UNIQUE(uuid_polyline);
+  UNIQUE(uuid_polyline),
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
   FOREIGN KEY (idtranslation_from, context) REFERENCES translation(idtranslation, context),
   FOREIGN KEY (idtranslation_to, context) REFERENCES translation(idtranslation, context),
