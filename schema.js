@@ -103,11 +103,11 @@ $$
 BEGIN
   CASE table_name
     WHEN 'box'
-      THEN RETURN EXISTS(SELECT * FROM box WHERE id=idbox)
+      THEN RETURN EXISTS(SELECT * FROM box WHERE id=idbox);
     WHEN 'field'
-      THEN RETURN EXISTS(SELECT * FROM field WHERE id=idfield)
+      THEN RETURN EXISTS(SELECT * FROM field WHERE id=idfield);
     WHEN 'value'
-      THEN RETURN EXISTS(SELECT * FROM value WHERE id=idvalue)
+      THEN RETURN EXISTS(SELECT * FROM value WHERE id=idvalue);
     WHEN 'link'
       THEN RETURN EXISTS(SELECT * FROM link WHERE id=idlink);
   END CASE;
