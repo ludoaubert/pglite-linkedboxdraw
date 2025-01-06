@@ -462,25 +462,7 @@ async function addNewBox()
 
 async function dropBox()
 {
-	console.log('dropBox');
-	await db.exec(`
- 		WITH cte AS (
- 			DELETE FROM box WHERE title='${boxCombo.value}'
-    			RETURNING idbox
-       		), cte2 AS (
-	 		DELETE FROM rectangle
-    			WHERE idbox IN (SELECT idbox FROM cte)
-       			RETURNING idrectangle
-		), cte3 AS (
-  			DELETE FROM translation
-     			WHERE idrectangle IN (SELECT idrectangle FROM cte2)
-		), cte4 AS (
-  			DELETE FROM graph
-     			WHERE to_table='box' AND to_key IN (SELECT idbox FROM cte)
-		)
-  		DELETE FROM link
-    		WHERE idbox_from IN (SELECT idbox FROM cte) OR idbox_to IN (SELECT idbox FROM cte)
-   	`);
+	await db.exec(`DELETE FROM box WHERE title='${boxCombo.value}'`);
 
 	currentBoxIndex = -1;
 
