@@ -86,21 +86,32 @@ CREATE TYPE source_table AS ENUM ('tag', 'message_tag');
 CREATE TYPE target_table AS ENUM ('box', 'field', 'value', 'link');
 
 
-CREATE FUNCTION check_source_pk(_table_name source_table, _id INTEGER) RETURNS BOOLEAN AS
+CREATE FUNCTION check_source_pk(table_name source_table, id INTEGER) RETURNS BOOLEAN AS
+$$
 BEGIN
-  RETURN
-    EXISTS(SELECT * FROM tag WHERE _table_name='tag' AND _id=idtag) OR
-    EXISTS(SELECT * FROM message_tag WHERE _table_name='message_tag' AND _id=idmessage);
-END
+  CASE table_name
+    WHEN 'tag'
+      RETURN EXISTS(SELECT * FROM tag WHERE id=idtag);
+    WHEN 'message_tag'
+      RETURN EXISTS(SELECT * FROM message_tag WHERE id=idmessage);
+  END CASE;
+END;
+$$ LANGUAGE plpgsql;
 
-CREATE FUNCTION check_target_pk(_table_name target_table, _id INTEGER) RETURNS BOOLEAN AS
+CREATE FUNCTION check_target_pk(table_name target_table, id INTEGER) RETURNS BOOLEAN AS
+$$
 BEGIN
-  RETURN
-    EXISTS(SELECT * FROM box WHERE _table_name='box' AND _id=idbox) OR
-    EXISTS(SELECT * FROM field WHERE _table_name='field' AND _id=idfield) OR
-    EXISTS(SELECT * FROM value WHERE _table_name='value' AND _id=idvalue) OR
-    EXISTS(SELECT * FROM link WHERE _table_name='link' AND _id=idlink);
-END
+  CASE table_name
+    WHEN 'box'
+      RETURN EXISTS(SELECT * FROM box WHERE id=idbox)
+    WHEN 'field'
+      RETURN EXISTS(SELECT * FROM field WHERE id=idfield)
+    WHEN 'value'
+      RENTURN EXISTS(SELECT * FROM value WHERE id=idvalue)
+    WHEN 'link'
+      RETURN EXISTS(SELECT * FROM link WHERE id=idlink);
+  END CASE;
+$$ LANGUAGE plpgsql;
 
 
 CREATE TABLE IF NOT EXISTS graph(
