@@ -111,6 +111,7 @@ BEGIN
     WHEN 'link'
       THEN RETURN EXISTS(SELECT * FROM link WHERE id=idlink);
   END CASE;
+END;
 $$ LANGUAGE plpgsql;
 
 
