@@ -91,9 +91,9 @@ $$
 BEGIN
   CASE table_name
     WHEN 'tag'
-      RETURN EXISTS(SELECT * FROM tag WHERE id=idtag);
+      THEN RETURN EXISTS(SELECT * FROM tag WHERE id=idtag);
     WHEN 'message_tag'
-      RETURN EXISTS(SELECT * FROM message_tag WHERE id=idmessage);
+      THEN RETURN EXISTS(SELECT * FROM message_tag WHERE id=idmessage);
   END CASE;
 END;
 $$ LANGUAGE plpgsql;
@@ -103,13 +103,13 @@ $$
 BEGIN
   CASE table_name
     WHEN 'box'
-      RETURN EXISTS(SELECT * FROM box WHERE id=idbox)
+      THEN RETURN EXISTS(SELECT * FROM box WHERE id=idbox)
     WHEN 'field'
-      RETURN EXISTS(SELECT * FROM field WHERE id=idfield)
+      THEN RETURN EXISTS(SELECT * FROM field WHERE id=idfield)
     WHEN 'value'
-      RETURN EXISTS(SELECT * FROM value WHERE id=idvalue)
+      THEN RETURN EXISTS(SELECT * FROM value WHERE id=idvalue)
     WHEN 'link'
-      RETURN EXISTS(SELECT * FROM link WHERE id=idlink);
+      THEN RETURN EXISTS(SELECT * FROM link WHERE id=idlink);
   END CASE;
 $$ LANGUAGE plpgsql;
 
