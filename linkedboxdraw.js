@@ -79,7 +79,9 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 			INSERT (uuid_diagram, title) VALUES(rd.uuid_diagram, rd.title)
 		WHEN MATCHED AND d.title != rd.title THEN
 			UPDATE SET title = rd.title
+		RETURNING merge_action(), d.*;
 	`);
+	console.log(result1.rows);
 	console.log("MERGE INTO diagram done...");
 
 	const result2 = await client.query(`
@@ -96,8 +98,10 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 			UPDATE SET title = rb.title
 		WHEN NOT MATCHED BY SOURCE
 			AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=b.iddiagram AND d.uuid_diagram='${uuid_diagram}')
-			THEN DELETE;
+			THEN DELETE
+		RETURNING merge_action(), b.*;;
         `);
+	console.log(result2.rows);
         console.log("MERGE INTO box done...");
 
         const result3 = await client.query(`
@@ -116,8 +120,10 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 		WHEN MATCHED AND f.name != rf.name THEN
 			UPDATE SET name = rf.name
 		WHEN NOT MATCHED BY SOURCE AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=f.iddiagram AND d.uuid_diagram='${uuid_diagram}')
-			THEN DELETE;
+			THEN DELETE
+		RETURNING merge_action(), f.*;
         `);
+	console.log(result3.rows);
         console.log("MERGE INTO field done...");
 
         const result4 = await client.query(`
@@ -138,8 +144,10 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 		WHEN MATCHED AND v.idfield != rv.idfield THEN
 			UPDATE SET idfield = rv.idfield
                 WHEN NOT MATCHED BY SOURCE AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=v.iddiagram AND d.uuid_diagram='${uuid_diagram}')
-			THEN DELETE;
+			THEN DELETE
+		RETURNING merge_action(), v.*;;
         `);
+	console.log(result4.rows);
         console.log("MERGE INTO value done...");
 
         const result5 = await client.query(`
@@ -164,8 +172,10 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 			VALUES(rl.iddiagram, rl.uuid_link, rl.idbox_from, rl.idfield_from, rl.idbox_to, rl.idfield_to)
 		WHEN NOT MATCHED BY SOURCE
 			AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=l.iddiagram AND d.uuid_diagram='${uuid_diagram}')
-			THEN DELETE;
+			THEN DELETE
+		RETURNING merge_action(), l.*;
         `);
+	console.log(result5.rows);
         console.log("MERGE INTO link done...");
 
         const result6 = await client.query(`
@@ -185,8 +195,10 @@ app.post('/linkedboxdraw/post', async (req, res) => {
                         UPDATE SET code = rt.code
                 WHEN NOT MATCHED BY SOURCE
 			AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram = t.iddiagram AND d.uuid_diagram='${uuid_diagram}')
-			THEN DELETE;
+			THEN DELETE
+		RETURNING merge_action(), t.*;
         `);
+	console.log(result6.rows);
         console.log("MERGE INTO tag done...");
 
         const result7 = await client.query(`
@@ -204,8 +216,10 @@ app.post('/linkedboxdraw/post', async (req, res) => {
                         UPDATE SET message = rm.message
 		WHEN NOT MATCHED BY SOURCE
 			AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram = m.iddiagram AND d.uuid_diagram='${uuid_diagram}')
-			THEN DELETE;
+			THEN DELETE
+		RETURNING merge_action(), m.*;
         `);
+	console.log(result7.rows);
         console.log("MERGE INTO message_tag done...");
 
         const result8 = await client.query(`
@@ -256,8 +270,10 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 		WHEN NOT MATCHED BY SOURCE AND EXISTS(
 			SELECT * FROM diagram d WHERE g.iddiagram=d.iddiagram AND d.uuid_diagram='${uuid_diagram}'
 		)
-		THEN DELETE;
+		THEN DELETE
+		RETURNING merge_action(), g.*;
         `);
+	console.log(result8.rows);
         console.log("MERGE INTO graph done...");
 
         const result9 = await client.query(`
@@ -280,8 +296,10 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 			UPDATE SET height = rr.height
 		WHEN NOT MATCHED BY SOURCE
                        AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=r.iddiagram AND d.uuid_diagram='${uuid_diagram}')
-			THEN DELETE;
+			THEN DELETE
+		RETURNING merge_action(), r.*;
         `);
+	console.log(result9.rows);
         console.log("MERGE INTO rectangle done...");
 
         const result10 = await client.query(`
@@ -306,8 +324,10 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 			UPDATE SET y = rt.y
 		WHEN NOT MATCHED BY SOURCE
                        AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=t.iddiagram AND d.uuid_diagram='${uuid_diagram}')
-			THEN DELETE;
+			THEN DELETE
+		RETURNING merge_action(), t.*;
         `);
+	console.log(result10.rows);
         console.log("MERGE INTO translation done...");
 /*
         const result11 = await client.query(`
@@ -323,9 +343,11 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 			UPDATE SET points = rp.points
 		WHEN NOT MATCHED BY SOURCE
 			AND EXISTS (SELECT * FROM diagram d WHERE d.iddiagram=p.iddiagram AND d.uuid_diagram='${uuid_diagram}')
-			THEN DELETE;
+			THEN DELETE
+		RETURNING merge_action(), p.*;
 	`);
-      console.log("MERGE INTO polyline done...");
+	console.log(result11.rows);
+	console.log("MERGE INTO polyline done...");
 */
 })
 
