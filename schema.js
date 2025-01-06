@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS box(
   uuid_box UUID DEFAULT gen_random_uuid(),
   title VARCHAR(128),
   iddiagram INTEGER DEFAULT 1,
-  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
   UNIQUE(iddiagram, title),
   UNIQUE(uuid_box)
 );
@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS field(
   uuid_field UUID DEFAULT gen_random_uuid(),
   name VARCHAR(128),
   idbox INTEGER,
-  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
-  FOREIGN KEY (idbox) REFERENCES box(idbox),
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
+  FOREIGN KEY (idbox) REFERENCES box(idbox) ON DELETE CASCADE,
   UNIQUE(idbox, name),
   UNIQUE(idbox, idfield),
   UNIQUE(uuid_field)
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS value(
   uuid_value UUID DEFAULT gen_random_uuid(),
   data VARCHAR(128),
   idfield INTEGER,
-  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
   FOREIGN KEY (idfield) REFERENCES field(idfield),
   UNIQUE(idfield, data),
   UNIQUE(uuid_value)
@@ -53,11 +53,11 @@ CREATE TABLE IF NOT EXISTS link(
   idfield_from INTEGER,
   idbox_to INTEGER,
   idfield_to INTEGER,
-  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
-  FOREIGN KEY (idbox_from) REFERENCES box(idbox),
-  FOREIGN KEY (idbox_from, idfield_from) REFERENCES field(idbox, idfield),
-  FOREIGN KEY (idbox_to) REFERENCES box(idbox),
-  FOREIGN KEY (idbox_to, idfield_to) REFERENCES field(idbox, idfield),
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
+  FOREIGN KEY (idbox_from) REFERENCES box(idbox) ON DELETE CASCADE,
+  FOREIGN KEY (idbox_from, idfield_from) REFERENCES field(idbox, idfield) ON DELETE CASCADE,
+  FOREIGN KEY (idbox_to) REFERENCES box(idbox) ON DELETE CASCADE,
+  FOREIGN KEY (idbox_to, idfield_to) REFERENCES field(idbox, idfield) ON DELETE CASCADE,
   UNIQUE(idbox_from, idfield_from, idbox_to, idfield_to),
   UNIQUE(uuid_link)
 );
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS tag(
   type_code VARCHAR(128),
   code VARCHAR(128),
   UNIQUE(iddiagram, type_code,code),
-  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
   UNIQUE(uuid_tag)
 );
 
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS message_tag(
   iddiagram INTEGER DEFAULT 1,
   uuid_message UUID DEFAULT gen_random_uuid(),
   message TEXT,
-  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
   UNIQUE(uuid_message)
 );
 
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS graph(
   from_key INTEGER,
   to_table target_table,
   to_key INTEGER,
-  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
   UNIQUE(from_table, from_key, to_table, to_key),
   UNIQUE(uuid_graph)
 /*
@@ -127,8 +127,8 @@ CREATE TABLE IF NOT EXISTS rectangle(
   idbox INTEGER,
   UNIQUE(idbox),
   UNIQUE(uuid_rectangle),
-  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
-  FOREIGN KEY (idbox) REFERENCES box(idbox)
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
+  FOREIGN KEY (idbox) REFERENCES box(idbox) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS translation(
@@ -142,8 +142,8 @@ CREATE TABLE IF NOT EXISTS translation(
   UNIQUE(uuid_translation),
   x INTEGER,
   y INTEGER,
-  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
-  FOREIGN KEY (idrectangle) REFERENCES rectangle(idrectangle)
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
+  FOREIGN KEY (idrectangle) REFERENCES rectangle(idrectangle) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS polyline(
@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS polyline(
   FOREIGN KEY (idlink) REFERENCES link(idlink),
   UNIQUE(idlink),
   UNIQUE(uuid_polyline);
-  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram),
+  FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
   FOREIGN KEY (idtranslation_from, context) REFERENCES translation(idtranslation, context),
   FOREIGN KEY (idtranslation_to, context) REFERENCES translation(idtranslation, context),
   UNIQUE(idtranslation_from, idtranslation_to)
