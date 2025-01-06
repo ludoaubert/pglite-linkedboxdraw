@@ -107,7 +107,7 @@ BEGIN
     WHEN 'field'
       RETURN EXISTS(SELECT * FROM field WHERE id=idfield)
     WHEN 'value'
-      RENTURN EXISTS(SELECT * FROM value WHERE id=idvalue)
+      RETURN EXISTS(SELECT * FROM value WHERE id=idvalue)
     WHEN 'link'
       RETURN EXISTS(SELECT * FROM link WHERE id=idlink);
   END CASE;
