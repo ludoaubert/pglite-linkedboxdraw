@@ -166,7 +166,7 @@ CREATE TABLE IF NOT EXISTS polyline(
 
 CREATE FUNCTION box_trg() RETURNS trigger AS $box_trg$
     BEGIN
-        DELETE FROM graph g WHERE g.to_table='box' AND g.to_key=OLD.idbox AND g.iddiagram=OLD.iddiagram 
+        DELETE FROM graph g WHERE g.to_table='box' AND g.to_key=OLD.idbox AND g.iddiagram=OLD.iddiagram;
         RETURN OLD;
     END;
 $box_trg$ LANGUAGE plpgsql;
@@ -176,7 +176,7 @@ CREATE TRIGGER box_trg AFTER DELETE ON box
 
 CREATE FUNCTION field_trg() RETURNS trigger AS $field_trg$
     BEGIN
-        DELETE FROM graph g WHERE g.to_table='field' AND g.to_key=OLD.idfield AND g.iddiagram=OLD.iddiagram 
+        DELETE FROM graph g WHERE g.to_table='field' AND g.to_key=OLD.idfield AND g.iddiagram=OLD.iddiagram;
         RETURN OLD;
     END;
 $field_trg$ LANGUAGE plpgsql;
@@ -186,7 +186,7 @@ CREATE TRIGGER field_trg AFTER DELETE ON field
 
 CREATE FUNCTION value_trg() RETURNS trigger AS $value_trg$
     BEGIN
-        DELETE FROM graph g WHERE g.to_table='value' AND g.to_key=OLD.idvalue AND g.iddiagram=OLD.iddiagram 
+        DELETE FROM graph g WHERE g.to_table='value' AND g.to_key=OLD.idvalue AND g.iddiagram=OLD.iddiagram;
         RETURN OLD;
     END;
 $value_trg$ LANGUAGE plpgsql;
@@ -196,7 +196,7 @@ CREATE TRIGGER value_trg AFTER DELETE ON value
 
 CREATE FUNCTION link_trg() RETURNS trigger AS $link_trg$
     BEGIN
-        DELETE FROM graph g WHERE g.to_table='link' AND g.to_key=OLD.idlink AND g.iddiagram=OLD.iddiagram 
+        DELETE FROM graph g WHERE g.to_table='link' AND g.to_key=OLD.idlink AND g.iddiagram=OLD.iddiagram;
         RETURN OLD;
     END;
 $link_trg$ LANGUAGE plpgsql;
