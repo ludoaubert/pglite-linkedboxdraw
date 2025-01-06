@@ -339,8 +339,8 @@ async function displayCurrent()
 	{
 		if (currentBoxIndex_ == -1 && boxCombo_.value != "")
 		{
-			const ret = await db.query(`SELECT COALESCE(idbox, -1) FROM box WHERE title='${boxCombo_.value}'`);
-			currentBoxIndex_ = ret.rows[0].coalesce;
+			const ret = await db.query(`SELECT idbox FROM box WHERE title='${boxCombo_.value}'`);
+			currentBoxIndex_ = ret.rows.length ==1 ? ret.rows[0].idbox : -1;
 		}
 		const ret1 = await db.query(`SELECT STRING_AGG('<option>' || title || '</option>', '' ORDER BY title) FROM box`);
 		const boxComboInnerHTML = ret1.rows[0].string_agg;
@@ -350,8 +350,8 @@ async function displayCurrent()
 			boxCombo_.innerHTML = boxComboInnerHTML;
 			if (currentBoxIndex_ == -1)
 			{
-				const ret = await db.query(`SELECT COALESCE(idbox, -1) FROM box ORDER BY title LIMIT 1`);
-				currentBoxIndex_ = ret.rows[0].coalesce;
+				const ret = await db.query(`SELECT idbox FROM box ORDER BY title LIMIT 1`);
+				currentBoxIndex_ = ret.rows.length == 1 ? ret.rows[0].idbox : -1;
 			}
 		}
 
@@ -366,13 +366,13 @@ async function displayCurrent()
 			fieldCombo_.innerHTML = fieldComboInnerHTML;
 			if (currentFieldIndex_ == -1)
 			{
-				const ret = await db.query(`SELECT COALESCE(idfield, -1) FROM field WHERE idbox=${currentBoxIndex_} ORDER BY name LIMIT 1`);
-				currentFieldIndex_ = ret.rows[0].coalesce;
+				const ret = await db.query(`SELECT idfield FROM field WHERE idbox=${currentBoxIndex_} ORDER BY name LIMIT 1`);
+				currentFieldIndex_ = ret.rows.length == 1 ? ret.rows[0].idfield : -1;
 			}
 		}
 
-		const ret4 = await db.query(`SELECT COALESCE(MAX(idfield), -1) FROM field WHERE idbox=${currentBoxIndex_} AND name='${fieldCombo_.value}'`);
-		currentFieldIndex_ = ret4.rows[0].coalesce; // -1;
+		const ret4 = await db.query(`SELECT idfield FROM field WHERE idbox=${currentBoxIndex_} AND name='${fieldCombo_.value}'`);
+		currentFieldIndex_ = ret4.rows.length == 1 ? ret4.rows[0].idfield : -1;
 
 		contexts[index] = {boxCombo_, fieldCombo_, currentBoxIndex_, currentFieldIndex_};
 	}
@@ -399,23 +399,23 @@ async function displayCurrent()
 		valueCombo.innerHTML = valueComboInnerHTML;
 
 	const ret4 = await db.query(`
- 		SELECT COALESCE(MAX(m.message), '') AS message
+ 		SELECT m.message AS message
    		FROM box b
      		JOIN graph g ON g.to_table='box' AND b.idbox=g.to_key AND g.from_table='message_tag'
        		JOIN message_tag m ON g.from_key=m.idmessage
      		WHERE b.title='${boxCombo.value}'
   	`);
-	({message:boxCommentTextArea.value} = ret4.rows[0]);
+	({message:boxCommentTextArea.value} = ret4.rows.length==1 ? ret4.rows[0].message : "");
 
 	const ret6 = await db.query(`
- 		SELECT COALESCE(MAX(message),'') AS message
+ 		SELECT message AS message
    		FROM box b
      		JOIN field f ON f.idbox=b.idbox
      		JOIN graph g ON g.to_table='field' AND f.idfield=g.to_key AND g.from_table='message_tag'
        		JOIN message_tag m ON g.from_key=m.idmessage
      		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
  	`);
-	({message:fieldCommentTextArea.value} = ret6.rows[0]);
+	({message:fieldCommentTextArea.value} = ret6.rows.length==1 ? ret6.rows[0].message : "");
 }
 
 
