@@ -33,6 +33,8 @@ CREATE TABLE IF NOT EXISTS field(
   UNIQUE(uuid_field)
 );
 
+CREATE INDEX field_idbox ON field(idbox);
+
 CREATE TABLE IF NOT EXISTS value(
   idvalue SERIAL PRIMARY KEY,
   iddiagram INTEGER DEFAULT 1,
@@ -44,6 +46,8 @@ CREATE TABLE IF NOT EXISTS value(
   UNIQUE(idfield, data),
   UNIQUE(uuid_value)
 );
+
+CREATE INDEX value_idfield ON value(idfield);
 
 CREATE TABLE IF NOT EXISTS link(
   idlink SERIAL PRIMARY KEY,
