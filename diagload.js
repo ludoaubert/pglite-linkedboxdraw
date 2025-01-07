@@ -5,7 +5,7 @@ import {db, init, displayCurrent} from "./table_edit.js";
 import {schema} from "./schema.js"
 import {sample_diagdata} from "./diagdata.js"
 
-export {drawDiag, updateColorLinks, compute_links, ApplyRepartition, enforce_bounding_rectangle};
+export {drawDiag, drawLinks, updateColorLinks, compute_links, ApplyRepartition, enforce_bounding_rectangle};
 export {data2contexts};
 export {MONOSPACE_FONT_PIXEL_WIDTH, CHAR_RECT_HEIGHT, RECTANGLE_BOTTOM_CAP};
 
