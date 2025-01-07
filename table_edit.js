@@ -123,7 +123,7 @@ async function init() {
 	updateFieldCommentButton = document.getElementById("update field comment");
 	dropFieldCommentButton = document.getElementById("drop field comment");
 	linkCombo = document.getElementById("links");
-	dropLinkButton = document.getElementById("drop link");
+	Button = document.getElementById("drop link");
 	addLinkButton = document.getElementById("add link");
 	newBoxEditField = document.getElementById("new box");
 	newFieldEditField = document.getElementById("new field");
@@ -299,13 +299,25 @@ async function init() {
 	dropValueButton.addEventListener("click", dropValueFromField);
 	updateValueButton.addEventListener("click", updateValue);
 	linkCombo.addEventListener("click", linkComboOnClick);
-	dropLinkButton.addEventListener("click", async () => {
+	Button.addEventListener("click", async () => {
 		await linkComboOnClick();
-		await dropLink();
-		const ret = await db.query(`SELECT DISTINCT context FROM translation ORDER BY context`);
-		const contexts = ret.rows;
-		for (const {context:selectedContextIndex} of contexts)
+		const options = await produce_link_options();
+		const {option, idlink} = options[linkCombo.selectedIndex];
+		await db.exec(`DELETE FROM link WHERE idlink=${idlink}`);
+		linkComboOnClick();
+		const ret = await db.query(`
+  			SELECT t_from.context
+     			FROM link l
+			JOIN rectangle r_from ON r_from.idbox = l.idbox_from
+     			JOIN translation t_from ON t_from.idrectangle = r_from.idrectangle
+			JOIN rectangle r_to ON r_to.idbox = l.idbox_to
+     			JOIN translation t_to ON t_to.idrectangle = r_to.idrectangle
+   			WHERE l.idlink = ${idlink} AND t_from.context = t_to.context
+     		`);			  
+
+		if (ret.rows.length > 0)
 		{
+			const selectedContextIndex = ret.rows[0].context;
 			const links = await compute_links(selectedContextIndex);
 			document.getElementById("links_${selectedContextIndex}").innerHTML = drawLinks(links);
 		}
@@ -690,27 +702,6 @@ async function addNewLink()
 		if (ids.includes(lk.from) && ids.includes(lk.to))
 		{
 			links.push({polyline:[], from:lk.from, to:lk.to}); 
-			context.links = await compute_links(selectedContextIndex);
-		}
-	}
-
-	await drawDiag();
-}
-
-async function dropLink()
-{
-	const options = await produce_link_options();
-	const {option, idlink} = options[linkCombo.selectedIndex];
-	await db.exec(`DELETE FROM link WHERE idlink=${idlink}`);
-	linkComboOnClick();
-
-	for (let [selectedContextIndex, context] of mycontexts.contexts.entries())
-	{
-		let {translatedBoxes, links} = context ;
-		const ids = translatedBoxes.map(({id,translation}) => id);
-		if (ids.includes(lk.from) && ids.includes(lk.to))
-		{
-			context.links = context.links.filter(link => !(link.to==lk.to && link.from==lk.from));
 			context.links = await compute_links(selectedContextIndex);
 		}
 	}
