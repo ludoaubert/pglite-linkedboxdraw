@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS value(
   data VARCHAR(128),
   idfield INTEGER,
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
-  FOREIGN KEY (idfield) REFERENCES field(idfield),
+  FOREIGN KEY (idfield) REFERENCES field(idfield) ON DELETE CASCADE,
   UNIQUE(idfield, data),
   UNIQUE(uuid_value)
 );
