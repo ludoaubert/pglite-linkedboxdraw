@@ -63,16 +63,18 @@ CREATE TABLE IF NOT EXISTS link(
   idfield_to INTEGER,
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
   FOREIGN KEY (idbox_from) REFERENCES box(idbox) ON DELETE CASCADE,
-  FOREIGN KEY (idbox_from, idfield_from) REFERENCES field(idbox, idfield) ON DELETE CASCADE,
+  FOREIGN KEY (idfield_from) REFERENCES field(idfield) ON DELETE CASCADE,
   FOREIGN KEY (idbox_to) REFERENCES box(idbox) ON DELETE CASCADE,
-  FOREIGN KEY (idbox_to, idfield_to) REFERENCES field(idbox, idfield) ON DELETE CASCADE,
+  FOREIGN KEY (idfield_to) REFERENCES field(idfield) ON DELETE CASCADE,
   UNIQUE(idbox_from, idfield_from, idbox_to, idfield_to),
   UNIQUE(uuid_link)
 );
 
-CREATE INDEX link_iddiagram ON link(iddiagram) INCLUDE(idlink, uuid_link, idbox_from, idbox_to, idbox_to, idfield_to);
+CREATE INDEX link_iddiagram ON link(iddiagram) INCLUDE(idlink, uuid_link, idbox_from, idfield_from, idbox_to, idfield_to);
 CREATE INDEX link_idbox_from ON link(idbox_from);
+CREATE INDEX link_idfield_from ON link(idfield_from);
 CREATE INDEX link_idbox_to ON link(idbox_to);
+CREATE INDEX link_idfield_to ON link(idfield_to);
 
 CREATE TABLE IF NOT EXISTS tag(
   idtag SERIAL PRIMARY KEY,
