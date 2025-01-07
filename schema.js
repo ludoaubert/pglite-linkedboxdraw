@@ -63,9 +63,9 @@ CREATE TABLE IF NOT EXISTS link(
   idfield_to INTEGER,
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
   FOREIGN KEY (idbox_from) REFERENCES box(idbox) ON DELETE CASCADE,
-  FOREIGN KEY (idfield_from) REFERENCES field(idfield) ON DELETE CASCADE,
+  FOREIGN KEY (idbox_from, idfield_from) REFERENCES field(idbox, idfield) ON DELETE CASCADE,
   FOREIGN KEY (idbox_to) REFERENCES box(idbox) ON DELETE CASCADE,
-  FOREIGN KEY (idfield_to) REFERENCES field(idfield) ON DELETE CASCADE,
+  FOREIGN KEY (idbox_to, idfield_to) REFERENCES field(idbox, idfield) ON DELETE CASCADE,
   UNIQUE(idbox_from, idfield_from, idbox_to, idfield_to),
   UNIQUE(uuid_link)
 );
