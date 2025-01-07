@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS box(
   UNIQUE(uuid_box)
 );
 
+CREATE INDEX box_iddiagram ON box(iddiagram) INCLUDE(idbox, uuid_box, title);
+
 CREATE TABLE IF NOT EXISTS field(
   idfield SERIAL PRIMARY KEY,
   iddiagram INTEGER DEFAULT 1,
@@ -33,6 +35,7 @@ CREATE TABLE IF NOT EXISTS field(
   UNIQUE(uuid_field)
 );
 
+CREATE INDEX field_iddiagram ON field(iddiagram) INCLUDE(idfield, uuid_field, name, idbox);
 CREATE INDEX field_idbox ON field(idbox);
 
 CREATE TABLE IF NOT EXISTS value(
@@ -47,6 +50,7 @@ CREATE TABLE IF NOT EXISTS value(
   UNIQUE(uuid_value)
 );
 
+CREATE INDEX value_iddiagram ON value(iddiagram) INCLUDE(idvalue, uuid_value, data, idfield);
 CREATE INDEX value_idfield ON value(idfield);
 
 CREATE TABLE IF NOT EXISTS link(
@@ -66,6 +70,10 @@ CREATE TABLE IF NOT EXISTS link(
   UNIQUE(uuid_link)
 );
 
+CREATE INDEX link_iddiagram ON link(iddiagram) INCLUDE(idlink, uuid_link, idbox_from, idbox_to, idbox_to, idfield_to);
+CREATE INDEX link_idbox_from ON link(idbox_from);
+CREATE INDEX link_idbox_to ON link(idbox_to);
+
 CREATE TABLE IF NOT EXISTS tag(
   idtag SERIAL PRIMARY KEY,
   iddiagram INTEGER DEFAULT 1,
@@ -77,6 +85,8 @@ CREATE TABLE IF NOT EXISTS tag(
   UNIQUE(uuid_tag)
 );
 
+CREATE INDEX tag_iddiagram ON tag(iddiagram) INCLUDE(idtag, uuid_tag, type_code, code);
+
 CREATE TABLE IF NOT EXISTS message_tag(
   idmessage SERIAL PRIMARY KEY,
   iddiagram INTEGER DEFAULT 1,
@@ -85,6 +95,8 @@ CREATE TABLE IF NOT EXISTS message_tag(
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
   UNIQUE(uuid_message)
 );
+
+CREATE INDEX message_tag_iddiagram ON message_tag(iddiagram) INCLUDE(idmessage, uuid_message, message);
 
 CREATE TYPE source_table AS ENUM ('tag', 'message_tag');
 CREATE TYPE target_table AS ENUM ('box', 'field', 'value', 'link');
@@ -134,6 +146,7 @@ CREATE TABLE IF NOT EXISTS graph(
   UNIQUE(uuid_graph)
 );
 
+CREATE INDEX graph_iddiagram ON graph(iddiagram) INCLUDE(idgraph, uuid_graph, from_table, from_key, to_table, to_key); 
 CREATE INDEX graph_source_idx ON graph (from_table, from_key);
 CREATE INDEX graph_target_idx ON graph (to_table, to_key);
 
@@ -153,6 +166,9 @@ CREATE TABLE IF NOT EXISTS rectangle(
   FOREIGN KEY (idbox) REFERENCES box(idbox) ON DELETE CASCADE
 );
 
+CREATE INDEX rectangle_idbox ON rectangle(idbox);
+CREATE INDEX rectangle_iddiagram ON rectangle(iddiagram) INCLUDE(idrectangle, uuid_rectangle, width, height, idbox);
+
 CREATE TABLE IF NOT EXISTS translation(
   idtranslation SERIAL PRIMARY KEY,
   iddiagram INTEGER DEFAULT 1,
@@ -167,6 +183,9 @@ CREATE TABLE IF NOT EXISTS translation(
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
   FOREIGN KEY (idrectangle) REFERENCES rectangle(idrectangle) ON DELETE CASCADE
 );
+
+CREATE INDEX translation_idrectangle ON translation(idrectangle);
+CREATE INDEX translation_iddiagram ON translation(iddiagram) INCLUDE(idtranslation, uuid_translation, context, idrectangle);
 
 CREATE TABLE IF NOT EXISTS polyline(
   idpolyline SERIAL PRIMARY KEY,
