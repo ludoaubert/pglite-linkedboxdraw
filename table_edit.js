@@ -161,6 +161,21 @@ async function init() {
 		await db.exec(delete_from_tables);
 		await db.exec(diagData);
 		await data2contexts();
+
+		currentBoxIndex = -1;
+
+		currentFieldIndex = -1;
+
+		currentFromBoxIndex = -1;
+		currentFromFieldIndex = -1;
+
+		currentToBoxIndex = -1;
+		currentToFieldIndex = -1;
+
+		currentColorBoxIndex = -1;
+		currentColorFieldIndex = -1;
+		
+		await displayCurrent();
 	});
 	downloadDiagramListButton.addEventListener("click", async (evt)=>{
 		const response = await fetch(
@@ -219,7 +234,7 @@ async function init() {
 		await db.exec(delete_from_tables);
 		await db.exec(query);
 		await drawDiag();
-		var currentBoxIndex = -1;
+		currentBoxIndex = -1;
 
 		currentFieldIndex = -1;
 
