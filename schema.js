@@ -254,6 +254,7 @@ CREATE TRIGGER link_trg AFTER DELETE ON link
 CREATE FUNCTION graph_trg() RETURNS trigger AS $graph_trg$
     BEGIN
         RAISE LOG 'Deleting row % (statement is %)', OLD, current_query();
+        RETURN NULL;
     END;
 $graph_trg$ LANGUAGE plpgsql;
 
