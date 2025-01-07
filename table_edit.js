@@ -303,8 +303,7 @@ async function init() {
 		await linkComboOnClick();
 		const options = await produce_link_options();
 		const {option, idlink} = options[linkCombo.selectedIndex];
-		await db.exec(`DELETE FROM link WHERE idlink=${idlink}`);
-		linkComboOnClick();
+
 		const ret = await db.query(`
   			SELECT t_from.context
      			FROM link l
@@ -315,9 +314,14 @@ async function init() {
    			WHERE l.idlink = ${idlink} AND t_from.context = t_to.context
      		`);			  
 
-		if (ret.rows.length > 0)
+		const selectedContextIndex = ret.rows.length > 0 ? ret.rows[0].context : 0 ;
+		
+		await db.exec(`DELETE FROM link WHERE idlink=${idlink}`);
+		
+		linkComboOnClick();
+		
+		if (selectedContextIndex != 0)
 		{
-			const selectedContextIndex = ret.rows[0].context;
 			const links = await compute_links(selectedContextIndex);
 			document.getElementById("links_${selectedContextIndex}").innerHTML = drawLinks(links);
 		}
