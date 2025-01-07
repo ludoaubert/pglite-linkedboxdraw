@@ -123,7 +123,7 @@ async function init() {
 	updateFieldCommentButton = document.getElementById("update field comment");
 	dropFieldCommentButton = document.getElementById("drop field comment");
 	linkCombo = document.getElementById("links");
-	Button = document.getElementById("drop link");
+	dropLinkButton = document.getElementById("drop link");
 	addLinkButton = document.getElementById("add link");
 	newBoxEditField = document.getElementById("new box");
 	newFieldEditField = document.getElementById("new field");
