@@ -209,6 +209,7 @@ CREATE TABLE IF NOT EXISTS polyline(
 
 CREATE FUNCTION box_trg() RETURNS trigger AS $box_trg$
     BEGIN
+        RAISE LOG 'Deleting row % (statement is %)', OLD, current_query();
         DELETE FROM graph g WHERE g.to_table='box' AND g.to_key=OLD.idbox AND g.iddiagram=OLD.iddiagram;
         RETURN OLD;
     END;
@@ -219,6 +220,7 @@ CREATE TRIGGER box_trg AFTER DELETE ON box
 
 CREATE FUNCTION field_trg() RETURNS trigger AS $field_trg$
     BEGIN
+        RAISE LOG 'Deleting row % (statement is %)', OLD, current_query();
         DELETE FROM graph g WHERE g.to_table='field' AND g.to_key=OLD.idfield AND g.iddiagram=OLD.iddiagram;
         RETURN OLD;
     END;
@@ -229,6 +231,7 @@ CREATE TRIGGER field_trg AFTER DELETE ON field
 
 CREATE FUNCTION value_trg() RETURNS trigger AS $value_trg$
     BEGIN
+        RAISE LOG 'Deleting row % (statement is %)', OLD, current_query();
         DELETE FROM graph g WHERE g.to_table='value' AND g.to_key=OLD.idvalue AND g.iddiagram=OLD.iddiagram;
         RETURN OLD;
     END;
@@ -239,6 +242,7 @@ CREATE TRIGGER value_trg AFTER DELETE ON value
 
 CREATE FUNCTION link_trg() RETURNS trigger AS $link_trg$
     BEGIN
+        RAISE LOG 'Deleting row % (statement is %)', OLD, current_query();
         DELETE FROM graph g WHERE g.to_table='link' AND g.to_key=OLD.idlink AND g.iddiagram=OLD.iddiagram;
         RETURN OLD;
     END;
@@ -246,4 +250,13 @@ $link_trg$ LANGUAGE plpgsql;
 
 CREATE TRIGGER link_trg AFTER DELETE ON link
     FOR EACH ROW EXECUTE FUNCTION link_trg();
+
+CREATE FUNCTION graph_trg() RETURNS trigger AS $graph_trg$
+    BEGIN
+        RAISE LOG 'Deleting row % (statement is %)', OLD, current_query();
+    END;
+$graph_trg$ LANGUAGE plpgsql;
+
+CREATE TRIGGER graph_trg AFTER DELETE ON graph
+    FOR EACH ROW EXECUTE FUNCTION graph_trg();
 `
