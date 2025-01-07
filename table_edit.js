@@ -123,7 +123,7 @@ async function init() {
 	updateFieldCommentButton = document.getElementById("update field comment");
 	dropFieldCommentButton = document.getElementById("drop field comment");
 	linkCombo = document.getElementById("links");
-	dropLinkButton = document.getElementById("drop link");
+	Button = document.getElementById("drop link");
 	addLinkButton = document.getElementById("add link");
 	newBoxEditField = document.getElementById("new box");
 	newFieldEditField = document.getElementById("new field");
@@ -299,7 +299,17 @@ async function init() {
 	dropValueButton.addEventListener("click", dropValueFromField);
 	updateValueButton.addEventListener("click", updateValue);
 	linkCombo.addEventListener("click", linkComboOnClick);
-	dropLinkButton.addEventListener("click", async () => {await linkComboOnClick(); await dropLink();});
+	Button.addEventListener("click", async () => {
+		await linkComboOnClick();
+		await dropLink();
+		const ret = await db.query(`SELECT DISTINCT context FROM translation ORDER BY context`);
+		const contexts = ret.rows;
+		for (const {context:selectedContextIndex} of contexts)
+		{
+			const links = await compute_links(selectedContextIndex);
+			document.getElementById("links_${selectedContextIndex}").innerHTML = drawLinks(links);
+		}
+	});
 	fromBoxCombo.addEventListener("change", async () => {currentFromBoxIndex = -1; await displayCurrent();});
 	fromFieldCombo.addEventListener("change", async () => {currentFromFieldIndex = -1; await displayCurrent();});
 	toBoxCombo.addEventListener("change", async () => {currentToBoxIndex = -1; await displayCurrent();});
