@@ -1,6 +1,6 @@
 import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js"
 
-import {drawDiag, updateColorLinks, compute_links, ApplyRepartition, enforce_bounding_rectangle} from "./diagload.js";
+import {drawDiag, drawLinks, updateColorLinks, compute_links, ApplyRepartition, enforce_bounding_rectangle} from "./diagload.js";
 import {data2contexts} from "./diagload.js";
 import {MONOSPACE_FONT_PIXEL_WIDTH, CHAR_RECT_HEIGHT, RECTANGLE_BOTTOM_CAP} from "./diagload.js";
 
