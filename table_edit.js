@@ -299,7 +299,7 @@ async function init() {
 	dropValueButton.addEventListener("click", dropValueFromField);
 	updateValueButton.addEventListener("click", updateValue);
 	linkCombo.addEventListener("click", linkComboOnClick);
-	Button.addEventListener("click", async () => {
+	dropLinkButton.addEventListener("click", async () => {
 		await linkComboOnClick();
 		await dropLink();
 		const ret = await db.query(`SELECT DISTINCT context FROM translation ORDER BY context`);
