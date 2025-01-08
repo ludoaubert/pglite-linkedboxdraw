@@ -694,7 +694,7 @@ async function addNewLink()
   			INSERT INTO link(idbox_from, idfield_from, idbox_to, idfield_to)
     			SELECT cte_from.idbox, cte_from.idfield, cte_to.idbox, cte_to.idfield
       			FROM cte2 cte_from
-			JOIN cte2 cte_to
+			CROSS JOIN cte2 cte_to
 			WHERE cte_from.side='from' AND cte_to.side='to'
    			RETURNING *
 		)
