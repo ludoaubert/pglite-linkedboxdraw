@@ -767,12 +767,12 @@ async function ApplyRepartition()
 	));
 
 	const ret = await db.query(`
- 		UPDATE translation t
-   		SET t.context = repartition.context, t.x=${FRAME_MARGIN}*1.5, t.y=${FRAME_MARGIN}*1.5
+ 		UPDATE translation
+   		SET context = repartition.context, x=${FRAME_MARGIN}*1.5, y=${FRAME_MARGIN}*1.5
 		FROM rectangle r
   		JOIN json_to_recordset('${repartition}') AS repartition("idbox" int, "context" int) ON repartition.idbox=r.idbox
-    		WHERE t.context != repartition.context
-      			AND r.idrectangle=t.idrectangle
+    		WHERE context != repartition.context
+      			AND r.idrectangle=idrectangle
  	`);
 
 	document.getElementById("diagram").innerHTML = await drawDiagram();
