@@ -323,7 +323,7 @@ async function init() {
 		if (selectedContextIndex != 0)
 		{
 			const links = await compute_links(selectedContextIndex);
-			document.getElementById("links_${selectedContextIndex}").innerHTML = drawLinks(links);
+			document.getElementById(`links_${selectedContextIndex}`).innerHTML = drawLinks(links);
 		}
 	});
 	fromBoxCombo.addEventListener("change", async () => {currentFromBoxIndex = -1; await displayCurrent();});
