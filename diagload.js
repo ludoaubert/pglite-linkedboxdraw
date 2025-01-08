@@ -757,10 +757,14 @@ async function ApplyRepartition()
 {
 	const repartitionTable = document.getElementById("repartition");
 
-	const repartiton = JSON.stringify(repartitionTable.rows.map(row => ({
-		idbox : parseInt(row.cells[0].innerText),
-		context : parseInt(row.cells[2].innerText)		
-	})));
+	const rows = repartitionTable.rows;
+	const n = rows.length ;
+	const repartition = JSON.stringify(
+		[...Array(n).keys()].map(i => ({
+			idbox : parseInt(rows[i].cells[0].innerText),
+			context : parseInt(rows[i].cells[2].innerText)		
+		})
+	));
 
 	const ret = await db.query(`
  		UPDATE translation t
