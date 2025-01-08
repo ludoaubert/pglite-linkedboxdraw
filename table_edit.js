@@ -680,37 +680,36 @@ async function linkComboOnClick()
 
 async function addNewLink()
 {
-	await db.exec(`
+	const ret = await db.query(`
  		WITH cte(side, title, name) AS (
 			SELECT 'from', '${fromBoxCombo.value}', '${fromFieldCombo.value}'
    				UNION ALL
        			SELECT 'to', '${toBoxCombo.value}', '${toFieldCombo.value}'
-		)
- 		WITH cte2 AS (
+		), cte2 AS (
  			SELECT cte.side, b.idbox, b.idfield
    			FROM cte
       			JOIN box b ON b.title = cte.title
      			LEFT JOIN field f ON f.name=cte.name
-		}
-  		INSERT INTO link(idbox_from, idfield_from, idbox_to, idfield_to)
-    		SELECT cte_from.idbox, cte_from.idfield, cte_to.idbox, cte_to.idfield
-      		FROM cte2 cte_from
-		JOIN cte2 cte_to
-		WHERE cte_from.side='from' AND cte_to.side='to'
+		), cte_link AS (
+  			INSERT INTO link(idbox_from, idfield_from, idbox_to, idfield_to)
+    			SELECT cte_from.idbox, cte_from.idfield, cte_to.idbox, cte_to.idfield
+      			FROM cte2 cte_from
+			JOIN cte2 cte_to
+			WHERE cte_from.side='from' AND cte_to.side='to'
+   			RETURNING *
+		)
+  		SELECT t_from.context
+     		FROM cte_link l
+		JOIN rectangle r_from ON r_from.idbox = l.idbox_from
+     		JOIN translation t_from ON t_from.idrectangle = r_from.idrectangle
+		JOIN rectangle r_to ON r_to.idbox = l.idbox_to
+     		JOIN translation t_to ON t_to.idrectangle = r_to.idrectangle
+   		WHERE t_from.context = t_to.context
 	`);
 
-	for (let [selectedContextIndex, context] of mycontexts.contexts.entries())
-	{
-		let {translatedBoxes, links} = context ;
-		const ids = translatedBoxes.map(({id,translation}) => id);
-		if (ids.includes(lk.from) && ids.includes(lk.to))
-		{
-			links.push({polyline:[], from:lk.from, to:lk.to}); 
-			context.links = await compute_links(selectedContextIndex);
-		}
-	}
-
-	await drawDiag();
+	const selectedContextIndex = ret.rows[0].context;
+	const links = await compute_links(selectedContextIndex);
+	document.getElementById(`links_${selectedContextIndex}`).innerHTML = drawLinks(links);
 }
 
 async function dropBoxComment()
