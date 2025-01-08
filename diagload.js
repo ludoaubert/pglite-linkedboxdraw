@@ -762,7 +762,7 @@ async function ApplyRepartition()
 		context : parseInt(row.cells[2].innerText)		
 	})));
 
-	await db.exec(`
+	const ret = await db.query(`
  		UPDATE translation t
    		SET t.context = repartition.context, t.x=FRAME_MARGIN*1.5, t.y=FRAME_MARGIN*1.5
 		FROM rectangle r
@@ -772,38 +772,7 @@ async function ApplyRepartition()
 		)
  	`);
 
-	updatePolylines();
-}
-
-async function updateContextPolylines(selectedContextIndex)
-{
-	enforce_bounding_rectangle(selectedContextIndex);
-	const links = await compute_links(selectedContextIndex);
-	const slinks = JSON.stringify(links);
-	await db.exec(`
-  		DELETE FROM polyline;
-
-		INSERT INTO polyline(idlink, points, idtranslation_from, idtranslation_to)
-		SELECT l.idlink, polyline_.points, t_from.idtranslation, t_to.idtranslation
-  		FROM json_to_recordset('${slinks}) AS polyline_("from" int, "to" int, points json)
-     		JOIN link l ON l.idbox_from=polyline_.from AND l.idbox_to=polyline_.to
-		JOIN rectangle r_from ON r_from.idbox=l.idbox_from
-   		JOIN translation t_from ON t_from.idrectangle=r_from.idrectangle
-      		JOIN rectangle r_to ON r_to.idbox=l.idbox_to
-   		JOIN translation t_to ON t_to.idrectangle=r_to.idrectangle
-  	`);
-}
-
-async function updatePolylines()
-{
-	const ret = await db.query(`SELECT DISTINCT context FROM translation ORDER BY context`);
-
-	const contexts = ret.rows;
-
-	for (const selectedContextIndex of contexts)
-	{
-		updateContextPolylines(selectedContextIndex);
-	}
+	document.getElementById("diagram").innerHTML = await drawDiagram();
 }
 
 
