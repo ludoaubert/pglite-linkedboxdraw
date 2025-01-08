@@ -768,7 +768,7 @@ async function ApplyRepartition()
 
 	const ret = await db.query(`
  		UPDATE translation t
-   		SET t.context = repartition.context, t.x=FRAME_MARGIN*1.5, t.y=FRAME_MARGIN*1.5
+   		SET t.context = repartition.context, t.x=${FRAME_MARGIN}*1.5, t.y=${FRAME_MARGIN}*1.5
 		FROM rectangle r
   		JOIN json_to_recordset('${repartition}') AS repartition("idbox" int, "context" int) ON repartition.idbox=r.idbox
     		WHERE t.context != repartition.context
