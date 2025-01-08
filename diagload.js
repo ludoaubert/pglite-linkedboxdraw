@@ -771,8 +771,8 @@ async function ApplyRepartition()
    		SET context = repartition.context, x=${FRAME_MARGIN}*1.5, y=${FRAME_MARGIN}*1.5
 		FROM rectangle r
   		JOIN json_to_recordset('${repartition}') AS repartition("idbox" int, "context" int) ON repartition.idbox=r.idbox
-    		WHERE context != repartition.context
-      			AND r.idrectangle=idrectangle
+    		WHERE translation.context != repartition.context
+      			AND r.idrectangle = translation.idrectangle
  	`);
 
 	document.getElementById("diagram").innerHTML = await drawDiagram();
