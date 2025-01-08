@@ -686,7 +686,7 @@ async function addNewLink()
    				UNION ALL
        			SELECT 'to', '${toBoxCombo.value}', '${toFieldCombo.value}'
 		), cte2 AS (
- 			SELECT cte.side, b.idbox, b.idfield
+ 			SELECT cte.side, b.idbox, f.idfield
    			FROM cte
       			JOIN box b ON b.title = cte.title
      			LEFT JOIN field f ON f.name=cte.name
