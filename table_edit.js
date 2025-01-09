@@ -444,7 +444,7 @@ async function displayCurrent()
 		valueCombo.innerHTML = valueComboInnerHTML;
 
 	const ret4 = await db.query(`
- 		SELECT m.message AS message
+ 		SELECT m.message
    		FROM box b
      		JOIN graph g ON g.to_table='box' AND b.idbox=g.to_key AND g.from_table='message_tag'
        		JOIN message_tag m ON g.from_key=m.idmessage
