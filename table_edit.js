@@ -450,7 +450,7 @@ async function displayCurrent()
        		JOIN message_tag m ON g.from_key=m.idmessage
      		WHERE b.title='${boxCombo.value}'
   	`);
-	({message:boxCommentTextArea.value} = ret4.rows.length==1 ? ret4.rows[0].message : "");
+	boxCommentTextArea.value = ret4.rows.length==1 ? ret4.rows[0].message : "";
 
 	const ret6 = await db.query(`
  		SELECT message AS message
@@ -460,7 +460,7 @@ async function displayCurrent()
        		JOIN message_tag m ON g.from_key=m.idmessage
      		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
  	`);
-	({message:fieldCommentTextArea.value} = ret6.rows.length==1 ? ret6.rows[0].message : "");
+	fieldCommentTextArea.value = ret6.rows.length==1 ? ret6.rows[0].message : "";
 }
 
 
