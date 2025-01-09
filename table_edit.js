@@ -722,7 +722,10 @@ async function dropBoxComment()
      		WHERE g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='box' AND b.title = '${boxCombo.value}'
  	`);
 	await displayCurrent();
-	await drawDiag();
+	
+	const ret = await db.query(`SELECT idbox FROM box WHERE title='${boxCombo.value}'`);
+	const idbox = ret.rows[0].idbox;
+	document.getElementById(`b${idbox}`).removeAttribute("title");
 }
 
 async function updateBoxComment()
@@ -744,6 +747,10 @@ async function updateBoxComment()
  	`);
 
 	await displayCurrent();
+
+	const ret = await db.query(`SELECT idbox FROM box WHERE title='${boxCombo.value}'`);
+	const idbox = ret.rows[0].idbox;
+	document.getElementById(`b${idbox}`).setAttribute("title", `${boxCommentTextArea.value}`);
 }
 
 async function dropFieldComment()
