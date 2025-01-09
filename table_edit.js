@@ -325,6 +325,10 @@ async function init() {
 			const links = await compute_links(selectedContextIndex);
 			document.getElementById(`links_${selectedContextIndex}`).innerHTML = drawLinks(links);
 		}
+		const css = await drawDiagramStyle();
+		console.log(css);
+		var sheet = document.getElementById("dynamic-sheet");
+		sheet.innerHTML = css;
 	});
 	fromBoxCombo.addEventListener("change", async () => {currentFromBoxIndex = -1; await displayCurrent();});
 	fromFieldCombo.addEventListener("change", async () => {currentFromFieldIndex = -1; await displayCurrent();});
@@ -574,16 +578,10 @@ async function updateField()
 async function dropFieldFromBox()
 {
 	await db.exec(`
- 		WITH cte AS (
- 			DELETE FROM field f
-   			USING box b 
-     			WHERE f.idbox=b.idbox
-				AND b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
-   			RETURNING f.idfield
-      		)
-		DELETE FROM graph g
-  		USING cte
-    		WHERE to_table='field' AND to_key IN (SELECT idfield FROM cte)
+ 		DELETE FROM field f
+   		USING box b 
+     		WHERE f.idbox=b.idbox
+			AND b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
  	`);
 
 	fieldCombo.value = "";
@@ -710,12 +708,16 @@ async function addNewLink()
 	const selectedContextIndex = ret.rows[0].context;
 	const links = await compute_links(selectedContextIndex);
 	document.getElementById(`links_${selectedContextIndex}`).innerHTML = drawLinks(links);
+	const css = await drawDiagramStyle();
+	console.log(css);
+	var sheet = document.getElementById("dynamic-sheet");
+	sheet.innerHTML = css;
 }
 
 async function dropBoxComment()
 {
 	await db.exec(`
- 		WITH cte AS (
+ 		WITH cte AS 
 			SELECT m.idmessage, g.idgraph
    			FROM message_tag m
 			JOIN graph g ON g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='box'
