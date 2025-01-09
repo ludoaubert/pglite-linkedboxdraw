@@ -628,11 +628,10 @@ async function updateValue()
 async function dropValueFromField()
 {
 	await db.exec(`
- 		DELETE v
-   		FROM value v
-     		JOIN field f ON v.idfield=f.idfield
-       		JOIN box b ON f.idbox=b.idbox
-	 	WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}' AND v.data='${valueCombo.value}'
+ 		DELETE FROM value v
+   		USING field f
+     		JOIN box b ON f.idbox=b.idbox
+     		WHERE f.idfield=v.idfield AND b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}' AND v.data='${valueCombo.value}'
  	`);
 
 	await displayCurrent();
@@ -717,22 +716,10 @@ async function addNewLink()
 async function dropBoxComment()
 {
 	await db.exec(`
- 		WITH cte AS 
-			SELECT m.idmessage, g.idgraph
-   			FROM message_tag m
-			JOIN graph g ON g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='box'
-			JOIN box b ON b.idbox=g.to_key
-			WHERE b.title = '${boxCombo.value}'   
-		), cte2 AS (
- 			DELETE FROM graph g
-    			WHERE g.idgraph	IN (
-	   			SELECT idgraph FROM cte
-			)
-    		)
-      		DELETE FROM message_tag
-	 	WHERE idmessage IN (
-    			SELECT idmessage FROM cte
-		)
+ 		DELETE FROM message_tag m
+   		USING graph g
+     		JOIN box b ON b.idbox=g.to_key
+     		WHERE g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='box' AND b.title = '${boxCombo.value}'
  	`);
 	await displayCurrent();
 	await drawDiag();
@@ -761,23 +748,12 @@ async function updateBoxComment()
 async function dropFieldComment()
 {
 	await db.exec(`
- 		WITH cte AS (
-			SELECT m.idmessage, g.idgraph
-   			FROM message_tag m
-			JOIN graph g ON g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='field'
-			JOIN box b ON b.idbox=g.to_key
-   			JOIN field f ON f.idbox=b.idbox
-			WHERE b.title = '${boxCombo.value}' AND f.name='${fieldCombo.value}'  
-		), cte2 AS (
- 			DELETE FROM graph g
-    			WHERE g.idgraph	IN (
-	   			SELECT idgraph FROM cte
-			)
-    		)
-      		DELETE FROM message_tag
-	 	WHERE idmessage IN (
-    			SELECT idmessage FROM cte
-		)
+ 		DELETE FROM message_tag m
+   		USING graph g
+     		JOIN box b ON b.idbox=g.to_key
+   		JOIN field f ON f.idbox=b.idbox
+     		WHERE b.title = '${boxCombo.value}' AND f.name='${fieldCombo.value}'
+       			AND g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='field'
  	`);
 	await displayCurrent();
 	await drawDiag();
