@@ -765,6 +765,15 @@ async function dropFieldComment()
  	`);
 
 	await displayCurrent();
+
+	const ret = await db.query(`
+ 		SELECT b.idbox, f.idfield
+   		FROM box b
+     		JOIN field f ON b.idbox = f.idbox
+     		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
+   	`);
+	const {idbox, idfield} = ret.rows[0];
+	document.getElementById(`b${idbox}f${idfield}`).removeAttribute("title");
 }
 
 
@@ -791,6 +800,15 @@ async function updateFieldComment()
  	`);
 
 	await displayCurrent();
+
+	const ret = await db.query(`
+ 		SELECT b.idbox, f.idfield
+   		FROM box b
+     		JOIN field f ON b.idbox = f.idbox
+     		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
+   	`);
+	const {idbox, idfield} = ret.rows[0];
+	document.getElementById(`b${idbox}f${idfield}`).setAttribute("title", `${fieldCommentTextArea.value}`);
 }
 
 async function produce_color_options()
