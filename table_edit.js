@@ -727,12 +727,14 @@ async function dropBoxComment()
 
 async function updateBoxComment()
 {
-	const boxComment = boxCommentTextArea.value ;
-	await dropBoxComment();
-	
 	await db.exec(`
+		DELETE FROM message_tag m
+   		USING graph g
+     		JOIN box b ON b.idbox=g.to_key
+     		WHERE g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='box' AND b.title = '${boxCombo.value}';
+ 
  		WITH cte AS (
- 			INSERT INTO message_tag(message) VALUES ('${boxComment}')
+ 			INSERT INTO message_tag(message) VALUES ('${boxCommentTextArea.value}')
     			RETURNING idmessage
     		)
      		INSERT INTO graph(from_table, from_key, to_table, to_key)
@@ -742,7 +744,6 @@ async function updateBoxComment()
  	`);
 
 	await displayCurrent();
-	await drawDiag();
 }
 
 async function dropFieldComment()
@@ -755,19 +756,23 @@ async function dropFieldComment()
      		WHERE b.title = '${boxCombo.value}' AND f.name='${fieldCombo.value}'
        			AND g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='field'
  	`);
+
 	await displayCurrent();
-	await drawDiag();
 }
 
 
 async function updateFieldComment()
 {
-	const fieldComment = fieldCommentTextArea.value;
-	await dropFieldComment();
-	
 	await db.exec(`
+ 		DELETE FROM message_tag m
+   		USING graph g
+     		JOIN box b ON b.idbox=g.to_key
+   		JOIN field f ON f.idbox=b.idbox
+     		WHERE b.title = '${boxCombo.value}' AND f.name='${fieldCombo.value}'
+       			AND g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='field';
+	  
  		WITH cte AS (
- 			INSERT INTO message_tag(message) VALUES ('${fieldComment}')
+ 			INSERT INTO message_tag(message) VALUES ('${fieldCommentTextArea.value}')
     			RETURNING idmessage
     		)
      		INSERT INTO graph(from_table, from_key, to_table, to_key)
@@ -779,7 +784,6 @@ async function updateFieldComment()
  	`);
 
 	await displayCurrent();
-	await drawDiag();
 }
 
 async function produce_color_options()
