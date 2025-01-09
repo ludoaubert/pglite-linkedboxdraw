@@ -758,8 +758,8 @@ async function dropFieldComment()
 	await db.exec(`
  		DELETE FROM message_tag m
    		USING graph g
-     		JOIN box b ON b.idbox=g.to_key
-   		JOIN field f ON f.idbox=b.idbox
+     		JOIN field f ON f.idfield=g.to_key
+     		JOIN box b ON b.idbox=f.idbox
      		WHERE b.title = '${boxCombo.value}' AND f.name='${fieldCombo.value}'
        			AND g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='field'
  	`);
