@@ -8,7 +8,7 @@ Just been hired on a software (or data) project. You need to quickly understand 
 To look at an example of map : https://ludoaubert.github.io/pglite-linkedboxdraw/table_edit_ti.html
 
 The source data for this example is located here:
-https://github.com/ludoaubert/pglite-linkedboxdraw/diagdata.js
+https://ludoaubert.github.io/pglite-linkedboxdraw/diagdata.js
 In order to create your own, you can start by duplicating this file, and replace the cte listings by your own data, and make sure the syntax is valid PostgreSQL syntax.
 
 You can then proceed to load the diagram file by pressing the "File Choose" button in the "File Input" section of https://ludoaubert.github.io/pglite-linkedboxdraw/table_edit_ti.html
