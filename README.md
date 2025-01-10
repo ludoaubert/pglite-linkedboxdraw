@@ -22,6 +22,9 @@ Cut links: geometric links do not cross cluster boundaries. Links are also mater
 Used Technology:
 
 The project depends on Eigen https://eigen.tuxfamily.org/ for the clustering (minimum cut) algorithm.
+
 The project uses pglite https://pglite.dev/ as local first db.
+
 It is deployed on github.io.
+
 The Algorithms are implemented in C++ and compiled to Web Assemblies for easy deployment on the web.
