@@ -32,6 +32,7 @@ var editTitle ;
 var newDiagramButton ;
 var boxCombo ;
 var boxZIndexSlider ;
+var boxZIndexValue ;
 var addBoxButton ;
 var dropBoxButton ;
 var updateBoxButton ;
@@ -83,7 +84,8 @@ async function init() {
 	editTitle = document.getElementById("title");
 	newDiagramButton = document.getElementById("new diagram");
 	boxCombo = document.getElementById("boxes");
-	boxZIndexSlider = document.getElementById("box z-index");
+	boxZIndexSlider = document.getElementById("box z-index slider");
+	boxZIndexValue = document.getElementById("box z-index value");
 	addBoxButton = document.getElementById("add box");
 	dropBoxButton = document.getElementById("drop box");
 	updateBoxButton = document.getElementById("update box");
@@ -302,9 +304,17 @@ async function init() {
      			SET z = ${event.target.value}
 			FROM rectangle r
    			JOIN box b ON r.idbox = b.idbox
+      			WHERE translation.idrectangle = r.idrectangle AND b.title = '${boxCombo.value}'
+  		`);
+
+		const ret = await db.query(`
+  			SELECT t.z
+     			FROM translation t
+			JOIN rectangle r ON r.idrectangle = t.idrectangle
+   			JOIN box b ON r.idbox = b.idbox
       			WHERE b.title = '${boxCombo.value}'
   		`);
-		ZIndexValue.textContent = event.target.value
+		ZIndexValue.textContent = ret.rows[0].z ;
 	});
 	addBoxButton.addEventListener("click", addNewBox);
 	dropBoxButton.addEventListener("click", dropBox);
