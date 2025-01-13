@@ -480,13 +480,13 @@ async function addNewBox()
  	 	SELECT setval(pg_get_serial_sequence('translation', 'idtranslation'), coalesce(max(idtranslation)+1, 1), false) FROM translation;
 
    		WITH cte AS (
- 			INSERT INTO box(title, iddiagram) VALUES('${newBoxEditField.value}')
-    			RETURNING idbox, title
+ 			INSERT INTO box(title) VALUES('${newBoxEditField.value}')
+    			RETURNING *
        		), cte2 AS (
  			INSERT INTO rectangle(width, height, idbox) 
    			SELECT 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT}, idbox 
      			FROM cte
-			RETURNING idrectangle
+			RETURNING *
 		), cte3 AS (
    			INSERT INTO translation(context, idrectangle, x, y)
    			SELECT 1 AS context, idrectangle, 0 AS x, 0 AS y
