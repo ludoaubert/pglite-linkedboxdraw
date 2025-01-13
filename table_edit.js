@@ -731,9 +731,10 @@ async function addNewLink()
       			JOIN box b ON b.title = cte.title
      			LEFT JOIN field f ON f.name=cte.name
 		), cte_link AS (
-  			INSERT INTO link(idbox_from, idfield_from, idbox_to, idfield_to)
-    			SELECT cte_from.idbox, cte_from.idfield, cte_to.idbox, cte_to.idfield
+  			INSERT INTO link(iddiagram, idbox_from, idfield_from, idbox_to, idfield_to)
+    			SELECT d.iddiagram, cte_from.idbox, cte_from.idfield, cte_to.idbox, cte_to.idfield
       			FROM cte2 cte_from
+	 		CROSS JOIN diagram d
 			CROSS JOIN cte2 cte_to
 			WHERE cte_from.side='from' AND cte_to.side='to'
    			RETURNING *
