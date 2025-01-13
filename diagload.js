@@ -672,7 +672,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 
 		const ret = await db.query(`
   		WITH cte AS (
-  			SELECT t.context, b.idbox, 1 AS position, FORMAT('
+  			SELECT t.context, b.idbox, t.z, 1 AS position, FORMAT('
      				<g id="g_%1$s" transform="translate(%4$s,%5$s)">
 				<rect id="rect_%1$s" width="%2$s" height="%3$s" />
 				<foreignObject id="box%1$s" width="%2$s" height="%3$s">
@@ -690,7 +690,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 			JOIN rectangle r ON t.idrectangle=r.idrectangle
     			JOIN box b ON r.idbox=b.idbox
        				UNION ALL
-     			SELECT t.context, f.idbox, 2 AS position, STRING_AGG(FORMAT('<tr id="b%1$sf%2$s"><td id="b%1$sf%2$s">%3$s</td></tr>',
+     			SELECT t.context, f.idbox, t.z, 2 AS position, STRING_AGG(FORMAT('<tr id="b%1$sf%2$s"><td id="b%1$sf%2$s">%3$s</td></tr>',
 	  			f.idbox, --%1
      				f.idfield, --%2
 	  			f.name),  --%3
@@ -706,7 +706,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
        					AND g.to_key=f.idfield ORDER BY g.idgraph LIMIT 1) sub ON true 
        			GROUP BY t.context, f.idbox
   				UNION ALL
-   			SELECT t.context, r.idbox, 3 AS position, FORMAT('
+   			SELECT t.context, r.idbox, t.z, 3 AS position, FORMAT('
       				</tbody>
 	  			</table>
       				</foreignObject>
@@ -719,7 +719,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
      			FROM translation t
 	 		JOIN rectangle r ON t.idrectangle=r.idrectangle
         	)
-		SELECT STRING_AGG(html, '\n' ORDER BY idbox, position)
+		SELECT STRING_AGG(html, '\n' ORDER BY z, idbox, position)
 		FROM cte
   		WHERE context=${selectedContextIndex}
    	`	);
