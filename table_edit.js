@@ -506,8 +506,8 @@ async function displayCurrent()
 	 	WHERE b.title = '${boxCombo.value}'
  	`);
 
-	boxZIndexSlider.value = ret7.rows[0].z ;
-	boxZIndexValue.textContent = ret7.rows[0].z ;
+	boxZIndexSlider.value = ret7.rows.length==1 ? ret7.rows[0].z : 1 ;
+	boxZIndexValue.textContent = ret7.rows.length==1 ? ret7.rows[0].z : 1 ;
 }
 
 
