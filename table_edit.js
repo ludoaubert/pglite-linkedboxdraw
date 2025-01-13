@@ -6,6 +6,7 @@ import {MONOSPACE_FONT_PIXEL_WIDTH, CHAR_RECT_HEIGHT, RECTANGLE_BOTTOM_CAP} from
 
 import {schema} from "./schema.js"
 import {delete_from_tables} from "./delete_from_tables.js"
+import {upgrade_key_sequences} from "./upgrade_key_sequences.js"
 	
 export {db, init, displayCurrent};
 
@@ -216,6 +217,7 @@ async function init() {
 		console.log(query);
 		await db.exec(delete_from_tables);
 		await db.exec(query);
+		await db.exec(upgrade_key_sequences);
 		await drawDiag();
 		currentBoxIndex = -1;
 
