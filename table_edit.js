@@ -31,6 +31,7 @@ var onlineDocumentCombo ;
 var editTitle ;
 var newDiagramButton ;
 var boxCombo ;
+var boxZIndexSlider ;
 var addBoxButton ;
 var dropBoxButton ;
 var updateBoxButton ;
@@ -82,6 +83,7 @@ async function init() {
 	editTitle = document.getElementById("title");
 	newDiagramButton = document.getElementById("new diagram");
 	boxCombo = document.getElementById("boxes");
+	boxZIndexSlider = document.getElementById("box z-index");
 	addBoxButton = document.getElementById("add box");
 	dropBoxButton = document.getElementById("drop box");
 	updateBoxButton = document.getElementById("update box");
@@ -294,6 +296,16 @@ async function init() {
 		await drawDiag();
 	});
 	boxCombo.addEventListener("change", async () => {currentBoxIndex = -1; await displayCurrent();});
+	boxZIndexSlider.addEventListener("change", async (event) => {
+		await db.exec(`
+  			UPDATE translation
+     			SET z = ${event.target.value}
+			FROM rectangle r
+   			JOIN box b ON r.idbox = b.idbox
+      			WHERE b.title = '${boxCombo.value}'
+  		`);
+		ZIndexValue.textContent = event.target.value
+	});
 	addBoxButton.addEventListener("click", addNewBox);
 	dropBoxButton.addEventListener("click", dropBox);
 	updateBoxButton.addEventListener("click", updateBox);
