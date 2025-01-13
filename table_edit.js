@@ -497,6 +497,17 @@ async function displayCurrent()
      		WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
  	`);
 	fieldCommentTextArea.value = ret6.rows.length==1 ? ret6.rows[0].message : "";
+
+	const ret7 = await db.query(`
+ 		SELECT t.z
+   		FROM translation t
+     		JOIN rectangle r ON t.idrectangle = r.idrectangle
+       		JOIN box b ON r.idbox = b.idbox
+	 	WHERE b.title = '${boxCombo.value}'
+ 	`);
+
+	boxZIndexSlider.value = ret7.rows[0].z ;
+	boxZIndexValue.textContent = ret7.rows[0].z ;
 }
 
 
