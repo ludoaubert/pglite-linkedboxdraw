@@ -1,3 +1,5 @@
+export {upgrade_key_sequences}
+
 const upgrade_key_sequences=`
 SELECT setval(pg_get_serial_sequence('box', 'idbox'), (SELECT MAX(idbox) FROM box) + 1);
 SELECT setval(pg_get_serial_sequence('field', 'idfield'), (SELECT MAX(idfield) FROM field) + 1);
