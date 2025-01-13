@@ -315,7 +315,7 @@ async function init() {
       			WHERE b.title = '${boxCombo.value}'
   		`);
 
-		ZIndexValue.textContent = ret.rows[0].z ;
+		boxZIndexValue.textContent = ret.rows[0].z ;
 		
 		await drawDiag();
 	});
