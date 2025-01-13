@@ -276,8 +276,6 @@ async function init() {
 			('RELATION_CATEGORY','TR2'),
 			('RELATION_CARDINALITY', '1,1'),('RELATION_CARDINALITY', '1,n'),('RELATION_CARDINALITY', 'n,n');
   		`);
-		
-		await data2contexts();
 
 		currentBoxIndex = -1;
 
@@ -292,7 +290,7 @@ async function init() {
 		currentColorBoxIndex = -1;
 		currentColorFieldIndex = -1;
 		
-		await displayCurrent(); 
+		await displayCurrent();
 		await drawDiag();
 	});
 	boxCombo.addEventListener("change", async () => {currentBoxIndex = -1; await displayCurrent();});
