@@ -299,6 +299,7 @@ async function init() {
 	});
 	boxCombo.addEventListener("change", async () => {currentBoxIndex = -1; await displayCurrent();});
 	boxZIndexSlider.addEventListener("change", async (event) => {
+		console.log(event.target.value);
 		await db.exec(`
   			UPDATE translation
      			SET z = ${event.target.value}
@@ -316,6 +317,7 @@ async function init() {
   		`);
 
 		boxZIndexValue.textContent = ret.rows[0].z ;
+		console.log(boxZIndexValue.textContent);
 		
 		await drawDiag();
 	});
