@@ -579,7 +579,7 @@ async function addNewFieldToBox()
  			INSERT INTO field(iddiagram, idbox, name)
    			SELECT iddiagram, idbox, '${newFieldEditField.value}'
      			FROM box WHERE title='${boxCombo.value}'
-			RETURNING idfield, idbox, name
+			RETURNING *
    		), cte2(idbox, width, height) AS (
    			SELECT iddiagram, idbox, 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT} FROM box
     			UNION ALL
