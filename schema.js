@@ -182,6 +182,7 @@ CREATE TABLE IF NOT EXISTS translation(
   UNIQUE(uuid_translation),
   x INTEGER,
   y INTEGER,
+  z INTEGER DEFAULT 1,
   FOREIGN KEY (iddiagram) REFERENCES diagram(iddiagram) ON DELETE CASCADE,
   FOREIGN KEY (idrectangle) REFERENCES rectangle(idrectangle) ON DELETE CASCADE
 );
