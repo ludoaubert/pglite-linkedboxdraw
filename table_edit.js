@@ -523,16 +523,18 @@ async function addNewBox()
 {	
 	const ret = await db.query(`
    		WITH cte AS (
- 			INSERT INTO box(title) VALUES('${newBoxEditField.value}')
+ 			INSERT INTO box(iddiagram, title)
+    			SELECT iddiagram, '${newBoxEditField.value}'
+       			FROM diagram
     			RETURNING *
        		), cte2 AS (
- 			INSERT INTO rectangle(width, height, idbox) 
-   			SELECT 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT}, idbox 
+ 			INSERT INTO rectangle(iddiagram, width, height, idbox) 
+   			SELECT iddiagram, 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT}, idbox 
      			FROM cte
 			RETURNING *
 		), cte3 AS (
-   			INSERT INTO translation(context, idrectangle, x, y)
-   			SELECT 1 AS context, idrectangle, 0 AS x, 0 AS y
+   			INSERT INTO translation(iddiagram, context, idrectangle, x, y)
+   			SELECT iddiagram, 1 AS context, idrectangle, 0 AS x, 0 AS y
      			FROM cte2
 		)
   		SELECT idbox FROM cte
@@ -572,23 +574,23 @@ async function addNewFieldToBox()
 {
 	const ret = await db.query(`
  		WITH cte AS (
- 			INSERT INTO field(idbox, name)
-   			SELECT idbox, '${newFieldEditField.value}'
+ 			INSERT INTO field(iddiagram, idbox, name)
+   			SELECT iddiagram, idbox, '${newFieldEditField.value}'
      			FROM box WHERE title='${boxCombo.value}'
 			RETURNING idfield, idbox, name
    		), cte2(idbox, width, height) AS (
-   			SELECT idbox, 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT} FROM box
+   			SELECT iddiagram, idbox, 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT} FROM box
     			UNION ALL
-       			SELECT idbox, LENGTH(name) * ${MONOSPACE_FONT_PIXEL_WIDTH}, ${CHAR_RECT_HEIGHT}  FROM field
+       			SELECT iddiagram, idbox, LENGTH(name) * ${MONOSPACE_FONT_PIXEL_WIDTH}, ${CHAR_RECT_HEIGHT}  FROM field
 	  		UNION ALL
-     			SELECT idbox, LENGTH(name) * ${MONOSPACE_FONT_PIXEL_WIDTH}, ${CHAR_RECT_HEIGHT}  FROM cte
+     			SELECT iddiagram, idbox, LENGTH(name) * ${MONOSPACE_FONT_PIXEL_WIDTH}, ${CHAR_RECT_HEIGHT}  FROM cte
 		), cte3 AS (
-  			SELECT idbox, MAX(width) AS width, LEAST(SUM(height), ${RECTANGLE_BOTTOM_CAP}) AS height
+  			SELECT iddiagram, idbox, MAX(width) AS width, LEAST(SUM(height), ${RECTANGLE_BOTTOM_CAP}) AS height
     			FROM cte2
-      			GROUP BY idbox
+      			GROUP BY iddiagram, idbox
 	 	), cte4 AS (
    			UPDATE rectangle r
-     			SET width = cte3.width, height = cte3.height
+     			SET iddiagram = cte3.iddiagram, width = cte3.width, height = cte3.height
 			FROM cte3 JOIN cte ON cte3.idbox = cte.idbox
    			WHERE r.idbox=cte.idbox
   		)
@@ -642,8 +644,8 @@ async function editValueFromField()
 async function addNewValueToField()
 {
 	await db.exec(`
- 		INSERT INTO value(data, idfield)
-   		SELECT '${newValueEditField.value}', f.idfield
+ 		INSERT INTO value(iddiagram, data, idfield)
+   		SELECT f.iddiagram, '${newValueEditField.value}', f.idfield
      		FROM field f
        		JOIN box b ON f.idbox = b.idbox
 	 	WHERE b.title='${boxCombo.value}' AND f.name='${fieldCombo.value}'
@@ -781,11 +783,13 @@ async function updateBoxComment()
      		WHERE g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='box' AND b.title = '${boxCombo.value}';
  
  		WITH cte AS (
- 			INSERT INTO message_tag(message) VALUES ('${boxCommentTextArea.value}')
-    			RETURNING idmessage
+ 			INSERT INTO message_tag(iddiagram, message)
+    			SELECT iddiagram, '${boxCommentTextArea.value}'
+       			FROM diagram
+    			RETURNING *
     		)
-     		INSERT INTO graph(from_table, from_key, to_table, to_key)
-       		SELECT 'message_tag', idmessage, 'box', b.idbox
+     		INSERT INTO graph(iddiagram, from_table, from_key, to_table, to_key)
+       		SELECT iddiagram, 'message_tag', idmessage, 'box', b.idbox
 	  	FROM cte
 	  	JOIN box b ON b.title = '${boxCombo.value}'
  	`);
@@ -832,11 +836,13 @@ async function updateFieldComment()
        			AND g.from_table='message_tag' AND g.from_key=m.idmessage AND g.to_table='field';
 	  
  		WITH cte AS (
- 			INSERT INTO message_tag(message) VALUES ('${fieldCommentTextArea.value}')
-    			RETURNING idmessage
+ 			INSERT INTO message_tag(iddiagram, message)
+    			SELECT iddiagram, '${fieldCommentTextArea.value}'
+       			FROM diagram
+    			RETURNING *
     		)
-     		INSERT INTO graph(from_table, from_key, to_table, to_key)
-       		SELECT 'message_tag', idmessage, 'field', f.idfield
+     		INSERT INTO graph(iddiagram, from_table, from_key, to_table, to_key)
+       		SELECT cte.iddiagram, 'message_tag', idmessage, 'field', f.idfield
 	  	FROM cte
 	  	JOIN box b ON b.title = '${boxCombo.value}' 
      		JOIN field f ON f.idbox=b.idbox
@@ -891,8 +897,8 @@ async function colorsComboOnClick()
 async function addNewColor()
 {
 	await db.exec(`
- 		INSERT INTO graph(from_table, from_key, to_table, to_key)
-   		SELECT 'tag', idtag, 'field', f.idfield
+ 		INSERT INTO graph(idiagram, from_table, from_key, to_table, to_key)
+   		SELECT f.iddiagram, 'tag', idtag, 'field', f.idfield
      		FROM field f
        		JOIN box b ON f.idbox=b.idbox
 	 	JOIN tag t ON t.type_code='COLOR' AND code='${colorCombo.value}'
