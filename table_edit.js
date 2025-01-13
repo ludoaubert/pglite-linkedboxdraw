@@ -314,7 +314,10 @@ async function init() {
    			JOIN box b ON r.idbox = b.idbox
       			WHERE b.title = '${boxCombo.value}'
   		`);
+
 		ZIndexValue.textContent = ret.rows[0].z ;
+		
+		await drawDiag();
 	});
 	addBoxButton.addEventListener("click", addNewBox);
 	dropBoxButton.addEventListener("click", dropBox);
