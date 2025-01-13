@@ -160,6 +160,13 @@ async function init() {
  		const diagData = await file.text(); 
 		await db.exec(delete_from_tables);
 		await db.exec(diagData);
+		
+		await db.exec(`SELECT setval(pg_get_serial_sequence('box', 'idbox'), coalesce(max(idbox)+1, 1), false) FROM box;`);
+		await db.exec(`SELECT setval(pg_get_serial_sequence('field', 'idfield'), coalesce(max(idfield)+1, 1), false) FROM field;`);
+		//await db.exec(`SELECT setval(pg_get_serial_sequence('graph', 'idgraph'), coalesce(max(idgraph)+1, 1), false) FROM graph;`);	
+  		await db.exec(`SELECT setval(pg_get_serial_sequence('rectangle', 'idrectangle'), coalesce(max(idrectangle)+1, 1), false) FROM rectangle;`);
+ 		await db.exec(`SELECT setval(pg_get_serial_sequence('translation', 'idtranslation'), coalesce(max(idtranslation)+1, 1), false) FROM translation;`);
+		
 		await data2contexts();
 
 		currentBoxIndex = -1;
@@ -473,13 +480,7 @@ async function updateTitle()
 
 
 async function addNewBox()
-{
-	await db.exec(`
-  		SELECT setval(pg_get_serial_sequence('box', 'idbox'), coalesce(max(idbox)+1, 1), false) FROM box;
-  		SELECT setval(pg_get_serial_sequence('rectangle', 'idrectangle'), coalesce(max(idrectangle)+1, 1), false) FROM rectangle;
- 	 	SELECT setval(pg_get_serial_sequence('translation', 'idtranslation'), coalesce(max(idtranslation)+1, 1), false) FROM translation;
-	`);
-	
+{	
 	const ret = await db.query(`
    		WITH cte AS (
  			INSERT INTO box(title) VALUES('${newBoxEditField.value}')
