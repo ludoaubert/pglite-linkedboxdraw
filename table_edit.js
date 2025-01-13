@@ -71,28 +71,6 @@ var addColorButton;
 var updateColorButton;
 var applyRepartitionButton;
 
-function newDiagram() {
-
-	mydata={documentTitle:"", boxes:[], values:[], boxComments:[], fieldComments:[], links:[], fieldColors:[]};
-	const mycontexts_={
-		contexts:[{frame:{left:0,right:1197,top:0,bottom:507}, translatedBoxes:[], links:[]}],
-		rectangles:[]
-	};
-	
-	setContexts(mycontexts_);
-
-	currentBoxIndex = -1;
-	currentFieldIndex = -1;
-
-	currentFromBoxIndex = -1;
-	currentFromFieldIndex = -1;
-
-	currentToBoxIndex = -1;
-	currentToFieldIndex = -1;
-
-	currentColorBoxIndex = -1;
-	currentColorFieldIndex = -1;
-}
 
 async function init() {
 
