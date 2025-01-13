@@ -704,7 +704,7 @@ Links are drawn first, because of RECT_STOKE_WIDTH. Rectangle stroke is painted 
 	  			WHERE g.from_table='tag'
 	  				AND g.to_table='field'
        					AND g.to_key=f.idfield ORDER BY g.idgraph LIMIT 1) sub ON true 
-       			GROUP BY t.context, f.idbox
+       			GROUP BY t.context, f.idbox, t.z
   				UNION ALL
    			SELECT t.context, r.idbox, t.z, 3 AS position, FORMAT('
       				</tbody>
