@@ -306,7 +306,7 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 
 		MERGE INTO translation t
 		USING (
-			SELECT d.iddiagram, rt.uuid_translation, rt.context, r.idrectangle, rt.x, rt.y
+			SELECT d.iddiagram, rt.uuid_translation, rt.context, r.idrectangle, rt.x, rt.y, rt.z
 			FROM json_to_recordset('${JSON.stringify(data.translation)}') AS rt(${column_list.translation})
 			JOIN json_to_recordset('${JSON.stringify(data.rectangle)}') AS rr(${column_list.rectangle}) ON rt.idrectangle=rr.idrectangle
 			JOIN rectangle r ON r.uuid_rectangle=rr.uuid_rectangle
@@ -314,14 +314,16 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 		) rt
 		ON t.uuid_translation = rt.uuid_translation
 		WHEN NOT MATCHED BY TARGET THEN
-			INSERT (iddiagram, uuid_translation, context, idrectangle, x, y)
-			VALUES(rt.iddiagram, rt.uuid_translation, rt.context, rt.idrectangle, rt.x, rt.y)
+			INSERT (iddiagram, uuid_translation, context, idrectangle, x, y, z)
+			VALUES(rt.iddiagram, rt.uuid_translation, rt.context, rt.idrectangle, rt.x, rt.y, rt.z)
 		WHEN MATCHED AND t.context != rt.context THEN
 			UPDATE SET context = rt.context
 		WHEN MATCHED AND t.x != rt.x THEN
 			UPDATE SET x = rt.x
 		WHEN MATCHED AND t.y != rt.y THEN
 			UPDATE SET y = rt.y
+   		WHEN MATCHED AND t.z != rt.z THEN
+     			UPDATE SET z = rt.z
 		WHEN NOT MATCHED BY SOURCE
                        AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=t.iddiagram AND d.uuid_diagram='${uuid_diagram}')
 			THEN DELETE
