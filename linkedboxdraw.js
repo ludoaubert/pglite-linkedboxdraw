@@ -81,7 +81,6 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 			UPDATE SET title = rd.title
 		RETURNING merge_action(), d.*;
 	`);
-	console.log(result1.rows);
 	console.log("MERGE INTO diagram done...");
 
 	const result2 = await client.query(`
@@ -99,7 +98,7 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 		WHEN NOT MATCHED BY SOURCE
 			AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=b.iddiagram AND d.uuid_diagram='${uuid_diagram}')
 			THEN DELETE
-		RETURNING merge_action(), b.*;;
+		RETURNING merge_action(), b.*;
         `);
 	console.log(result2.rows);
         console.log("MERGE INTO box done...");
@@ -145,7 +144,7 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 			UPDATE SET idfield = rv.idfield
                 WHEN NOT MATCHED BY SOURCE AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=v.iddiagram AND d.uuid_diagram='${uuid_diagram}')
 			THEN DELETE
-		RETURNING merge_action(), v.*;;
+		RETURNING merge_action(), v.*;
         `);
 	console.log(result4.rows);
         console.log("MERGE INTO value done...");
@@ -158,12 +157,12 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 			FROM json_to_recordset('${JSON.stringify(data.link)}') AS rl(${column_list.link})
              		JOIN json_to_recordset('${JSON.stringify(data.box)}') AS rb_from(${column_list.box}) ON rl.idbox_from=rb_from.idbox
                         JOIN json_to_recordset('${JSON.stringify(data.box)}') AS rb_to(${column_list.box}) ON rl.idbox_to=rb_to.idbox
-               		JOIN json_to_recordset('${JSON.stringify(data.field)}') AS rf_from(${column_list.field}) ON rl.idfield_from=rf_from.idfield
-                        JOIN json_to_recordset('${JSON.stringify(data.field)}') AS rf_to(${column_list.field}) ON rl.idfield_to=rf_to.idfield
+               		LEFT JOIN json_to_recordset('${JSON.stringify(data.field)}') AS rf_from(${column_list.field}) ON rl.idfield_from=rf_from.idfield
+                        LEFT JOIN json_to_recordset('${JSON.stringify(data.field)}') AS rf_to(${column_list.field}) ON rl.idfield_to=rf_to.idfield
 			JOIN box b_from ON b_from.uuid_box=rb_from.uuid_box
 			JOIN box b_to ON b_to.uuid_box=rb_to.uuid_box
-			JOIN field f_from ON f_from.uuid_field=rf_from.uuid_field
-			JOIN field f_to ON f_to.uuid_field=rf_to.uuid_field
+			LEFT JOIN field f_from ON f_from.uuid_field=rf_from.uuid_field
+			LEFT JOIN field f_to ON f_to.uuid_field=rf_to.uuid_field
 			JOIN diagram d ON d.uuid_diagram = '${uuid_diagram}'
 		) rl
 		ON l.uuid_link = rl.uuid_link
@@ -322,8 +321,8 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 			UPDATE SET x = rt.x
 		WHEN MATCHED AND t.y != rt.y THEN
 			UPDATE SET y = rt.y
-   		WHEN MATCHED AND t.z != rt.z THEN
-     			UPDATE SET z = rt.z
+		WHEN MATCHED AND t.z != rt.z THEN
+			UPDATE SET z = rt.z
 		WHEN NOT MATCHED BY SOURCE
                        AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=t.iddiagram AND d.uuid_diagram='${uuid_diagram}')
 			THEN DELETE
@@ -396,7 +395,7 @@ app.get('/linkedboxdraw/get', async (req, res) => {
   	SELECT json_build_object(
 		'diagram', (SELECT json_agg(row_to_json(d))::json FROM diagram d WHERE d.uuid_diagram='${uuid_diagram}'),
 		'box', (SELECT json_agg(row_to_json(b))::json FROM box b JOIN diagram d ON d.iddiagram=b.iddiagram AND d.uuid_diagram='${uuid_diagram}'),
-		'field', (SELECT colasce(json_agg(row_to_json(f))::json, '[]'::json) FROM field f JOIN diagram d ON d.iddiagram=f.iddiagram AND d.uuid_diagram='${uuid_diagram}'),
+		'field', (SELECT coalesce(json_agg(row_to_json(f))::json, '[]'::json) FROM field f JOIN diagram d ON d.iddiagram=f.iddiagram AND d.uuid_diagram='${uuid_diagram}'),
 		'value', (SELECT coalesce(json_agg(row_to_json(v))::json, '[]'::json) FROM value v JOIN diagram d ON d.iddiagram=v.iddiagram AND d.uuid_diagram='${uuid_diagram}'),
 		'link', (SELECT coalesce(json_agg(row_to_json(l))::json, '[]'::json) FROM link l JOIN diagram d ON d.iddiagram=l.iddiagram AND d.uuid_diagram='${uuid_diagram}'),
 		'tag', (SELECT json_agg(row_to_json(t))::json FROM tag t JOIN diagram d ON d.iddiagram=t.iddiagram AND d.uuid_diagram='${uuid_diagram}'),
