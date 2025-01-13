@@ -60,10 +60,8 @@ var newBoxEditField ;
 var newFieldEditField ;
 var fromBoxCombo ;
 var fromFieldCombo ;
-var fromCardinalityCombo ;
 var toBoxCombo ;
 var toFieldCombo ;
-var toCardinalityCombo ;
 var newValueEditField ;
 var colorBoxCombo ;
 var colorFieldCombo ;
@@ -112,10 +110,8 @@ async function init() {
 	newFieldEditField = document.getElementById("new field");
 	fromBoxCombo = document.getElementById("from boxes");
 	fromFieldCombo = document.getElementById("from fields");
-	fromCardinalityCombo = document.getElementById("from cardinality");
 	toBoxCombo = document.getElementById("to boxes");
 	toFieldCombo = document.getElementById("to fields");
-	toCardinalityCombo = document.getElementById("to cardinality");
 	newValueEditField = document.getElementById("new value");
 	colorBoxCombo = document.getElementById("color boxes");
 	colorFieldCombo = document.getElementById("color fields");
@@ -125,12 +121,6 @@ async function init() {
 	addColorButton = document.getElementById("add color");
 	updateColorButton = document.getElementById("update color");
 	applyRepartitionButton = document.getElementById("apply repartition");
-
-	const ret1 = await db.query(`SELECT string_agg('<option>' || code || '</option>', '' ORDER BY code) FROM tag WHERE type_code='RELATION_CARDINALITY'`);
-	const innerHTML = ret1.rows[0].string_agg;
-
-	fromCardinalityCombo.innerHTML = innerHTML;
-	toCardinalityCombo.innerHTML = innerHTML;
 
 	document.querySelectorAll("button.collapsible")
 			.forEach(button => {
@@ -279,8 +269,7 @@ async function init() {
 			('LINK_COLOR','lime'),('LINK_COLOR','fuchsia'),('LINK_COLOR','teal'),('LINK_COLOR','aqua'),('LINK_COLOR','aquamarine'),('LINK_COLOR','coral'),('LINK_COLOR','cornflowerblue'),('LINK_COLOR','darkgray'),('LINK_COLOR','darkkhaki'),
 			('LINK_COLOR','indianred'),('LINK_COLOR','indigo'),('LINK_COLOR','ivory'),('LINK_COLOR','khaki'),('LINK_COLOR','mediumorchid'),('LINK_COLOR','mediumpurple'),('LINK_COLOR','lawngreen'),('LINK_COLOR','lemonchiffon'),
 			('LINK_COLOR','lightblue'),('LINK_COLOR','lightcoral'),('LINK_COLOR','greenyellow'),('LINK_COLOR','lightgoldenrodyellow'),('LINK_COLOR','lightgray'),('LINK_COLOR','lightgreen'),('LINK_COLOR','lightgrey'),('LINK_COLOR','lightpink'),('LINK_COLOR','lightsalmon'),('LINK_COLOR','lightseagreen'),('LINK_COLOR','lightskyblue'),('LINK_COLOR','lightslategray'),
-			('RELATION_CATEGORY','TR2'),
-			('RELATION_CARDINALITY', '1,1'),('RELATION_CARDINALITY', '1,n'),('RELATION_CARDINALITY', 'n,n');
+			('RELATION_CATEGORY','TR2');
   		`);
 
 		currentBoxIndex = -1;
