@@ -533,6 +533,8 @@ async function handleDeselectSizer()
        		RETURNING *
  	`);
 
+	console.log(ret2);
+
 	const links = await compute_links(selectedContextIndex);
 	document.getElementById(`links_${selectedContextIndex}`).innerHTML = drawLinks(links);
 }
