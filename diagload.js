@@ -563,7 +563,7 @@ async function handleDeselectElement()
 
 	console.log(ret);
 
-	enforce_bounding_rectangle(selectedContextIndex);
+	await enforce_bounding_rectangle(selectedContextIndex);
 
 	const links = await compute_links(selectedContextIndex);
 //	mycontexts.contexts[selectedContextIndex].links = await links;
@@ -751,7 +751,7 @@ async function drawDiag()
 	
 	for (const {context:selectedContextIndex} of contexts)
 	{
-		enforce_bounding_rectangle(selectedContextIndex);		
+		await enforce_bounding_rectangle(selectedContextIndex);		
 	}
 }
 
