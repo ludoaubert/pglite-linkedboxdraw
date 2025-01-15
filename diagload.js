@@ -517,22 +517,20 @@ async function handleDeselectSizer()
 
 	const fO = document.querySelector(`foreignObject[id=box${idbox}]`);
 
-	const width_ = parseInt(fO.getAttribute("width"));
-	const height_ = parseInt(fO.getAttribute("height"));
+	const width = parseInt(fO.getAttribute("width"));
+	const height = parseInt(fO.getAttribute("height"));
 
 	const ret = await db.query(`SELECT * FROM rectangle WHERE idbox=${idbox}`);
 	const r = ret.rows[0];
 
-	if (r.width == width_ && r.height == height_)
+	if (r.width == width && r.height == height)
 		return;
 
-	const dx = width_ - r.width;
-	const dy = height_ - r.height;
-
-	await db.exec(`
+	const ret2 = await db.query(`
  		UPDATE rectangle
-   		SET width = width + ${dx}, height = height + ${dy}
-     		WHERE idbox=${idbox}
+   		SET width = ${width}, height = ${height}
+     		WHERE idbox = ${idbox}
+       		RETURNING *
  	`);
 
 	const links = await compute_links(selectedContextIndex);
