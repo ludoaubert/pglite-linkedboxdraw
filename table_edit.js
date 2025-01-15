@@ -514,7 +514,7 @@ async function updateTitle()
 
 async function addNewBox()
 {	
-	const ret = await db.query(`
+	const ret1 = await db.query(`
    		WITH cte AS (
  			INSERT INTO box(iddiagram, title)
     			SELECT iddiagram, '${newBoxEditField.value}'
@@ -525,15 +525,15 @@ async function addNewBox()
    			SELECT iddiagram, 2*4 + LENGTH(title) * ${MONOSPACE_FONT_PIXEL_WIDTH}, 8 + ${CHAR_RECT_HEIGHT}, idbox 
      			FROM cte
 			RETURNING *
-		), cte3 AS (
-   			INSERT INTO translation(iddiagram, context, idrectangle, x, y)
-   			SELECT iddiagram, 1 AS context, idrectangle, 0 AS x, 0 AS y
-     			FROM cte2
 		)
-  		SELECT idbox FROM cte
-   	`);
+   		INSERT INTO translation(iddiagram, context, idrectangle, x, y)
+   		SELECT iddiagram, 1 AS context, idrectangle, 0 AS x, 0 AS y
+     		FROM cte2
+	`);
 
-	currentBoxIndex = ret.rows[0].idbox;
+	const ret2 = await db.query(`SELECT idbox FROM box WHERE title = '${newBoxEditField.value}'`);
+
+	currentBoxIndex = ret2.rows[0].idbox;
 	currentFieldIndex = -1;
 
 	newBoxEditField.value = "";
