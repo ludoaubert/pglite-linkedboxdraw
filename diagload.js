@@ -232,12 +232,12 @@ function selectElement(elmnt)
 	g = elmnt;
 }
 
-function deselectElement(elmnt)
+async function deselectElement(elmnt)
 {
 	if (g == 0)
 		return;
 	console.log("deselectElement()");
-	handleDeselectElement();
+	await handleDeselectElement();
 	currentX=0;
 	currentY=0;
 	g=0;
@@ -803,7 +803,7 @@ function addEventListeners()
 	document.querySelectorAll("svg")
 		.forEach(svg => {
 			svg.addEventListener("mousemove", event => {moveElement(event); moveSizer(event);});
-			svg.addEventListener("mouseup", event => {deselectElement(g); deselectSizer(sizer);});
+			svg.addEventListener("mouseup", async event => {await deselectElement(g); deselectSizer(sizer);});
 		});
 
 	document.querySelectorAll("g > rect[id^=sizer_]")
