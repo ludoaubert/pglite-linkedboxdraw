@@ -293,6 +293,8 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 			UPDATE SET width = rr.width
 		WHEN MATCHED AND r.height != rr.height THEN
 			UPDATE SET height = rr.height
+		WHEN MATCHED AND r.idbox != rr.idbox THEN
+			UPDATE SET idbox = rr.idbox
 		WHEN NOT MATCHED BY SOURCE
                        AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=r.iddiagram AND d.uuid_diagram='${uuid_diagram}')
 			THEN DELETE
@@ -413,3 +415,11 @@ app.get('/linkedboxdraw/get', async (req, res) => {
 	res.json(json_doc);
 })
 
+/*
+to run as service using a node.js module called pm2 which allows to do the same thing as systemd:
+>pm2 start linkedboxdraw.js
+to start node linkedboxdraw.js as a service
+>pm2 monit
+to look at the log
+>pm2 stop linkedboxdraw.js
+*/
