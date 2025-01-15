@@ -12,6 +12,8 @@ export {db, init, displayCurrent};
 
 const db = new PGlite();
 
+const serverAddress="192.168.0.21";
+
 var currentBoxIndex = -1;
 var currentFieldIndex = -1;
 
@@ -154,7 +156,7 @@ async function init() {
 	downloadDiagramListButton.addEventListener("click", async (evt)=>{
 		const response = await fetch(
 			//"https://www.diskloud.fr:3000/linkedboxdraw/list",
-			"https://109.11.33.79:8443/linkedboxdraw/list"
+			`https://${serverAddress}:8443/linkedboxdraw/list`
 		);
 		const sjson = await response.json();
 		console.log(sjson);
@@ -165,7 +167,7 @@ async function init() {
 	download.addEventListener("click", async (evt)=>{
 		const response = await fetch(
 			//"https://www.diskloud.fr:3000/linkedboxdraw/list",
-			"https://109.11.33.79:8443/linkedboxdraw/list"
+			`https://${serverAddress}:8443/linkedboxdraw/list`
 		);
 		const sjson = await response.json();
 		console.log(sjson);
@@ -174,7 +176,7 @@ async function init() {
 
 		const response2 = await fetch(
 			//"https://www.diskloud.fr:3000/linkedboxdraw/get",
-			`https://109.11.33.79:8443/linkedboxdraw/get?uuid_diagram=${uuid_diagram}`
+			`https://${serverAddress}:8443/linkedboxdraw/get?uuid_diagram=${uuid_diagram}`
 		);
 		const sjson2 = await response2.json();
 		const json_doc = JSON.parse(sjson2);
@@ -246,7 +248,7 @@ async function init() {
 		console.log(json_doc);
 		const response = await fetch(
 			//"https://www.diskloud.fr:3000/linkedboxdraw/post",
-			"https://109.11.33.79:8443/linkedboxdraw/post",
+			`https://${serverAddress}:8443/linkedboxdraw/post`,
 			{
 				method: "POST",
 				body: json_doc,
