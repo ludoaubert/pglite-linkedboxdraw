@@ -138,10 +138,8 @@ app.post('/linkedboxdraw/post', async (req, res) => {
                 ON v.uuid_value = rv.uuid_value
                 WHEN NOT MATCHED BY TARGET THEN
                         INSERT (iddiagram, uuid_value, data, idfield) VALUES(rv.iddiagram, rv.uuid_value, rv.data, rv.idfield)
-		WHEN MATCHED AND v.data != rv.data THEN
-			UPDATE SET data = rv.data
-		WHEN MATCHED AND v.idfield != rv.idfield THEN
-			UPDATE SET idfield = rv.idfield
+		WHEN MATCHED AND ((v.data != rv.data) OR (v.idfield != rv.idfield)) THEN
+			UPDATE SET data = rv.data, idfield = rv.idfield
                 WHEN NOT MATCHED BY SOURCE AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=v.iddiagram AND d.uuid_diagram='${uuid_diagram}')
 			THEN DELETE
 		RETURNING merge_action(), v.*;
@@ -188,10 +186,8 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 		ON t.uuid_tag = rt.uuid_tag
 		WHEN NOT MATCHED BY TARGET THEN
 			INSERT (iddiagram, uuid_tag, type_code, code) VALUES(rt.iddiagram, rt.uuid_tag, rt.type_code, rt.code)
-		WHEN MATCHED AND t.type_code != rt.type_code THEN
-                        UPDATE SET type_code = rt.type_code
-                WHEN MATCHED AND t.code != rt.code THEN
-                        UPDATE SET code = rt.code
+		WHEN MATCHED AND ((t.type_code != rt.type_code) OR (t.code != rt.code)) THEN
+                        UPDATE SET type_code = rt.type_code, code = rt.code
                 WHEN NOT MATCHED BY SOURCE
 			AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram = t.iddiagram AND d.uuid_diagram='${uuid_diagram}')
 			THEN DELETE
@@ -256,16 +252,10 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 		WHEN NOT MATCHED BY TARGET THEN
 			INSERT (iddiagram, uuid_graph, from_table, from_key, to_table, to_key)
 			VALUES(rg.iddiagram, rg.uuid_graph, rg.from_table, rg.from_key, rg.to_table, rg.to_key)
-		WHEN MATCHED AND g.from_table != rg.from_table THEN
-			UPDATE SET from_table = rg.from_table
-		WHEN MATCHED AND g.from_key != rg.from_key THEN
-                        UPDATE SET from_key = rg.from_key
-		WHEN MATCHED AND g.to_table != rg.to_table THEN
-			UPDATE SET to_table = rg.to_table
-		WHEN MATCHED AND g.to_key != rg.to_key THEN
-                        UPDATE SET to_key = rg.to_key
-		WHEN MATCHED AND g.iddiagram != rg.iddiagram THEN
-			UPDATE SET iddiagram = rg.iddiagram
+		WHEN MATCHED AND ((g.from_table != rg.from_table) OR (g.from_key != rg.from_key) OR (g.to_table != rg.to_table)
+			OR (g.to_key != rg.to_key) OR (g.iddiagram != rg.iddiagram)) THEN
+			UPDATE SET from_table = rg.from_table, from_key = rg.from_key, to_table = rg.to_table, to_key = rg.to_key,
+				iddiagram = rg.iddiagram
 		WHEN NOT MATCHED BY SOURCE AND EXISTS(
 			SELECT * FROM diagram d WHERE g.iddiagram=d.iddiagram AND d.uuid_diagram='${uuid_diagram}'
 		)
@@ -289,12 +279,8 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 		WHEN NOT MATCHED BY TARGET THEN
 			INSERT (iddiagram, uuid_rectangle, width, height, idbox)
 			VALUES(rr.iddiagram, rr.uuid_rectangle, rr.width, rr.height, rr.idbox)
-		WHEN MATCHED AND r.width != rr.width THEN
-			UPDATE SET width = rr.width
-		WHEN MATCHED AND r.height != rr.height THEN
-			UPDATE SET height = rr.height
-		WHEN MATCHED AND r.idbox != rr.idbox THEN
-			UPDATE SET idbox = rr.idbox
+		WHEN MATCHED AND ((r.width != rr.width) OR (r.height != rr.height) OR (r.idbox != rr.idbox)) THEN
+			UPDATE SET width = rr.width, height = rr.height, idbox = rr.idbox
 		WHEN NOT MATCHED BY SOURCE
                        AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=r.iddiagram AND d.uuid_diagram='${uuid_diagram}')
 			THEN DELETE
@@ -317,14 +303,8 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 		WHEN NOT MATCHED BY TARGET THEN
 			INSERT (iddiagram, uuid_translation, context, idrectangle, x, y, z)
 			VALUES(rt.iddiagram, rt.uuid_translation, rt.context, rt.idrectangle, rt.x, rt.y, rt.z)
-		WHEN MATCHED AND t.context != rt.context THEN
-			UPDATE SET context = rt.context
-		WHEN MATCHED AND t.x != rt.x THEN
-			UPDATE SET x = rt.x
-		WHEN MATCHED AND t.y != rt.y THEN
-			UPDATE SET y = rt.y
-		WHEN MATCHED AND t.z != rt.z THEN
-			UPDATE SET z = rt.z
+		WHEN MATCHED AND ((t.context != rt.context) OR (t.x != rt.x) OR (t.y != rt.y) OR (t.z != rt.z)) THEN
+			UPDATE SET context = rt.context, x = rt.x, y = rt.y, z = rt.z
 		WHEN NOT MATCHED BY SOURCE
                        AND EXISTS(SELECT * FROM diagram d WHERE d.iddiagram=t.iddiagram AND d.uuid_diagram='${uuid_diagram}')
 			THEN DELETE
@@ -340,10 +320,8 @@ app.post('/linkedboxdraw/post', async (req, res) => {
 		ON p.uuid_polyline = rp.uuid_polyline
 		WHEN NOT MATCHED BY TARGET THEN
 			INSERT (uuid_polyline, context, points) VALUES(rp.uuid_polyline, rp.context, rp.points)
-		WHEN MATCHED AND p.context != rp.context THEN
-			UPDATE SET context = rp.context
-		WHEN MATCHED AND p.points != rp.points THEN
-			UPDATE SET points = rp.points
+		WHEN MATCHED AND ((p.context != rp.context) OR (p.points != rp.points)) THEN
+			UPDATE SET context = rp.context, points = rp.points
 		WHEN NOT MATCHED BY SOURCE
 			AND EXISTS (SELECT * FROM diagram d WHERE d.iddiagram=p.iddiagram AND d.uuid_diagram='${uuid_diagram}')
 			THEN DELETE
