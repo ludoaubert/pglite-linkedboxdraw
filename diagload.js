@@ -552,12 +552,6 @@ async function handleDeselectElement()
 	const translateX = firstXForm.matrix.e;
 	const translateY = firstXForm.matrix.f;
 
-	await db.exec(`
-  		UPDATE translation
-   		SET x=${translateX}, y=${translateY}
-     		WHERE idrectangle = (SELECT idrectangle FROM rectangle WHERE idbox=${idbox})
- 	`);
-/*
 	const ret = await db.query(`
  		UPDATE translation t
    		SET x=${translateX}, y=${translateY}
@@ -568,7 +562,7 @@ async function handleDeselectElement()
  	`);
 
 	console.log(ret);
-*/
+
 	await enforce_bounding_rectangle(selectedContextIndex);
 
 	const links = await compute_links(selectedContextIndex);
